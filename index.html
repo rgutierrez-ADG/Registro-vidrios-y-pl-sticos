@@ -423,6 +423,37 @@ function parseWorkbook(wb) {
 }
 
 // ── File upload ──
+// Excel filename in the same repo folder (change this if you rename the file)
+const XLSX_FILENAME = 'R-SIG-GVP_01_REGISTRO_DE_CONTROL_DE_VIDRIOS_Y_PLÁSTICOS_11-09-2023.xlsx';
+
+// Auto-load Excel from same directory on startup
+async function autoLoadXLSX() {
+  state.loading = true; render();
+  try {
+    await loadSheetJS();
+    // Try to fetch the xlsx from the same folder as index.html
+    const res = await fetch(encodeURIComponent(XLSX_FILENAME));
+    if (!res.ok) {
+      // Try alternate names (spaces vs underscores)
+      const alt = XLSX_FILENAME.replace(/_/g, ' ');
+      const res2 = await fetch(encodeURIComponent(alt));
+      if (!res2.ok) throw new Error('No se encontró el archivo Excel');
+      var buf = await res2.arrayBuffer();
+    } else {
+      var buf = await res.arrayBuffer();
+    }
+    const wb = XLSX.read(new Uint8Array(buf), {type:'array', cellDates:true});
+    state.sheets = parseWorkbook(wb);
+    if (state.sheets.length > 0) {
+      showToast(state.sheets.length + ' formulario(s) cargado(s)');
+    }
+  } catch(err) {
+    console.log('Auto-load failed, manual upload required:', err.message);
+    // Silent fail - user can upload manually
+  }
+  state.loading = false; render();
+}
+
 function handleXLSX(e) {
   const file = e.target.files?.[0];
   if (!file) return;
@@ -1077,6 +1108,8 @@ function render() {
 
 // Initial render
 render();
+// Auto-load Excel on startup
+autoLoadXLSX();
 </script>
 </body>
 </html>
