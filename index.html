@@ -318,11 +318,18 @@ const state = {
 };
 
 // Ensure config defaults
-if (!state.config.clientId) state.config.clientId = '';
-if (!state.config.folderId) state.config.folderId = '';
+// ── Credenciales fijas (no se pierden aunque se limpie el localStorage) ──
+const DEFAULT_CLIENT_ID = '399944808776-ndb9l3rsnv17cbrteni11n0nrmgjve7n.apps.googleusercontent.com';
+const DEFAULT_FOLDER_ID  = '18KDbxt63cluSBl5rFDdSP7ZdiUzGPZPL';
+
+if (!state.config.clientId) state.config.clientId = DEFAULT_CLIENT_ID;
+if (!state.config.folderId) state.config.folderId = DEFAULT_FOLDER_ID;
 if (!state.config.email) state.config.email = '';
 if (!state.config.deadline) state.config.deadline = '09:00';
 if (!state.config.folderMap) state.config.folderMap = {}; // {sheetName: folderId}
+
+// Persistir defaults de inmediato (por si es primera vez)
+saveConfig();
 
 // Clean display names: remove Diario-, Diaria-, Mensual, Trimestral prefixes
 function displayName(name) {
@@ -507,13 +514,16 @@ function authenticate(silent) {
 
 // Auto-connect on startup
 async function autoConnect() {
+  // Garantizar que los defaults siempre estén cargados
+  if (!state.config.clientId) { state.config.clientId = DEFAULT_CLIENT_ID; saveConfig(); }
+  if (!state.config.folderId) { state.config.folderId = DEFAULT_FOLDER_ID; saveConfig(); }
+
   const savedToken = localStorage.getItem('fv_token');
-  const savedTime = localStorage.getItem('fv_token_time');
-  if (!savedToken || !state.config.clientId) return;
-  // Token expires after ~3600s, try to use it if < 50 min old
-  const age = (Date.now() - parseInt(savedTime||'0')) / 1000;
-  if (age < 3000) {
-    // Verify token is still valid
+  const savedTime  = localStorage.getItem('fv_token_time');
+  const age = savedTime ? (Date.now() - parseInt(savedTime)) / 1000 : 99999;
+
+  // 1. Intentar reutilizar token guardado si tiene menos de 50 min
+  if (savedToken && age < 3000) {
     try {
       const res = await fetch('https://www.googleapis.com/drive/v3/about?fields=user', {
         headers: { Authorization: 'Bearer ' + savedToken }
@@ -521,12 +531,45 @@ async function autoConnect() {
       if (res.ok) {
         state.token = savedToken;
         render();
-        return;
+        return; // ✓ conectado sin interacción
       }
     } catch {}
   }
-  // Token expired, try silent re-auth
-  authenticate(true);
+
+  // 2. Token vencido o ausente → intentar silent re-auth (sin popup)
+  //    Solo funciona si el navegador ya tiene sesión Google activa
+  function loadGSIandTrySilent() {
+    function trySilent() {
+      try {
+        const hint = localStorage.getItem('fv_login_hint') || '';
+        const cfg = {
+          client_id: DEFAULT_CLIENT_ID,
+          scope: SCOPES,
+          prompt: '',          // vacío = sin popup (el navegador resuelve solo)
+          callback: (r) => {
+            if (r.access_token) {
+              state.token = r.access_token;
+              localStorage.setItem('fv_token', r.access_token);
+              localStorage.setItem('fv_token_time', Date.now().toString());
+              if (r.hint) localStorage.setItem('fv_login_hint', r.hint);
+              render();
+            }
+            // Si falla en silencio → el botón "Conectar" queda disponible
+          },
+        };
+        if (hint) cfg.login_hint = hint;
+        google.accounts.oauth2.initTokenClient(cfg).requestAccessToken();
+      } catch(e) { /* fallo silencioso — usuario puede conectar manual */ }
+    }
+    if (window.google?.accounts) { trySilent(); }
+    else {
+      const s = document.createElement('script');
+      s.src = 'https://accounts.google.com/gsi/client';
+      s.onload = trySilent;
+      document.head.appendChild(s);
+    }
+  }
+  loadGSIandTrySilent();
 }
 
 // ── Upload to Drive ──
