@@ -460,13 +460,31 @@ function handleXLSX(e) {
   e.target.value = '';
 }
 
+// ── Extract folder ID from URL or raw ID ──
+function extractFolderId(input) {
+  if (!input) return '';
+  const m = input.match(/folders\/([a-zA-Z0-9_-]+)/);
+  return m ? m[1] : input.trim();
+}
+
 // ── Google Auth ──
-function authenticate() {
-  if (!state.config.clientId) { showToast('Ingresa Client ID en ⚙','err'); return; }
+function authenticate(silent) {
+  if (!state.config.clientId) { if(!silent) showToast('Ingresa Client ID en ⚙','err'); return; }
   function doAuth() {
     const client = google.accounts.oauth2.initTokenClient({
       client_id: state.config.clientId, scope: SCOPES,
-      callback: (r) => { if (r.access_token) { state.token = r.access_token; showToast('Conectado a Drive'); } else showToast('Error auth','err'); render(); },
+      prompt: silent ? '' : 'consent',
+      callback: (r) => {
+        if (r.access_token) {
+          state.token = r.access_token;
+          localStorage.setItem('fv_token', r.access_token);
+          localStorage.setItem('fv_token_time', Date.now().toString());
+          if(!silent) showToast('Conectado a Drive');
+        } else {
+          if(!silent) showToast('Error auth','err');
+        }
+        render();
+      },
     });
     client.requestAccessToken();
   }
@@ -475,6 +493,30 @@ function authenticate() {
     s.src = 'https://accounts.google.com/gsi/client';
     s.onload = doAuth; document.head.appendChild(s);
   } else doAuth();
+}
+
+// Auto-connect on startup
+async function autoConnect() {
+  const savedToken = localStorage.getItem('fv_token');
+  const savedTime = localStorage.getItem('fv_token_time');
+  if (!savedToken || !state.config.clientId) return;
+  // Token expires after ~3600s, try to use it if < 50 min old
+  const age = (Date.now() - parseInt(savedTime||'0')) / 1000;
+  if (age < 3000) {
+    // Verify token is still valid
+    try {
+      const res = await fetch('https://www.googleapis.com/drive/v3/about?fields=user', {
+        headers: { Authorization: 'Bearer ' + savedToken }
+      });
+      if (res.ok) {
+        state.token = savedToken;
+        render();
+        return;
+      }
+    } catch {}
+  }
+  // Token expired, try silent re-auth
+  authenticate(true);
 }
 
 // ── Upload to Drive ──
@@ -1070,8 +1112,8 @@ function render() {
     driveCard.appendChild(h('div', {style:{height:'12px'}}));
 
     const fidLabel = h('label', {className:'config-label'}, 'Carpeta general (fallback)');
-    const fidInput = h('input', {placeholder:'Vacío = raíz de Drive', value:state.config.folderId});
-    fidInput.addEventListener('input', e => { state.config.folderId = e.target.value; saveConfig(); });
+    const fidInput = h('input', {placeholder:'Pegá la URL o ID de la carpeta', value:state.config.folderId});
+    fidInput.addEventListener('input', e => { state.config.folderId = extractFolderId(e.target.value); saveConfig(); });
     driveCard.appendChild(fidLabel); driveCard.appendChild(fidInput);
     driveCard.appendChild(h('div', {className:'config-hint'}, 'Se usa si la hoja no tiene carpeta asignada'));
     driveCard.appendChild(h('div', {style:{height:'12px'}}));
@@ -1089,9 +1131,9 @@ function render() {
       state.sheets.forEach(s => {
         const row = h('div', {style:{marginBottom:'10px'}});
         row.appendChild(h('label', {className:'config-label'}, '📋 '+displayName(s.name)));
-        const folderInput = h('input', {placeholder:'ID de carpeta en Drive', value:state.config.folderMap[s.name]||'', style:{fontSize:'13px',padding:'9px 12px'}});
+        const folderInput = h('input', {placeholder:'URL o ID de carpeta', value:state.config.folderMap[s.name]||'', style:{fontSize:'13px',padding:'9px 12px'}});
         folderInput.addEventListener('input', e => {
-          state.config.folderMap[s.name] = e.target.value.trim();
+          state.config.folderMap[s.name] = extractFolderId(e.target.value);
           saveConfig();
         });
         row.appendChild(folderInput);
@@ -1173,6 +1215,8 @@ function render() {
 // Load embedded data and render
 loadEmbeddedData();
 render();
+// Auto-connect to Drive
+autoConnect();
 </script>
 </body>
 </html>
