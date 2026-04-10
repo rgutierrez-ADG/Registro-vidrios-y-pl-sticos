@@ -477,27 +477,36 @@ function extractFolderId(input) {
 }
 
 // ── Google Auth ──
+// ── Update Drive badge in header without full re-render ──
+function updateDriveBadge() {
+  const badge = document.getElementById('drive-badge');
+  if (!badge) { render(); return; } // fallback if badge not found
+  if (state.token) {
+    badge.innerHTML = '<span style="display:inline-flex;align-items:center;gap:4px;font-family:IBM Plex Mono,monospace;font-size:10px;color:#4A8556"><span style="width:6px;height:6px;border-radius:50%;background:#4A8556;display:inline-block"></span> Drive ✓</span>';
+  } else {
+    badge.innerHTML = '<button class="btn btn-s btn-accent" onclick="authenticate(false)" style="font-size:11px;padding:5px 10px">Conectar</button>';
+  }
+}
+
 function authenticate(silent) {
   if (!state.config.clientId) { if(!silent) showToast('Ingresa Client ID en ⚙','err'); return; }
   function doAuth() {
     const savedHint = localStorage.getItem('fv_login_hint') || '';
     const clientCfg = {
       client_id: state.config.clientId, scope: SCOPES,
-      // '' = no prompt (silent re-auth uses saved session)
-      // 'select_account' only when user explicitly clicks Connect
       prompt: silent ? '' : 'select_account',
       callback: (r) => {
         if (r.access_token) {
           state.token = r.access_token;
           localStorage.setItem('fv_token', r.access_token);
           localStorage.setItem('fv_token_time', Date.now().toString());
-          // Save the hint so future silent auths skip account picker
           if (r.hint) localStorage.setItem('fv_login_hint', r.hint);
-          if(!silent) showToast('✓ Conectado a Drive');
+          if (!silent) showToast('✓ Conectado a Drive');
+          // Actualizar solo el badge del header sin destruir el formulario
+          updateDriveBadge();
         } else {
-          if(!silent) showToast('Error al conectar','err');
+          if (!silent) showToast('Error al conectar — intentá de nuevo', 'err');
         }
-        render();
       },
     };
     // Use login_hint if we know the account — skips account picker on silent re-auth
@@ -530,7 +539,7 @@ async function autoConnect() {
       });
       if (res.ok) {
         state.token = savedToken;
-        render();
+        updateDriveBadge();
         return; // ✓ conectado sin interacción
       }
     } catch {}
@@ -552,7 +561,7 @@ async function autoConnect() {
               localStorage.setItem('fv_token', r.access_token);
               localStorage.setItem('fv_token_time', Date.now().toString());
               if (r.hint) localStorage.setItem('fv_login_hint', r.hint);
-              render();
+              updateDriveBadge();
             }
             // Si falla en silencio → el botón "Conectar" queda disponible
           },
@@ -793,9 +802,13 @@ async function handleSave() {
     const blob = await generatePDF();
 
     const folderId = getFolderForSheet(state.activeSheet.name);
-    console.log('Subiendo a Drive — carpeta:', folderId||'raíz', '— archivo:', fileName);
+    // Token check justo antes de subir
+    if (!state.token) {
+      state.uploading = false; render();
+      showToast('Token perdido — tocá Conectar de nuevo', 'err');
+      return;
+    }
     showToast('Subiendo a Drive...');
-
     await uploadToDrive(blob, fileName, folderId);
 
     // Adjuntos no-imagen
@@ -946,9 +959,11 @@ function render() {
       ),
     ),
     h('div', {className:'header-actions'},
-      state.token
-        ? h('span', {className:'drive-badge', style:{color:'#4A8556'}}, h('span',{className:'drive-dot',style:{background:'#4A8556'}}), ' Drive')
-        : h('button', {className:'btn btn-s btn-accent', onClick:authenticate}, 'Conectar'),
+      h('span', {id:'drive-badge'},
+        state.token
+          ? h('span', {className:'drive-badge', style:{color:'#4A8556'}}, h('span',{className:'drive-dot',style:{background:'#4A8556'}}), ' Drive ✓')
+          : h('button', {className:'btn btn-s btn-accent', onClick:()=>authenticate(false)}, 'Conectar')
+      ),
       h('button', {className:'btn btn-s btn-ghost', style:{color:'rgba(255,255,255,.5)',fontSize:'18px'}, onClick:()=>{state.view='config';render();}}, '⚙'),
     ),
   );
