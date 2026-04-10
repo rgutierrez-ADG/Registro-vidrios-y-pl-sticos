@@ -315,12 +315,19 @@ const state = {
   toast: null,
 };
 
-// Ensure config defaults
-if (!state.config.clientId) state.config.clientId = '';
-if (!state.config.folderId) state.config.folderId = '';
+// ── App defaults (hardcoded) ──
+const DEFAULT_CLIENT_ID = '399944808776-ndb9l3rsnv17cbrteni11n0nrmgjve7n.apps.googleusercontent.com';
+const DEFAULT_FOLDER_ID  = '18KDbxt63cluSBl5rFDdSP7ZdiUzGPZPL';
+
+// Ensure config defaults — always fall back to hardcoded values
+if (!state.config.clientId) state.config.clientId = DEFAULT_CLIENT_ID;
+if (!state.config.folderId) state.config.folderId = DEFAULT_FOLDER_ID;
 if (!state.config.email) state.config.email = '';
 if (!state.config.deadline) state.config.deadline = '09:00';
 if (!state.config.folderMap) state.config.folderMap = {}; // {sheetName: folderId}
+
+// Persist defaults so they survive a fresh localStorage
+saveConfig();
 
 // Clean display names: remove Diario-, Diaria-, Mensual, Trimestral prefixes
 function displayName(name) {
@@ -342,7 +349,7 @@ function showToast(msg, type='ok') {
   state.toast = {msg, type};
   render();
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { state.toast = null; render(); }, 3500);
+  toastTimer = setTimeout(() => { state.toast = null; render(); }, type==='err' ? 6000 : 3500);
 }
 
 // ── Load libs ──
@@ -497,13 +504,16 @@ function authenticate(silent) {
 
 // Auto-connect on startup
 async function autoConnect() {
+  // Always ensure defaults are set
+  if (!state.config.clientId) { state.config.clientId = DEFAULT_CLIENT_ID; saveConfig(); }
+  if (!state.config.folderId) { state.config.folderId = DEFAULT_FOLDER_ID; saveConfig(); }
+
   const savedToken = localStorage.getItem('fv_token');
-  const savedTime = localStorage.getItem('fv_token_time');
-  if (!savedToken || !state.config.clientId) return;
-  // Token expires after ~3600s, try to use it if < 50 min old
+  const savedTime  = localStorage.getItem('fv_token_time');
   const age = (Date.now() - parseInt(savedTime||'0')) / 1000;
-  if (age < 3000) {
-    // Verify token is still valid
+
+  if (savedToken && age < 3000) {
+    // Try to reuse the saved token
     try {
       const res = await fetch('https://www.googleapis.com/drive/v3/about?fields=user', {
         headers: { Authorization: 'Bearer ' + savedToken }
@@ -515,8 +525,37 @@ async function autoConnect() {
       }
     } catch {}
   }
-  // Token expired, try silent re-auth
-  authenticate(true);
+
+  // No valid token — attempt silent re-auth (no consent screen)
+  // Load GSI lib first if needed, then try
+  function trySilent() {
+    if (!state.config.clientId) return;
+    try {
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: state.config.clientId,
+        scope: SCOPES,
+        prompt: '',  // empty = silent, no popup unless required
+        callback: (r) => {
+          if (r.access_token) {
+            state.token = r.access_token;
+            localStorage.setItem('fv_token', r.access_token);
+            localStorage.setItem('fv_token_time', Date.now().toString());
+            render();
+          }
+        },
+      });
+      client.requestAccessToken();
+    } catch(e) { /* silent fail — user can connect manually */ }
+  }
+
+  if (window.google?.accounts) {
+    trySilent();
+  } else {
+    const s = document.createElement('script');
+    s.src = 'https://accounts.google.com/gsi/client';
+    s.onload = trySilent;
+    document.head.appendChild(s);
+  }
 }
 
 // ── Upload to Drive ──
@@ -529,7 +568,12 @@ async function uploadToDrive(blob, fileName, folderId) {
   const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
     method:'POST', headers:{Authorization:'Bearer '+state.token}, body:form,
   });
-  if (!res.ok) throw new Error('Error al subir');
+  if (!res.ok) {
+    const errBody = await res.text().catch(()=>'');
+    if (res.status === 401) { state.token = null; throw new Error('Token expirado. Reconectá en ⚙'); }
+    throw new Error('Drive error '+res.status+': '+errBody.slice(0,100));
+  }
+  return res.json();
 }
 
 async function uploadAttachment(file, folderId) {
@@ -659,14 +703,20 @@ async function generatePDF() {
     doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(122,99,50);
     doc.text('EVIDENCIA FOTOGRÁFICA', 20, iy); iy+=10;
     for (const af of state.attachedFiles) {
-      if (af.file.type.startsWith('image/')) {
+      if (af.dataUrl && (af.type||af.file?.type||'').startsWith('image/')) {
         try {
-          const du = await new Promise(r => { const rd = new FileReader(); rd.onload=()=>r(rd.result); rd.readAsDataURL(af.file); });
-          if (iy > 240) { doc.addPage('p'); iy=14; }
-          doc.addImage(du,'JPEG',20,iy,90,60); iy+=62;
+          if (iy > 230) { doc.addPage('p'); iy=14; }
+          doc.addImage(af.dataUrl, 'JPEG', 20, iy, 90, 60);
+          iy += 62;
           doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(145,139,127);
-          doc.text(af.name,20,iy); iy+=8;
-        } catch { iy+=5; }
+          doc.text(af.name, 20, iy); iy+=10;
+        } catch(imgErr) {
+          doc.setFontSize(7); doc.text('[Imagen: '+af.name+']', 20, iy); iy+=8;
+        }
+      } else {
+        if (iy > 270) { doc.addPage('p'); iy=14; }
+        doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(92,85,74);
+        doc.text('📎 '+af.name, 20, iy); iy+=8;
       }
     }
   }
@@ -696,14 +746,27 @@ async function handleSave() {
     const blob = await generatePDF();
 
     if (state.token) {
-      // Upload to Drive
-      const folderId = getFolderForSheet(state.activeSheet.name);
-      await uploadToDrive(blob, fileName, folderId);
-      // Upload non-image attachments too
-      for (const af of state.attachedFiles) {
-        if (!af.file.type.startsWith('image/')) { try { await uploadAttachment(af.file, folderId); } catch{} }
+      // Try Upload to Drive
+      try {
+        const folderId = getFolderForSheet(state.activeSheet.name);
+        await uploadToDrive(blob, fileName, folderId);
+        // Upload non-image attachments too
+        for (const af of state.attachedFiles) {
+          if (af.file && !(af.type||af.file.type||'').startsWith('image/')) {
+            try { await uploadAttachment(af.file, folderId); } catch{}
+          }
+        }
+        showToast('✓ PDF subido a Drive');
+      } catch(driveErr) {
+        console.error('Drive upload failed:', driveErr);
+        // Fallback to local download
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = fileName;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        showToast('⚠ Drive falló: '+driveErr.message+'. PDF descargado.', 'err');
       }
-      showToast('✓ PDF subido a Drive');
     } else {
       // Download locally (works on mobile)
       const url = URL.createObjectURL(blob);
@@ -763,11 +826,22 @@ function setAllStatus(status) {
 
 // ── Attachments ──
 function handleAttach(e) {
-  const files = Array.from(e.target.files).map(f => ({
-    id: Math.random().toString(36).slice(2,9), file:f, name:f.name,
-    preview: f.type.startsWith('image/') ? URL.createObjectURL(f) : null,
-  }));
-  state.attachedFiles.push(...files);
+  const files = Array.from(e.target.files);
+  files.forEach(f => {
+    const entry = {
+      id: Math.random().toString(36).slice(2,9), file:f, name:f.name, type:f.type, size:f.size,
+      preview: null, dataUrl: null,
+    };
+    // Convert to base64 immediately (mobile files can become stale)
+    const reader = new FileReader();
+    reader.onload = () => {
+      entry.dataUrl = reader.result;
+      if (f.type.startsWith('image/')) entry.preview = reader.result;
+      render();
+    };
+    reader.readAsDataURL(f);
+    state.attachedFiles.push(entry);
+  });
   render(); e.target.value = '';
 }
 function removeAttach(id) {
@@ -1048,7 +1122,8 @@ function render() {
     // Attachments section
     const attachSection = h('div', {style:{padding:'16px',borderTop:'1.5px solid var(--border)'}});
     const attachHeader = h('div', {style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'10px'}});
-    attachHeader.appendChild(h('span', {style:{fontSize:'12px',fontWeight:'600',color:'var(--text-m)',textTransform:'uppercase',letterSpacing:'.04em'}}, '📎 Evidencia'));
+    attachHeader.appendChild(h('span', {style:{fontSize:'12px',fontWeight:'600',color:'var(--text-m)',textTransform:'uppercase',letterSpacing:'.04em'}},
+      '📎 Evidencia' + (state.attachedFiles.length > 0 ? ' ('+state.attachedFiles.length+')' : '')));
     const afi = h('input', {type:'file', multiple:'true', accept:'image/*,.pdf,.doc,.docx,.xls,.xlsx', style:{display:'none'}, onChange:handleAttach});
     attachHeader.appendChild(afi);
     // Camera button + file button
@@ -1103,6 +1178,16 @@ function render() {
     sigCanvas.addEventListener('mousedown', startDraw); sigCanvas.addEventListener('mousemove', draw); sigCanvas.addEventListener('mouseup', endDraw); sigCanvas.addEventListener('mouseleave', endDraw);
     sigCanvas.addEventListener('touchstart', startDraw, {passive:false}); sigCanvas.addEventListener('touchmove', draw, {passive:false}); sigCanvas.addEventListener('touchend', endDraw);
     sigSection.appendChild(sigCanvas);
+    // Restore previous signature after canvas is in DOM
+    if (state.signatureData) {
+      setTimeout(() => {
+        try {
+          const img = new Image();
+          img.onload = () => { sigCanvas.getContext('2d').drawImage(img, 0, 0); };
+          img.src = state.signatureData;
+        } catch(e) {}
+      }, 50);
+    }
     const clearSig = h('button', {className:'btn btn-s btn-ghost', style:{marginTop:'6px'}, onClick:()=>{ const ctx=sigCanvas.getContext('2d'); ctx.clearRect(0,0,sigCanvas.width,sigCanvas.height); state.signatureData=null; }}, '✕ Borrar firma');
     sigSection.appendChild(clearSig);
     content.appendChild(sigSection);
