@@ -691,7 +691,7 @@ async function handleSave() {
   try {
     const ts = new Date();
     const d = state.controlDate;
-    const t = ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}).replace(':','');
+    const t = (state.controlTime||ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})).replace(':','');
     const fileName = 'R-SIG-GVP_01_'+state.activeSheet.name+'_'+d+'_'+t+'.pdf';
     const blob = await generatePDF();
 
@@ -699,17 +699,22 @@ async function handleSave() {
       // Upload to Drive
       const folderId = getFolderForSheet(state.activeSheet.name);
       await uploadToDrive(blob, fileName, folderId);
+      // Upload non-image attachments too
       for (const af of state.attachedFiles) {
         if (!af.file.type.startsWith('image/')) { try { await uploadAttachment(af.file, folderId); } catch{} }
       }
       showToast('✓ PDF subido a Drive');
     } else {
-      // Download locally
+      // Download locally (works on mobile)
+      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
+      a.href = url;
       a.download = fileName;
-      a.click(); URL.revokeObjectURL(a.href);
-      showToast('✓ PDF descargado (conecta Drive para subir)');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      showToast('✓ PDF descargado');
     }
 
     state.history.unshift({
@@ -720,7 +725,12 @@ async function handleSave() {
     });
     saveHistory();
     state.attachedFiles = [];
-  } catch(err) { showToast('Error: '+err.message,'err'); }
+    state.signatureData = null;
+    state.generalObs = '';
+  } catch(err) {
+    console.error('Save error:', err);
+    showToast('Error: '+err.message,'err');
+  }
   state.uploading = false; render();
 }
 
@@ -728,10 +738,19 @@ async function handlePreview() {
   if (!state.activeSheet) return;
   try {
     const blob = await generatePDF();
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'preview_'+state.activeSheet.name+'.pdf';
-    a.click(); URL.revokeObjectURL(a.href);
+    const url = URL.createObjectURL(blob);
+    // On mobile, open in new tab works better than download
+    if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
+      window.open(url, '_blank');
+    } else {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'preview_'+state.activeSheet.name+'.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
   } catch(err) { showToast('Error: '+err.message,'err'); }
 }
 
@@ -1032,7 +1051,13 @@ function render() {
     attachHeader.appendChild(h('span', {style:{fontSize:'12px',fontWeight:'600',color:'var(--text-m)',textTransform:'uppercase',letterSpacing:'.04em'}}, '📎 Evidencia'));
     const afi = h('input', {type:'file', multiple:'true', accept:'image/*,.pdf,.doc,.docx,.xls,.xlsx', style:{display:'none'}, onChange:handleAttach});
     attachHeader.appendChild(afi);
-    attachHeader.appendChild(h('button', {className:'btn btn-s btn-default', onClick:()=>afi.click()}, '+ Adjuntar'));
+    // Camera button + file button
+    const cameraInput = h('input', {type:'file', accept:'image/*', capture:'environment', style:{display:'none'}, onChange:handleAttach});
+    const attachBtns = h('div', {style:{display:'flex',gap:'4px'}});
+    attachBtns.appendChild(h('button', {className:'btn btn-s btn-default', onClick:()=>cameraInput.click()}, '📸'));
+    attachBtns.appendChild(h('button', {className:'btn btn-s btn-default', onClick:()=>afi.click()}, '📁 Adjuntar'));
+    attachHeader.appendChild(cameraInput);
+    attachHeader.appendChild(attachBtns);
     attachSection.appendChild(attachHeader);
 
     if (state.attachedFiles.length === 0) {
@@ -1065,7 +1090,7 @@ function render() {
     // Signature section
     const sigSection = h('div', {style:{padding:'16px',borderTop:'1.5px solid var(--border)'}});
     sigSection.appendChild(h('label', {style:{display:'block',fontSize:'12px',fontWeight:'600',color:'var(--text-m)',textTransform:'uppercase',letterSpacing:'.04em',marginBottom:'8px'}}, '✍ Firma — Responsable de control'));
-    const sigCanvas = h('canvas', {width:'320', height:'150', style:{border:'1.5px solid var(--border)',borderRadius:'10px',background:'var(--surface)',width:'100%',maxWidth:'400px',height:'150px',touchAction:'none',cursor:'crosshair'}});
+    const sigCanvas = h('canvas', {width:'640', height:'240', style:{border:'1.5px solid var(--border)',borderRadius:'10px',background:'var(--surface)',width:'100%',maxWidth:'400px',height:'120px',touchAction:'none',cursor:'crosshair'}});
     let isDrawing = false;
     function getPos(e) {
       const r = sigCanvas.getBoundingClientRect();
@@ -1073,7 +1098,7 @@ function render() {
       return { x: (touch.clientX - r.left) * (sigCanvas.width / r.width), y: (touch.clientY - r.top) * (sigCanvas.height / r.height) };
     }
     function startDraw(e) { e.preventDefault(); isDrawing = true; const ctx = sigCanvas.getContext('2d'); ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); }
-    function draw(e) { if (!isDrawing) return; e.preventDefault(); const ctx = sigCanvas.getContext('2d'); ctx.strokeStyle = '#2C2820'; ctx.lineWidth = 2; ctx.lineCap = 'round'; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }
+    function draw(e) { if (!isDrawing) return; e.preventDefault(); const ctx = sigCanvas.getContext('2d'); ctx.strokeStyle = '#2C2820'; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }
     function endDraw() { if (isDrawing) { isDrawing = false; state.signatureData = sigCanvas.toDataURL('image/png'); } }
     sigCanvas.addEventListener('mousedown', startDraw); sigCanvas.addEventListener('mousemove', draw); sigCanvas.addEventListener('mouseup', endDraw); sigCanvas.addEventListener('mouseleave', endDraw);
     sigCanvas.addEventListener('touchstart', startDraw, {passive:false}); sigCanvas.addEventListener('touchmove', draw, {passive:false}); sigCanvas.addEventListener('touchend', endDraw);
@@ -1088,9 +1113,9 @@ function render() {
       className:'btn btn-accent', style:{flex:'1'},
       disabled: state.uploading,
       onClick: handleSave,
-    }, state.uploading ? h('span',{className:'spinner'}) : '💾', state.uploading ? ' Guardando...' : (state.token ? ' Guardar en Drive' : ' Guardar PDF'));
+    }, state.uploading ? h('span',{className:'spinner'}) : '💾', state.uploading ? ' Guardando...' : (state.token ? ' Subir a Drive' : ' Descargar PDF'));
     bottomBar.appendChild(saveBtn);
-    bottomBar.appendChild(h('button', {className:'btn btn-default', onClick:handlePreview}, '👁'));
+    bottomBar.appendChild(h('button', {className:'btn btn-default', onClick:handlePreview}, '👁 Preview'));
     content.appendChild(bottomBar);
   }
 
