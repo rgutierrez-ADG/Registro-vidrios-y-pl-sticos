@@ -895,6 +895,9 @@ async function handleSave() {
           } catch(reAuthErr) {
             break; // Can't re-auth, will show error below
           }
+        } else if (upErr.status === 404) {
+          // Folder not found — no point retrying
+          break;
         } else {
           break; // Non-401 error or second attempt failed
         }
@@ -908,6 +911,8 @@ async function handleSave() {
         ? 'Error 403: La API de Google Drive no está habilitada o no tenés permiso. Habilitala en console.cloud.google.com → APIs → Google Drive API.'
         : lastError?.status === 401
         ? 'No se pudo autenticar. Tocá "Conectar" y autorizá de nuevo.'
+        : lastError?.status === 404
+        ? 'Error 404: La carpeta de Drive no existe o fue eliminada. Revisá la configuración en ⚙ y verificá el ID de carpeta.'
         : 'Error al subir: ' + (lastError?.message || 'desconocido') + '. Tocá GUARDAR para reintentar.';
       showToast(errMsg, 'err');
       // PDF queda en _pendingBlob - el usuario puede reintentar sin perder datos
@@ -923,8 +928,6 @@ async function handleSave() {
 
     // ── STEP 5: Success ──
     showToast('✓ PDF guardado en Drive correctamente');
-    _pendingBlob = null;
-    _pendingFileName = '';
 
     state.history.unshift({
       sheet:state.activeSheet.name, date:ts.toISOString(), fileName: _pendingFileName || 'ok',
@@ -933,6 +936,9 @@ async function handleSave() {
       nc:state.activeSheet.items.filter(i=>i.estado==='No Conforme').length,
     });
     saveHistory();
+
+    _pendingBlob = null;
+    _pendingFileName = '';
     state.attachedFiles = [];
     state.signatureData = null;
     state.generalObs = '';
