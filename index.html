@@ -1032,6 +1032,11 @@ function h(tag, props, ...children) {
     else if (k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(), v);
     else if (k === 'className') el.className = v;
     else if (k === 'innerHTML') el.innerHTML = v;
+    else if (k === 'disabled' || k === 'checked' || k === 'selected' || k === 'required' || k === 'multiple') {
+      // Boolean HTML attributes: set as property, not attribute
+      el[k] = !!v;
+    }
+    else if (v === false || v === null || v === undefined) { /* skip falsy attributes */ }
     else el.setAttribute(k, v);
   });
   children.flat(Infinity).forEach(c => {
