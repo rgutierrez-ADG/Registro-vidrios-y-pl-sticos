@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1B1915">
+<meta name="mobile-web-app-capable" content="yes">
+<title>FormVault GVP — Control de Vidrios y Plásticos</title>
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRm9ybVZhdWx0IEdWUCIsInNob3J0X25hbWUiOiJGb3JtVmF1bHQiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzFCMTkxNSIsInRoZW1lX2NvbG9yIjoiIzFCMTkxNSJ9">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F2EFEA;
+  --surface: #FFFFFF;
+  --surface-alt: #F8F7F4;
+  --card: #FFFFFF;
+  --border: #DDD8CE;
+  --border-s: #C8C2B6;
+  --border-f: #7A6332;
+  --accent: #7A6332;
+  --accent-l: #9E8550;
+  --accent-bg: rgba(122,99,50,.06);
+  --accent-bd: rgba(122,99,50,.2);
+  --text: #2C2820;
+  --text-m: #5C554A;
+  --text-mu: #918B7F;
+  --text-d: #B5AFA3;
+  --ok: #4A8556;
+  --ok-bg: rgba(74,133,86,.08);
+  --nc: #B34033;
+  --nc-bg: rgba(179,64,51,.08);
+  --na: #918B7F;
+  --white: #FFF;
+  --radius: 10px;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+input, select, textarea {
+  font-family: 'DM Sans', sans-serif; font-size: 16px;
+  background: var(--surface); color: var(--text);
+  border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 12px 14px; width: 100%; outline: none;
+  transition: border-color .2s;
+  -webkit-appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--border-f);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+textarea { resize: vertical; min-height: 60px; }
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23918B7F' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  padding-right: 32px;
+}
+button { font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+::placeholder { color: var(--text-d); }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border-s); border-radius: 2px; }
+
+/* Animations */
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px) } to { opacity:1; transform:translateY(0) } }
+@keyframes spin { to { transform:rotate(360deg) } }
+@keyframes slideUp { from { transform:translateY(100%) } to { transform:translateY(0) } }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+.fade-up { animation: fadeUp .35s ease both; }
+
+/* Layout */
+.app { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+.header {
+  background: #1B1915; color: var(--white);
+  padding: 14px 16px; padding-top: max(14px, env(safe-area-inset-top));
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+}
+.header-logo { display: flex; align-items: center; gap: 10px; }
+.header-logo .icon {
+  width: 32px; height: 32px; border-radius: 8px; background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Instrument Serif', serif; font-size: 16px; font-weight: 400; color: var(--white);
+}
+.header-logo .name { font-size: 16px; font-weight: 700; }
+.header-logo .badge { font-size: 9px; color: rgba(255,255,255,.4); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+
+.content { flex: 1; padding: 16px; padding-bottom: calc(16px + var(--safe-b)); max-width: 800px; width: 100%; margin: 0 auto; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-weight: 600; font-size: 13px; padding: 10px 18px; border-radius: 8px;
+  border: none; transition: all .15s; white-space: nowrap;
+  touch-action: manipulation;
+}
+.btn-s { padding: 7px 12px; font-size: 12px; }
+.btn-full { width: 100%; }
+.btn-accent { background: var(--accent); color: var(--white); }
+.btn-default { background: var(--surface); color: var(--text); border: 1.5px solid var(--border); }
+.btn-ghost { background: transparent; color: var(--text-mu); padding: 6px 10px; }
+.btn-ok { background: var(--ok-bg); color: var(--ok); }
+.btn-nc { background: var(--nc-bg); color: var(--nc); }
+.btn:disabled { opacity: .4; pointer-events: none; }
+.btn:active { transform: scale(.97); }
+
+/* Cards */
+.card {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 18px; transition: all .15s;
+}
+.card-hover:active { border-color: var(--accent-bd); transform: scale(.98); }
+
+/* Toast */
+.toast {
+  position: fixed; top: max(16px, env(safe-area-inset-top, 16px)); left: 16px; right: 16px;
+  z-index: 999; padding: 12px 16px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; text-align: center;
+  animation: fadeUp .3s ease; max-width: 400px; margin: 0 auto;
+  box-shadow: 0 4px 20px rgba(0,0,0,.1);
+}
+.toast-ok { background: var(--ok-bg); color: var(--ok); border: 1px solid rgba(74,133,86,.15); }
+.toast-err { background: var(--nc-bg); color: var(--nc); border: 1px solid rgba(179,64,51,.15); }
+
+/* Status pills */
+.status-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; padding: 8px 12px; border-radius: 8px;
+  border: 1.5px solid var(--border); background: transparent; color: var(--text-d);
+  transition: all .15s; min-width: 44px; min-height: 44px;
+  touch-action: manipulation; cursor: pointer;
+}
+.status-pill.active-ok { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
+.status-pill.active-nc { border-color: var(--nc); background: var(--nc-bg); color: var(--nc); }
+.status-pill.active-na { border-color: var(--na); background: rgba(145,139,127,.08); color: var(--na); }
+.status-pill:active { transform: scale(.93); }
+
+/* Progress */
+.progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-l)); border-radius: 3px; transition: width .3s; }
+
+/* Inspection row */
+.inspect-row {
+  padding: 14px 12px; border-bottom: 1px solid rgba(0,0,0,.04);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.inspect-row:nth-child(even) { background: var(--surface-alt); }
+.inspect-row .row-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.inspect-row .row-info { flex: 1; min-width: 0; }
+.inspect-row .row-num {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-d);
+  background: var(--accent-bg); padding: 2px 6px; border-radius: 4px;
+  display: inline-block; margin-right: 6px;
+}
+.inspect-row .row-equipo { font-size: 14px; font-weight: 600; line-height: 1.3; }
+.inspect-row .row-sector { font-size: 11px; color: var(--text-mu); margin-top: 2px; }
+.inspect-row .row-tipo {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-d);
+  display: inline-block; margin-top: 2px;
+}
+.inspect-row .status-group { display: flex; gap: 6px; flex-shrink: 0; }
+.inspect-row .obs-input {
+  font-size: 13px; padding: 8px 10px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--surface);
+}
+.inspect-row .obs-input:focus { border-color: var(--border-f); }
+
+/* Section header */
+.section-header {
+  background: #1B1915; color: var(--white);
+  padding: 10px 14px; font-weight: 700; font-size: 13px;
+  letter-spacing: .01em; position: sticky; top: 56px; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.section-header .count {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  color: rgba(255,255,255,.4); font-weight: 400;
+}
+
+/* Sheet cards grid */
+.sheets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (min-width: 600px) { .sheets-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.sheet-card {
+  background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 16px 14px; cursor: pointer; transition: all .15s;
+}
+.sheet-card:active { border-color: var(--accent-bd); transform: scale(.97); }
+.sheet-card .freq {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-d);
+  display: flex; align-items: center; gap: 5px; margin-bottom: 8px;
+}
+.sheet-card .freq .dot { width: 7px; height: 7px; border-radius: 50%; }
+.sheet-card .sname { font-family: 'Instrument Serif', serif; font-size: 17px; line-height: 1.2; margin-bottom: 4px; }
+.sheet-card .sitems { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-d); }
+
+/* Attachments */
+.attach-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+@media (min-width: 500px) { .attach-grid { grid-template-columns: repeat(4, 1fr); } }
+.attach-item {
+  position: relative; border-radius: 8px; overflow: hidden;
+  border: 1px solid var(--border); background: var(--surface-alt);
+}
+.attach-item img { width: 100%; height: 70px; object-fit: cover; display: block; }
+.attach-item .attach-placeholder {
+  width: 100%; height: 70px; display: flex; align-items: center; justify-content: center;
+  font-size: 22px; background: var(--accent-bg);
+}
+.attach-item .attach-name {
+  font-size: 9px; padding: 4px 6px; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; color: var(--text-m);
+}
+.attach-item .attach-remove {
+  position: absolute; top: 3px; right: 3px; width: 22px; height: 22px;
+  border-radius: 50%; background: rgba(0,0,0,.6); color: white; border: none;
+  font-size: 11px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+
+/* Bottom action bar */
+.bottom-bar {
+  position: sticky; bottom: 0; left: 0; right: 0;
+  background: var(--surface); border-top: 1.5px solid var(--border);
+  padding: 12px 16px; padding-bottom: calc(12px + var(--safe-b));
+  display: flex; gap: 8px; z-index: 40;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.05);
+}
+
+/* Config sections */
+.config-section { margin-bottom: 14px; }
+.config-section .config-title {
+  font-size: 13px; font-weight: 700; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.config-label {
+  display: block; font-size: 10px; font-weight: 600; color: var(--text-mu);
+  margin-bottom: 4px; text-transform: uppercase; letter-spacing: .05em;
+}
+.config-hint {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  color: var(--text-d); margin-top: 3px;
+}
+
+/* History */
+.history-item {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 14px; margin-bottom: 5px; font-size: 12px;
+}
+
+/* Spinner */
+.spinner {
+  display: inline-block; width: 16px; height: 16px;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin .5s linear infinite;
+}
+
+/* Mono */
+.mono { font-family: 'IBM Plex Mono', monospace; }
+
+/* Script */
+.script-block {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 1.6;
+  color: var(--text-m); background: var(--surface-alt); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px; overflow-x: auto; white-space: pre-wrap;
+  max-height: 50vh;
+}
+
+/* Drive badge */
+.drive-badge {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  display: flex; align-items: center; gap: 4px;
+}
+.drive-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+</style>
+</head>
+<body>
+<div id="app" class="app"></div>
+
+<!-- External libs loaded on demand -->
+<script>
+// ═══════════════════════════════════════════════════
+// FormVault GVP — Standalone PWA
+// ═══════════════════════════════════════════════════
+
+const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+const STATUS_OPT = ['Conforme','No Conforme','N/A'];
+
+// ── State ──
+const state = {
+  view: 'home', // home | fill | config | script
+  sheets: [],
+  activeSheet: null,
+  inspector: localStorage.getItem('fv_inspector') || '',
+  controlDate: new Date().toISOString().slice(0,10),
+  attachedFiles: [],
+  history: JSON.parse(localStorage.getItem('fv_history') || '[]'),
+  config: JSON.parse(localStorage.getItem('fv_config') || '{}'),
+  token: null,
+  loading: false,
+  uploading: false,
+  toast: null,
+};
+
+// Ensure config defaults
+if (!state.config.clientId) state.config.clientId = '';
+if (!state.config.folderId) state.config.folderId = '';
+if (!state.config.email) state.config.email = '';
+if (!state.config.deadline) state.config.deadline = '09:00';
+if (!state.config.folderMap) state.config.folderMap = {}; // {sheetName: folderId}
+
+// Clean display names: remove Diario-, Diaria-, Mensual, Trimestral prefixes
+function displayName(name) {
+  return name.replace(/^Diario[-\s]*/i,'').replace(/^Diaria[-\s]*/i,'').replace(/^Mensual[-\s]*/i,'').replace(/^Trimestral[-\s]*/i,'').trim() || name;
+}
+
+// Get folder for a specific sheet (falls back to general folder)
+function getFolderForSheet(sheetName) {
+  return state.config.folderMap[sheetName] || state.config.folderId || '';
+}
+
+function saveConfig() { localStorage.setItem('fv_config', JSON.stringify(state.config)); }
+function saveHistory() { localStorage.setItem('fv_history', JSON.stringify(state.history.slice(0,30))); }
+function saveInspector() { localStorage.setItem('fv_inspector', state.inspector); }
+
+// ── Toast ──
+let toastTimer;
+function showToast(msg, type='ok') {
+  state.toast = {msg, type};
+  render();
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { state.toast = null; render(); }, 3500);
+}
+
+// ── Load libs ──
+async function loadSheetJS() {
+  if (window.XLSX) return;
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload = res; s.onerror = rej; document.head.appendChild(s);
+  });
+}
+
+async function loadJsPDF() {
+  if (window.jspdf) return;
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    s.onload = res; s.onerror = rej; document.head.appendChild(s);
+  });
+}
+
+// ── Parse XLSX ──
+function parseWorkbook(wb) {
+  const KNOWN_TYPES = ['text','number','date','email','select','textarea','checkbox','file'];
+  return wb.SheetNames.map(name => {
+    const ws = wb.Sheets[name];
+    const raw = XLSX.utils.sheet_to_json(ws, {header:1, defval:null});
+    let headerIdx = -1;
+    for (let i = 0; i < Math.min(raw.length, 12); i++) {
+      const row = (raw[i]||[]).map(c => String(c||'').trim().toLowerCase());
+      if (row.includes('sector') && (row.includes('tipo') || row.includes('equipo/superficie'))) {
+        headerIdx = i; break;
+      }
+    }
+    if (headerIdx < 0) return { name, items: [], meta: {} };
+    let frequency='', riskLevel='';
+    for (let i = 0; i < headerIdx; i++) {
+      const row = (raw[i]||[]).map(c => String(c||'').trim());
+      const joined = row.join(' ').toLowerCase();
+      if (joined.includes('frecuencia de control')) {
+        const fi = row.findIndex(c => c.toLowerCase().includes('frecuencia de control'));
+        for (let j = fi+1; j < row.length; j++) {
+          if (row[j] && !row[j].toLowerCase().includes('frecuencia') && !row[j].toLowerCase().includes('fecha')) { frequency = row[j]; break; }
+        }
+      }
+      if (joined.includes('nivel de riesgo')) {
+        const ni = row.findIndex(c => c.toLowerCase().includes('nivel de riesgo'));
+        if (ni >= 0 && row[ni+1]) riskLevel = row[ni+1];
+      }
+    }
+    const headers = (raw[headerIdx]||[]).map(h => String(h||'').trim());
+    const colMap = {};
+    headers.forEach((h,i) => {
+      const lh = h.toLowerCase().replace(/\s+/g,'');
+      if (lh.includes('ubicaci')) colMap.ubicacion = i;
+      else if (lh==='n°'||lh==='nro'||lh==='n') colMap.num = i;
+      else if (lh.includes('sector')) colMap.sector = i;
+      else if (lh.includes('equipo')||lh.includes('superficie')) colMap.equipo = i;
+      else if (lh==='tipo') colMap.tipo = i;
+    });
+    const items = [];
+    let lastUb = '';
+    for (let i = headerIdx+1; i < raw.length; i++) {
+      const row = raw[i];
+      if (!row || row.every(c => c===null||c===undefined||String(c).trim()==='')) continue;
+      const ub = colMap.ubicacion !== undefined ? String(row[colMap.ubicacion]||'').trim() : '';
+      if (ub) lastUb = ub;
+      const num = colMap.num !== undefined ? row[colMap.num] : '';
+      const sector = colMap.sector !== undefined ? String(row[colMap.sector]||'').trim() : '';
+      const equipo = colMap.equipo !== undefined ? String(row[colMap.equipo]||'').trim() : '';
+      const tipo = colMap.tipo !== undefined ? String(row[colMap.tipo]||'').trim() : '';
+      if (!sector && !equipo && !num) continue;
+      items.push({
+        id: Math.random().toString(36).slice(2,9),
+        ubicacion: lastUb, num: num ? String(Math.floor(Number(num))) : '',
+        sector, equipo, tipo, estado: '', observaciones: '',
+      });
+    }
+    return { name, items, meta: { frequency, riskLevel } };
+  }).filter(s => s.items.length > 0);
+}
+
+// ── File upload ──
+function handleXLSX(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  state.loading = true; render();
+  const reader = new FileReader();
+  reader.onload = async (ev) => {
+    try {
+      await loadSheetJS();
+      const wb = XLSX.read(new Uint8Array(ev.target.result), {type:'array', cellDates:true});
+      state.sheets = parseWorkbook(wb);
+      showToast(state.sheets.length + ' formulario(s) cargado(s)');
+    } catch(err) { showToast('Error: ' + err.message, 'err'); }
+    state.loading = false; render();
+  };
+  reader.readAsArrayBuffer(file);
+  e.target.value = '';
+}
+
+// ── Google Auth ──
+function authenticate() {
+  if (!state.config.clientId) { showToast('Ingresa Client ID en ⚙','err'); return; }
+  function doAuth() {
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: state.config.clientId, scope: SCOPES,
+      callback: (r) => { if (r.access_token) { state.token = r.access_token; showToast('Conectado a Drive'); } else showToast('Error auth','err'); render(); },
+    });
+    client.requestAccessToken();
+  }
+  if (!window.google?.accounts) {
+    const s = document.createElement('script');
+    s.src = 'https://accounts.google.com/gsi/client';
+    s.onload = doAuth; document.head.appendChild(s);
+  } else doAuth();
+}
+
+// ── Upload to Drive ──
+async function uploadToDrive(blob, fileName, folderId) {
+  const meta = { name: fileName, mimeType: 'application/pdf' };
+  if (folderId) meta.parents = [folderId];
+  const form = new FormData();
+  form.append('metadata', new Blob([JSON.stringify(meta)], {type:'application/json'}));
+  form.append('file', blob, fileName);
+  const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+    method:'POST', headers:{Authorization:'Bearer '+state.token}, body:form,
+  });
+  if (!res.ok) throw new Error('Error al subir');
+}
+
+async function uploadAttachment(file, folderId) {
+  const meta = { name: file.name, mimeType: file.type||'application/octet-stream' };
+  if (folderId) meta.parents = [folderId];
+  const form = new FormData();
+  form.append('metadata', new Blob([JSON.stringify(meta)], {type:'application/json'}));
+  form.append('file', file, file.name);
+  await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+    method:'POST', headers:{Authorization:'Bearer '+state.token}, body:form,
+  });
+}
+
+// ── PDF Generation ──
+async function generatePDF() {
+  await loadJsPDF();
+  const sheet = state.activeSheet;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'mm', format:'a4', orientation:'landscape'});
+  const PW=297, PH=210, M=12, CW=PW-2*M;
+  let y = M;
+
+  // Header
+  doc.setFillColor(27,25,21);
+  doc.rect(0,0,PW,30,'F');
+  doc.setTextColor(244,241,236);
+  doc.setFontSize(13); doc.setFont('helvetica','bold');
+  doc.text('REGISTRO DE CONTROL DE VIDRIOS Y PLÁSTICOS', M, 13);
+  doc.setFontSize(8); doc.setFont('helvetica','normal');
+  doc.setTextColor(180,175,163);
+  doc.text('R-SIG-GVP 01 | Rev. 7 | '+sheet.name+' | '+sheet.meta.frequency, M, 21);
+  doc.text('Riesgo: '+(sheet.meta.riskLevel||'-'), M, 26);
+  doc.setTextColor(200,195,180);
+  doc.text('Fecha: '+state.controlDate, PW-M, 13, {align:'right'});
+  doc.text('Inspector: '+(state.inspector||'-'), PW-M, 21, {align:'right'});
+  y = 36;
+
+  const cols = [
+    {l:'Ubicación',w:38},{l:'N°',w:11},{l:'Sector',w:40},{l:'Equipo/Superficie',w:56},
+    {l:'Tipo',w:20},{l:'Estado',w:28},{l:'Observaciones',w:CW-38-11-40-56-20-28}
+  ];
+
+  function drawTH(yy) {
+    doc.setFillColor(122,99,50);
+    doc.rect(M,yy,CW,7,'F');
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(6.5); doc.setFont('helvetica','bold');
+    let x = M+1.5;
+    for (const c of cols) { doc.text(c.l.toUpperCase(), x, yy+5); x += c.w; }
+    return yy+7;
+  }
+  y = drawTH(y);
+
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
+  let lastUb = '', stripe = false;
+  for (const item of sheet.items) {
+    if (y > PH-18) { doc.addPage(); y=M; y=drawTH(y); lastUb=''; }
+    const rh = 6;
+    if (stripe) { doc.setFillColor(248,247,244); doc.rect(M,y,CW,rh,'F'); }
+    doc.setDrawColor(218,213,203); doc.setLineWidth(.15); doc.line(M,y+rh,M+CW,y+rh);
+    let x = M+1.5; doc.setTextColor(44,40,32);
+    const showUb = item.ubicacion!==lastUb?item.ubicacion:'';
+    if (showUb) { doc.setFont('helvetica','bold'); doc.setFontSize(6.5); }
+    doc.text(doc.splitTextToSize(showUb,cols[0].w-2).slice(0,1).join(''), x, y+4); 
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
+    lastUb = item.ubicacion; x+=cols[0].w;
+    doc.text(String(item.num), x, y+4); x+=cols[1].w;
+    doc.text(doc.splitTextToSize(item.sector,cols[2].w-2).slice(0,1).join(''), x, y+4); x+=cols[2].w;
+    doc.text(doc.splitTextToSize(item.equipo,cols[3].w-2).slice(0,1).join(''), x, y+4); x+=cols[3].w;
+    doc.text(item.tipo, x, y+4); x+=cols[4].w;
+    if (item.estado==='Conforme') { doc.setTextColor(74,133,86); doc.setFont('helvetica','bold'); }
+    else if (item.estado==='No Conforme') { doc.setTextColor(179,64,51); doc.setFont('helvetica','bold'); }
+    else doc.setTextColor(145,139,127);
+    doc.text(item.estado||'—', x, y+4);
+    doc.setTextColor(44,40,32); doc.setFont('helvetica','normal'); x+=cols[5].w;
+    doc.setFontSize(6); doc.text(doc.splitTextToSize(item.observaciones||'',cols[6].w-2).slice(0,1).join(''), x, y+4);
+    doc.setFontSize(6.5);
+    y += rh; stripe = !stripe;
+  }
+
+  // Summary
+  y += 6;
+  if (y > PH-25) { doc.addPage(); y=M; }
+  const conf = sheet.items.filter(i=>i.estado==='Conforme').length;
+  const nc = sheet.items.filter(i=>i.estado==='No Conforme').length;
+  const pend = sheet.items.filter(i=>!i.estado).length;
+  doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(122,99,50);
+  doc.text('RESUMEN', M, y); y+=5;
+  doc.setFont('helvetica','normal'); doc.setTextColor(44,40,32); doc.setFontSize(7.5);
+  doc.text('Total: '+sheet.items.length+'  |  Conforme: '+conf+'  |  No Conforme: '+nc+'  |  Pendiente: '+pend, M, y);
+  y+=12;
+  doc.setDrawColor(180,175,163); doc.setLineWidth(.3);
+  doc.line(M,y,M+55,y); doc.line(M+70,y,M+125,y); doc.line(M+140,y,M+195,y);
+  doc.setFontSize(6.5); doc.setTextColor(145,139,127);
+  doc.text('Firma Inspector',M,y+4); doc.text('Firma Supervisor',M+70,y+4); doc.text('Fecha y hora',M+140,y+4);
+
+  // Images
+  if (state.attachedFiles.length > 0) {
+    doc.addPage('p'); let iy=14;
+    doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(122,99,50);
+    doc.text('EVIDENCIA FOTOGRÁFICA', 20, iy); iy+=10;
+    for (const af of state.attachedFiles) {
+      if (af.file.type.startsWith('image/')) {
+        try {
+          const du = await new Promise(r => { const rd = new FileReader(); rd.onload=()=>r(rd.result); rd.readAsDataURL(af.file); });
+          if (iy > 240) { doc.addPage('p'); iy=14; }
+          doc.addImage(du,'JPEG',20,iy,90,60); iy+=62;
+          doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(145,139,127);
+          doc.text(af.name,20,iy); iy+=8;
+        } catch { iy+=5; }
+      }
+    }
+  }
+
+  const pages = doc.internal.getNumberOfPages();
+  for (let i=1;i<=pages;i++) {
+    doc.setPage(i);
+    const pw=doc.internal.pageSize.getWidth(), ph=doc.internal.pageSize.getHeight();
+    doc.setFontSize(6.5); doc.setFont('helvetica','normal'); doc.setTextColor(180,175,163);
+    doc.text('R-SIG-GVP 01 — '+sheet.name+' — Pág. '+i+'/'+pages, pw/2, ph-5, {align:'center'});
+  }
+  return doc.output('blob');
+}
+
+// ── Save & Upload ──
+async function handleSave() {
+  if (!state.activeSheet) return;
+  if (!state.token) { showToast('Conecta Drive en ⚙','err'); return; }
+  const pend = state.activeSheet.items.filter(i=>!i.estado).length;
+  if (pend > 0 && !confirm('Hay '+pend+' ítems sin completar. ¿Guardar igual?')) return;
+
+  state.uploading = true; render();
+  try {
+    const ts = new Date();
+    const d = state.controlDate;
+    const t = ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}).replace(':','');
+    const fileName = 'R-SIG-GVP_01_'+state.activeSheet.name+'_'+d+'_'+t+'.pdf';
+    const folderId = getFolderForSheet(state.activeSheet.name);
+    const blob = await generatePDF();
+    await uploadToDrive(blob, fileName, folderId);
+    for (const af of state.attachedFiles) {
+      if (!af.file.type.startsWith('image/')) { try { await uploadAttachment(af.file, folderId); } catch{} }
+    }
+    state.history.unshift({
+      sheet:state.activeSheet.name, date:ts.toISOString(), fileName,
+      total:state.activeSheet.items.length,
+      ok:state.activeSheet.items.filter(i=>i.estado==='Conforme').length,
+      nc:state.activeSheet.items.filter(i=>i.estado==='No Conforme').length,
+    });
+    saveHistory();
+    showToast('✓ PDF subido a Drive');
+    state.attachedFiles = [];
+  } catch(err) { showToast('Error: '+err.message,'err'); }
+  state.uploading = false; render();
+}
+
+async function handlePreview() {
+  if (!state.activeSheet) return;
+  try {
+    const blob = await generatePDF();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'preview_'+state.activeSheet.name+'.pdf';
+    a.click(); URL.revokeObjectURL(a.href);
+  } catch(err) { showToast('Error: '+err.message,'err'); }
+}
+
+// ── Set all statuses ──
+function setAllStatus(status) {
+  if (!state.activeSheet) return;
+  state.activeSheet.items.forEach(i => i.estado = status);
+  render();
+}
+
+// ── Attachments ──
+function handleAttach(e) {
+  const files = Array.from(e.target.files).map(f => ({
+    id: Math.random().toString(36).slice(2,9), file:f, name:f.name,
+    preview: f.type.startsWith('image/') ? URL.createObjectURL(f) : null,
+  }));
+  state.attachedFiles.push(...files);
+  render(); e.target.value = '';
+}
+function removeAttach(id) {
+  state.attachedFiles = state.attachedFiles.filter(f=>f.id!==id);
+  render();
+}
+
+// ── GAS Code ──
+function gasCode() {
+  const h = parseInt(state.config.deadline?.split(':')[0])||9;
+  const m = parseInt(state.config.deadline?.split(':')[1])||0;
+  return `// FormVault GVP — Recordatorio
+const FOLDER_ID = "${state.config.folderId||'TU_FOLDER_ID'}";
+const RESPONSIBLE_EMAIL = "${state.config.email||'email@empresa.com'}";
+const DEADLINE_HOUR = ${h};
+const DEADLINE_MINUTE = ${m};
+
+function checkSubmissions() {
+  const now = new Date();
+  if (now.getHours() < DEADLINE_HOUR || (now.getHours()===DEADLINE_HOUR && now.getMinutes()<DEADLINE_MINUTE)) return;
+  const folder = DriveApp.getFolderById(FOLDER_ID);
+  const today = Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyy-MM-dd");
+  const files = folder.getFilesByType("application/pdf");
+  let found = false;
+  while (files.hasNext()) {
+    if (Utilities.formatDate(files.next().getDateCreated(), Session.getScriptTimeZone(), "yyyy-MM-dd") === today) { found = true; break; }
+  }
+  if (!found) {
+    MailApp.sendEmail({
+      to: RESPONSIBLE_EMAIL,
+      subject: "⚠️ R-SIG-GVP 01: Registro pendiente — " + today,
+      body: "No se cargó el registro de Control de Vidrios y Plásticos para hoy ("+today+").\\nHora límite: "+DEADLINE_HOUR+":"+String(DEADLINE_MINUTE).padStart(2,'0')+"\\n\\n— FormVault"
+    });
+  }
+}
+function testReminder() {
+  MailApp.sendEmail({to:RESPONSIBLE_EMAIL, subject:"🧪 Test FormVault", body:"Email de prueba del sistema de recordatorio."});
+}`;
+}
+
+// ═══════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════
+function h(tag, props, ...children) {
+  const el = document.createElement(tag);
+  if (props) Object.entries(props).forEach(([k,v]) => {
+    if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(), v);
+    else if (k === 'className') el.className = v;
+    else if (k === 'innerHTML') el.innerHTML = v;
+    else el.setAttribute(k, v);
+  });
+  children.flat(Infinity).forEach(c => {
+    if (c == null || c === false) return;
+    el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+  });
+  return el;
+}
+
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+
+  // Toast
+  if (state.toast) {
+    app.appendChild(h('div', {className:'toast toast-'+(state.toast.type==='err'?'err':'ok')}, state.toast.msg));
+  }
+
+  // Header
+  const header = h('div', {className:'header'},
+    h('div', {className:'header-logo', onClick:()=>{state.view='home';state.activeSheet=null;render();}},
+      h('div', {className:'icon'}, 'V'),
+      h('div', null,
+        h('span', {className:'name'}, 'FormVault'),
+        h('span', {className:'badge', style:{marginLeft:'6px'}}, 'GVP'),
+      ),
+    ),
+    h('div', {className:'header-actions'},
+      state.token
+        ? h('span', {className:'drive-badge', style:{color:'#4A8556'}}, h('span',{className:'drive-dot',style:{background:'#4A8556'}}), ' Drive')
+        : h('button', {className:'btn btn-s btn-accent', onClick:authenticate}, 'Conectar'),
+      h('button', {className:'btn btn-s btn-ghost', style:{color:'rgba(255,255,255,.5)',fontSize:'18px'}, onClick:()=>{state.view='config';render();}}, '⚙'),
+    ),
+  );
+  app.appendChild(header);
+
+  const content = h('div', {className:'content'});
+
+  // ══ HOME ══
+  if (state.view === 'home') {
+    content.className = 'content fade-up';
+    content.appendChild(h('h1', {style:{fontFamily:"'Instrument Serif',serif",fontSize:'24px',marginBottom:'4px'}}, 'Control de Vidrios y Plásticos'));
+    content.appendChild(h('p', {style:{color:'var(--text-mu)',fontSize:'13px',marginBottom:'20px'}}, 'R-SIG-GVP 01'));
+
+    if (state.sheets.length === 0) {
+      const empty = h('div', {className:'card', style:{textAlign:'center',padding:'40px 20px'}});
+      empty.appendChild(h('div', {style:{fontSize:'44px',marginBottom:'8px'}}, '📋'));
+      empty.appendChild(h('div', {style:{fontSize:'16px',fontWeight:'600',marginBottom:'4px'}}, 'Cargá tu archivo Excel'));
+      empty.appendChild(h('div', {style:{color:'var(--text-mu)',fontSize:'13px',marginBottom:'20px',lineHeight:'1.5'}}, 'Subí el .xlsx con los registros de control. Cada hoja se mostrará como formulario.'));
+      const fileInput = h('input', {type:'file', accept:'.xlsx,.xls', style:{display:'none'}, onChange:handleXLSX});
+      const btn = h('button', {className:'btn btn-accent', onClick:()=>fileInput.click()},
+        state.loading ? h('span',{className:'spinner'}) : '📁',
+        state.loading ? ' Cargando...' : ' Seleccionar archivo'
+      );
+      empty.appendChild(fileInput);
+      empty.appendChild(btn);
+      content.appendChild(empty);
+    } else {
+      // Sheets grid
+      const reloadRow = h('div', {style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'12px'}});
+      reloadRow.appendChild(h('span', {className:'mono', style:{fontSize:'11px',color:'var(--text-d)'}}, state.sheets.length+' hojas'));
+      const ri = h('input', {type:'file', accept:'.xlsx,.xls', style:{display:'none'}, onChange:handleXLSX});
+      reloadRow.appendChild(ri);
+      reloadRow.appendChild(h('button', {className:'btn btn-s btn-ghost', onClick:()=>ri.click()}, '↻ Otro archivo'));
+      content.appendChild(reloadRow);
+
+      const grid = h('div', {className:'sheets-grid'});
+      state.sheets.forEach((s, i) => {
+        const isDiario = s.meta.frequency?.toLowerCase().includes('diario');
+        const isMensual = s.meta.frequency?.toLowerCase().includes('mensual');
+        const dotColor = isDiario ? '#B34033' : isMensual ? '#C8A832' : '#4A8556';
+
+        const card = h('div', {className:'sheet-card', style:{animationDelay:i*.04+'s'}, onClick:()=>{
+          state.activeSheet = s; state.view='fill'; state.attachedFiles=[]; state.controlDate=new Date().toISOString().slice(0,10); render();
+        }},
+          h('div', {className:'freq'}, h('span',{className:'dot',style:{background:dotColor}}), s.meta.frequency||'—'),
+          h('div', {className:'sname'}, displayName(s.name)),
+          h('div', {className:'sitems'}, s.items.length+' ítems'),
+        );
+        grid.appendChild(card);
+      });
+      content.appendChild(grid);
+
+      // History
+      if (state.history.length > 0) {
+        content.appendChild(h('h3', {style:{fontSize:'11px',fontWeight:'600',color:'var(--text-mu)',textTransform:'uppercase',letterSpacing:'.06em',marginTop:'28px',marginBottom:'10px'}}, 'Últimos envíos'));
+        state.history.slice(0,6).forEach(hi => {
+          content.appendChild(h('div', {className:'history-item'},
+            h('div', {style:{display:'flex',alignItems:'center',gap:'8px'}},
+              h('span', {style:{color:'var(--ok)'}}, '✓'),
+              h('span', {style:{fontWeight:'600'}}, displayName(hi.sheet)),
+              h('span', {className:'mono', style:{fontSize:'10px',color:'var(--text-d)'}}, hi.ok+'/'+hi.total),
+            ),
+            h('span', {className:'mono', style:{fontSize:'10px',color:'var(--text-d)'}},
+              new Date(hi.date).toLocaleDateString('es-AR',{day:'2-digit',month:'short'})),
+          ));
+        });
+      }
+    }
+  }
+
+  // ══ FILL ══
+  else if (state.view === 'fill' && state.activeSheet) {
+    const sheet = state.activeSheet;
+    content.className = 'content fade-up';
+    content.style.padding = '0';
+    content.style.paddingBottom = '0';
+
+    // Top section
+    const top = h('div', {style:{padding:'16px'}});
+    top.appendChild(h('button', {className:'btn btn-s btn-ghost', style:{marginBottom:'8px'}, onClick:()=>{state.view='home';state.activeSheet=null;render();}}, '← Volver'));
+    top.appendChild(h('h1', {style:{fontFamily:"'Instrument Serif',serif",fontSize:'20px',marginBottom:'2px'}}, displayName(sheet.name)));
+    top.appendChild(h('div', {className:'mono', style:{fontSize:'10px',color:'var(--text-d)',marginBottom:'12px'}}, (sheet.meta.frequency||'—')+' • Riesgo '+(sheet.meta.riskLevel||'—')+' • '+sheet.items.length+' ítems'));
+
+    // Folder indicator
+    const sheetFolder = getFolderForSheet(sheet.name);
+    if (sheetFolder) {
+      top.appendChild(h('div', {style:{fontSize:'11px',color:'var(--ok)',marginBottom:'10px',display:'flex',alignItems:'center',gap:'5px'}},
+        h('span', null, '📂'),
+        h('span', null, 'Carpeta asignada'),
+        h('span', {className:'mono', style:{fontSize:'9px',color:'var(--text-d)'}}, '('+sheetFolder.slice(0,12)+'...)')
+      ));
+    } else {
+      top.appendChild(h('div', {style:{fontSize:'11px',color:'var(--nc)',marginBottom:'10px'}}, '⚠ Sin carpeta asignada — irá a carpeta general o raíz'));
+    }
+
+    // Inspector/Date
+    const metaRow = h('div', {style:{display:'flex',gap:'10px',marginBottom:'12px',flexWrap:'wrap'}});
+    const inspDiv = h('div', {style:{flex:'2 1 150px'}});
+    inspDiv.appendChild(h('label', {className:'config-label'}, 'Inspector'));
+    const inspInput = h('input', {placeholder:'Nombre', value:state.inspector, style:{fontSize:'14px',padding:'10px 12px'}});
+    inspInput.addEventListener('input', e => { state.inspector = e.target.value; saveInspector(); });
+    inspDiv.appendChild(inspInput);
+    metaRow.appendChild(inspDiv);
+
+    const dateDiv = h('div', {style:{flex:'1 1 120px'}});
+    dateDiv.appendChild(h('label', {className:'config-label'}, 'Fecha'));
+    const dateInput = h('input', {type:'date', value:state.controlDate, style:{fontSize:'14px',padding:'10px 12px'}});
+    dateInput.addEventListener('input', e => { state.controlDate = e.target.value; });
+    dateDiv.appendChild(dateInput);
+    metaRow.appendChild(dateDiv);
+    top.appendChild(metaRow);
+
+    // Progress
+    const completed = sheet.items.filter(i=>i.estado).length;
+    const pct = sheet.items.length > 0 ? (completed/sheet.items.length)*100 : 0;
+    const progRow = h('div', {style:{display:'flex',justifyContent:'space-between',marginBottom:'4px'}});
+    progRow.appendChild(h('span', {className:'mono', style:{fontSize:'11px',color:'var(--text-m)'}}, completed+'/'+sheet.items.length));
+    progRow.appendChild(h('span', {className:'mono', style:{fontSize:'11px',color:'var(--accent)'}}, Math.round(pct)+'%'));
+    top.appendChild(progRow);
+    const progBar = h('div', {className:'progress-bar'}, h('div',{className:'progress-fill',style:{width:pct+'%'}}));
+    top.appendChild(progBar);
+
+    // Quick actions
+    const qa = h('div', {style:{display:'flex',gap:'6px',marginTop:'12px',flexWrap:'wrap'}});
+    qa.appendChild(h('button', {className:'btn btn-s btn-ok', onClick:()=>{setAllStatus('Conforme');}}, '✓ Todo Conforme'));
+    qa.appendChild(h('button', {className:'btn btn-s btn-default', onClick:()=>{setAllStatus('N/A');}}, 'Todo N/A'));
+    qa.appendChild(h('button', {className:'btn btn-s btn-ghost', onClick:()=>{setAllStatus('');}}, 'Limpiar'));
+    top.appendChild(qa);
+    content.appendChild(top);
+
+    // Group by ubicacion
+    const groups = {};
+    sheet.items.forEach(item => {
+      const k = item.ubicacion || 'General';
+      if (!groups[k]) groups[k] = [];
+      groups[k].push(item);
+    });
+
+    Object.entries(groups).forEach(([ub, items]) => {
+      const groupOk = items.filter(i=>i.estado).length;
+      content.appendChild(h('div', {className:'section-header'},
+        h('span', null, ub),
+        h('span', {className:'count'}, groupOk+'/'+items.length),
+      ));
+
+      items.forEach((item, idx) => {
+        const row = h('div', {className:'inspect-row'});
+        const rowTop = h('div', {className:'row-top'});
+        const info = h('div', {className:'row-info'});
+        info.appendChild(h('div', null,
+          h('span', {className:'row-num'}, '#'+item.num),
+          h('span', {className:'row-equipo'}, item.equipo),
+        ));
+        info.appendChild(h('div', {className:'row-sector'}, item.sector));
+        info.appendChild(h('span', {className:'row-tipo'}, item.tipo));
+        rowTop.appendChild(info);
+
+        // Status pills
+        const sg = h('div', {className:'status-group'});
+        STATUS_OPT.forEach(st => {
+          const cls = item.estado===st ? (st==='Conforme'?'active-ok':st==='No Conforme'?'active-nc':'active-na') : '';
+          const label = st==='Conforme'?'✓':st==='No Conforme'?'✗':'—';
+          sg.appendChild(h('button', {
+            className:'status-pill '+cls,
+            onClick:()=>{ item.estado = item.estado===st?'':st; render(); }
+          }, label));
+        });
+        rowTop.appendChild(sg);
+        row.appendChild(rowTop);
+
+        // Obs input (only show if NC or always?)
+        const obsInput = h('input', {
+          className:'obs-input', placeholder:'Observaciones...', value:item.observaciones,
+          style:{fontSize:'13px'},
+        });
+        obsInput.addEventListener('input', e => { item.observaciones = e.target.value; });
+        row.appendChild(obsInput);
+        content.appendChild(row);
+      });
+    });
+
+    // Attachments section
+    const attachSection = h('div', {style:{padding:'16px',borderTop:'1.5px solid var(--border)'}});
+    const attachHeader = h('div', {style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'10px'}});
+    attachHeader.appendChild(h('span', {style:{fontSize:'12px',fontWeight:'600',color:'var(--text-m)',textTransform:'uppercase',letterSpacing:'.04em'}}, '📎 Evidencia'));
+    const afi = h('input', {type:'file', multiple:'true', accept:'image/*,.pdf,.doc,.docx,.xls,.xlsx', style:{display:'none'}, onChange:handleAttach});
+    attachHeader.appendChild(afi);
+    attachHeader.appendChild(h('button', {className:'btn btn-s btn-default', onClick:()=>afi.click()}, '+ Adjuntar'));
+    attachSection.appendChild(attachHeader);
+
+    if (state.attachedFiles.length === 0) {
+      const dropZone = h('div', {
+        style:{border:'2px dashed var(--border)',borderRadius:'10px',padding:'20px',textAlign:'center',cursor:'pointer'},
+        onClick:()=>afi.click(),
+      });
+      dropZone.appendChild(h('div', {style:{fontSize:'28px',marginBottom:'4px'}}, '📷'));
+      dropZone.appendChild(h('div', {style:{color:'var(--text-mu)',fontSize:'12px'}}, 'Tocar para adjuntar fotos o archivos'));
+      attachSection.appendChild(dropZone);
+    } else {
+      const agrid = h('div', {className:'attach-grid'});
+      state.attachedFiles.forEach(af => {
+        const item = h('div', {className:'attach-item'});
+        if (af.preview) item.appendChild(h('img', {src:af.preview}));
+        else item.appendChild(h('div', {className:'attach-placeholder'}, '📄'));
+        item.appendChild(h('div', {className:'attach-name'}, af.name));
+        item.appendChild(h('button', {className:'attach-remove', onClick:()=>removeAttach(af.id)}, '✕'));
+        agrid.appendChild(item);
+      });
+      attachSection.appendChild(agrid);
+    }
+    content.appendChild(attachSection);
+
+    // Bottom bar
+    const bottomBar = h('div', {className:'bottom-bar'});
+    const saveBtn = h('button', {
+      className:'btn btn-accent', style:{flex:'1'},
+      disabled: state.uploading,
+      onClick: handleSave,
+    }, state.uploading ? h('span',{className:'spinner'}) : '💾', state.uploading ? ' Subiendo...' : ' Guardar PDF');
+    bottomBar.appendChild(saveBtn);
+    bottomBar.appendChild(h('button', {className:'btn btn-default', onClick:handlePreview}, '👁'));
+    content.appendChild(bottomBar);
+  }
+
+  // ══ CONFIG ══
+  else if (state.view === 'config') {
+    content.className = 'content fade-up';
+    content.appendChild(h('button', {className:'btn btn-s btn-ghost', style:{marginBottom:'8px'}, onClick:()=>{state.view='home';render();}}, '← Volver'));
+    content.appendChild(h('h1', {style:{fontFamily:"'Instrument Serif',serif",fontSize:'22px',marginBottom:'4px'}}, 'Configuración'));
+    content.appendChild(h('p', {style:{color:'var(--text-mu)',fontSize:'13px',marginBottom:'20px'}}, 'Google Drive y avisos por email'));
+
+    // Drive section
+    const driveCard = h('div', {className:'card config-section'});
+    driveCard.appendChild(h('div', {className:'config-title'}, '🔑 Google Drive'));
+
+    const cidLabel = h('label', {className:'config-label'}, 'Client ID OAuth 2.0');
+    const cidInput = h('input', {placeholder:'xxxxx.apps.googleusercontent.com', value:state.config.clientId});
+    cidInput.addEventListener('input', e => { state.config.clientId = e.target.value; saveConfig(); });
+    driveCard.appendChild(cidLabel); driveCard.appendChild(cidInput);
+    driveCard.appendChild(h('div', {style:{height:'12px'}}));
+
+    const fidLabel = h('label', {className:'config-label'}, 'Carpeta general (fallback)');
+    const fidInput = h('input', {placeholder:'Vacío = raíz de Drive', value:state.config.folderId});
+    fidInput.addEventListener('input', e => { state.config.folderId = e.target.value; saveConfig(); });
+    driveCard.appendChild(fidLabel); driveCard.appendChild(fidInput);
+    driveCard.appendChild(h('div', {className:'config-hint'}, 'Se usa si la hoja no tiene carpeta asignada'));
+    driveCard.appendChild(h('div', {style:{height:'12px'}}));
+
+    driveCard.appendChild(h('button', {className:'btn btn-s '+(state.token?'btn-ok':'btn-accent'), onClick:authenticate},
+      state.token ? '✓ Reconectar' : 'Conectar con Google'));
+    content.appendChild(driveCard);
+
+    // Per-sheet folder mapping
+    if (state.sheets.length > 0) {
+      const folderCard = h('div', {className:'card config-section'});
+      folderCard.appendChild(h('div', {className:'config-title'}, '📂 Carpeta por formulario'));
+      folderCard.appendChild(h('p', {style:{fontSize:'12px',color:'var(--text-mu)',marginBottom:'14px',lineHeight:'1.5'}}, 'Asigná una carpeta de Drive distinta para cada hoja. Copiá el ID de la URL de cada carpeta.'));
+
+      state.sheets.forEach(s => {
+        const row = h('div', {style:{marginBottom:'10px'}});
+        row.appendChild(h('label', {className:'config-label'}, '📋 '+displayName(s.name)));
+        const folderInput = h('input', {placeholder:'ID de carpeta en Drive', value:state.config.folderMap[s.name]||'', style:{fontSize:'13px',padding:'9px 12px'}});
+        folderInput.addEventListener('input', e => {
+          state.config.folderMap[s.name] = e.target.value.trim();
+          saveConfig();
+        });
+        row.appendChild(folderInput);
+        if (state.config.folderMap[s.name]) {
+          row.appendChild(h('div', {className:'config-hint', style:{color:'var(--ok)'}}, '✓ Carpeta asignada'));
+        }
+        folderCard.appendChild(row);
+      });
+
+      folderCard.appendChild(h('div', {className:'config-hint', style:{marginTop:'6px'}}, 'drive.google.com/drive/folders/[ESTE_ID]'));
+      content.appendChild(folderCard);
+    }
+
+    // Email section
+    const emailCard = h('div', {className:'card config-section'});
+    emailCard.appendChild(h('div', {className:'config-title'}, '📧 Aviso por email'));
+
+    const emRow = h('div', {style:{display:'flex',gap:'10px',flexWrap:'wrap',marginBottom:'12px'}});
+    const emDiv = h('div', {style:{flex:'2 1 180px'}});
+    emDiv.appendChild(h('label', {className:'config-label'}, 'Email responsable'));
+    const emInput = h('input', {type:'email', placeholder:'email@empresa.com', value:state.config.email});
+    emInput.addEventListener('input', e => { state.config.email = e.target.value; saveConfig(); });
+    emDiv.appendChild(emInput);
+    emRow.appendChild(emDiv);
+
+    const dlDiv = h('div', {style:{flex:'1 1 100px'}});
+    dlDiv.appendChild(h('label', {className:'config-label'}, 'Hora límite'));
+    const dlInput = h('input', {type:'time', value:state.config.deadline});
+    dlInput.addEventListener('input', e => { state.config.deadline = e.target.value; saveConfig(); });
+    dlDiv.appendChild(dlInput);
+    emRow.appendChild(dlDiv);
+    emailCard.appendChild(emRow);
+
+    emailCard.appendChild(h('button', {className:'btn btn-s btn-default', onClick:()=>{state.view='script';render();}}, '📜 Ver script de recordatorio'));
+    content.appendChild(emailCard);
+
+    // Instructions
+    const instCard = h('div', {className:'card', style:{background:'var(--accent-bg)',border:'1px solid var(--accent-bd)'}});
+    instCard.innerHTML = `
+      <div class="mono" style="font-size:11px;color:var(--text-m);line-height:1.8">
+        <strong style="color:var(--accent)">Pasos en Google Cloud (console.cloud.google.com):</strong><br>
+        1. Proyecto APP POES → <strong>Habilitar APIs</strong> → Google Drive API<br>
+        2. <strong>Credenciales</strong> → Crear ID OAuth 2.0 → Aplicación Web<br>
+        3. En <strong>Orígenes autorizados</strong>, agregar la URL donde alojás esta app<br>
+        4. Copiar el Client ID y pegarlo arriba
+      </div>
+    `;
+    content.appendChild(instCard);
+  }
+
+  // ══ SCRIPT ══
+  else if (state.view === 'script') {
+    content.className = 'content fade-up';
+    content.appendChild(h('button', {className:'btn btn-s btn-ghost', style:{marginBottom:'8px'}, onClick:()=>{state.view='config';render();}}, '← Config'));
+    content.appendChild(h('h1', {style:{fontFamily:"'Instrument Serif',serif",fontSize:'22px',marginBottom:'4px'}}, 'Script de recordatorio'));
+    content.appendChild(h('p', {style:{color:'var(--text-mu)',fontSize:'13px',marginBottom:'16px'}}, 'Pegar en script.google.com'));
+
+    const instCard = h('div', {className:'card', style:{marginBottom:'14px'}});
+    instCard.innerHTML = `<ol style="font-size:12px;color:var(--text-m);line-height:2;padding-left:18px">
+      <li>Ir a <strong>script.google.com</strong> → Nuevo proyecto</li>
+      <li>Pegar el código</li>
+      <li>Activadores → checkSubmissions → Diario</li>
+      <li>Autorizar y listo</li>
+    </ol>`;
+    content.appendChild(instCard);
+
+    const codeCard = h('div', {className:'card'});
+    const codeHeader = h('div', {style:{display:'flex',justifyContent:'space-between',marginBottom:'10px'}});
+    codeHeader.appendChild(h('span', {className:'mono', style:{fontSize:'11px',color:'var(--text-d)'}}, 'Google Apps Script'));
+    codeHeader.appendChild(h('button', {className:'btn btn-s btn-accent', onClick:()=>{navigator.clipboard.writeText(gasCode());showToast('Copiado');}}, '📋 Copiar'));
+    codeCard.appendChild(codeHeader);
+    codeCard.appendChild(h('pre', {className:'script-block'}, gasCode()));
+    content.appendChild(codeCard);
+  }
+
+  app.appendChild(content);
+}
+
+// Initial render
+render();
+</script>
+</body>
+</html>
