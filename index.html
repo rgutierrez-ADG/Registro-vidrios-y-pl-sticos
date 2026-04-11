@@ -286,6 +286,7 @@ button { font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: tra
 <body>
 <div id="app" class="app"></div>
 
+<!-- External libs loaded on demand -->
 <script>
 // ═══════════════════════════════════════════════════
 // FormVault GVP — Standalone PWA
@@ -293,6 +294,1093 @@ button { font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: tra
 
 const SCOPES = 'https://www.googleapis.com/auth/drive';
 const STATUS_OPT = ['Conforme','No Conforme','N/A'];
-const LOGO_B64 = 'data:image/jpeg;base64,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';
+const LOGO_B64 = 'data:image/jpeg;base64,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';
 
-const FIRMA_NATACHA_B64 = 'data:image/png;base64,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
+const FIRMA_NATACHA_B64 = 'data:image/png;base64,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';
+
+// ── State ──
+const state = {
+  view: 'home', // home | fill | config | script
+  sheets: [],
+  activeSheet: null,
+  inspector: localStorage.getItem('fv_inspector') || '',
+  controlDate: new Date().toISOString().slice(0,10),
+  controlTime: new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}),
+  generalObs: '',
+  signatureData: null,
+  attachedFiles: [],
+  history: JSON.parse(localStorage.getItem('fv_history') || '[]'),
+  config: JSON.parse(localStorage.getItem('fv_config') || '{}'),
+  token: null,
+  loading: false,
+  uploading: false,
+  toast: null,
+};
+
+// Ensure config defaults
+// ── Credenciales fijas (no se pierden aunque se limpie el localStorage) ──
+const DEFAULT_CLIENT_ID = '399944808776-ndb9l3rsnv17cbrteni11n0nrmgjve7n.apps.googleusercontent.com';
+const DEFAULT_FOLDER_ID  = '18KDbxt63cluSBl5rFDdSP7ZdiUzGPZPL';
+
+if (!state.config.clientId) state.config.clientId = DEFAULT_CLIENT_ID;
+if (!state.config.folderId) state.config.folderId = DEFAULT_FOLDER_ID;
+if (!state.config.email) state.config.email = '';
+if (!state.config.deadline) state.config.deadline = '09:00';
+if (!state.config.folderMap) state.config.folderMap = {}; // {sheetName: folderId}
+
+// Persistir defaults de inmediato (por si es primera vez)
+saveConfig();
+
+// Clean display names: remove Diario-, Diaria-, Mensual, Trimestral prefixes
+function displayName(name) {
+  return name.replace(/^Diario[-\s]*/i,'').replace(/^Diaria[-\s]*/i,'').replace(/^Mensual[-\s]*/i,'').replace(/^Trimestral[-\s]*/i,'').trim() || name;
+}
+
+// Hardcoded folder IDs (always available even if localStorage is cleared)
+const FIXED_FOLDERS = {
+  "Trimestral": "12_sPI8pZHgBUorhl4GccL77ooJGMo6p8",
+  "Mensual ": "1iZ3p9b5VSHmrseOUiMDatoCbMkFVZWlD",
+  "Diario-Blanchado": "1DkmsnSJrn-gMY1YccYMg9K1obO1SatdP",
+  "Diario-HPS1": "1ZaFYbXVvuuJDZTYur5-4ECTB_j5-2tib",
+  "Diario-HPS2": "1Rl8mEId5JipHK5K8gK9lkhMFf2XB-5Xh",
+  "Diaria-Depósitos": "1d3yK6PVdz2tlL-U9XSgTbqi7cPLY0QjO",
+  "Diario-Tostado-Pasta-Frito": "1ltSWK8XH9LACOcGrEND7YgGaJ4O8GMEj",
+  "Diario-Planta PE II": "1EtWnvY76lh4KaVWhtOxEqTO1Qd5bFzGi",
+  "Planta Tacc": "1msZpAigKWZIrfZGBhfAtWEiLlSOWLfRD",
+};
+
+// Get folder for a specific sheet (falls back to general folder)
+function getFolderForSheet(sheetName) {
+  return state.config.folderMap[sheetName] || FIXED_FOLDERS[sheetName] || state.config.folderId || '';
+}
+
+function saveConfig() { localStorage.setItem('fv_config', JSON.stringify(state.config)); }
+function saveHistory() { localStorage.setItem('fv_history', JSON.stringify(state.history.slice(0,30))); }
+function saveInspector() { localStorage.setItem('fv_inspector', state.inspector); }
+
+// ── Toast ──
+let toastTimer;
+function showToast(msg, type='ok') {
+  state.toast = {msg, type};
+  render();
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { state.toast = null; render(); }, type==='err' ? 6000 : 3500);
+}
+
+// ── Load libs ──
+async function loadSheetJS() {
+  if (window.XLSX) return;
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload = res; s.onerror = rej; document.head.appendChild(s);
+  });
+}
+
+async function loadJsPDF() {
+  if (window.jspdf) return;
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    s.onload = res; s.onerror = rej; document.head.appendChild(s);
+  });
+}
+
+// ── Parse XLSX ──
+function parseWorkbook(wb) {
+  const KNOWN_TYPES = ['text','number','date','email','select','textarea','checkbox','file'];
+  return wb.SheetNames.map(name => {
+    const ws = wb.Sheets[name];
+    const raw = XLSX.utils.sheet_to_json(ws, {header:1, defval:null});
+    let headerIdx = -1;
+    for (let i = 0; i < Math.min(raw.length, 12); i++) {
+      const row = (raw[i]||[]).map(c => String(c||'').trim().toLowerCase());
+      if (row.includes('sector') && (row.includes('tipo') || row.includes('equipo/superficie'))) {
+        headerIdx = i; break;
+      }
+    }
+    if (headerIdx < 0) return { name, items: [], meta: {} };
+    let frequency='', riskLevel='';
+    for (let i = 0; i < headerIdx; i++) {
+      const row = (raw[i]||[]).map(c => String(c||'').trim());
+      const joined = row.join(' ').toLowerCase();
+      if (joined.includes('frecuencia de control')) {
+        const fi = row.findIndex(c => c.toLowerCase().includes('frecuencia de control'));
+        for (let j = fi+1; j < row.length; j++) {
+          if (row[j] && !row[j].toLowerCase().includes('frecuencia') && !row[j].toLowerCase().includes('fecha')) { frequency = row[j]; break; }
+        }
+      }
+      if (joined.includes('nivel de riesgo')) {
+        const ni = row.findIndex(c => c.toLowerCase().includes('nivel de riesgo'));
+        if (ni >= 0 && row[ni+1]) riskLevel = row[ni+1];
+      }
+    }
+    const headers = (raw[headerIdx]||[]).map(h => String(h||'').trim());
+    const colMap = {};
+    headers.forEach((h,i) => {
+      const lh = h.toLowerCase().replace(/\s+/g,'');
+      if (lh.includes('ubicaci')) colMap.ubicacion = i;
+      else if (lh==='n°'||lh==='nro'||lh==='n') colMap.num = i;
+      else if (lh.includes('sector')) colMap.sector = i;
+      else if (lh.includes('equipo')||lh.includes('superficie')) colMap.equipo = i;
+      else if (lh==='tipo') colMap.tipo = i;
+    });
+    const items = [];
+    let lastUb = '';
+    for (let i = headerIdx+1; i < raw.length; i++) {
+      const row = raw[i];
+      if (!row || row.every(c => c===null||c===undefined||String(c).trim()==='')) continue;
+      const ub = colMap.ubicacion !== undefined ? String(row[colMap.ubicacion]||'').trim() : '';
+      if (ub) lastUb = ub;
+      const num = colMap.num !== undefined ? row[colMap.num] : '';
+      const sector = colMap.sector !== undefined ? String(row[colMap.sector]||'').trim() : '';
+      const equipo = colMap.equipo !== undefined ? String(row[colMap.equipo]||'').trim() : '';
+      const tipo = colMap.tipo !== undefined ? String(row[colMap.tipo]||'').trim() : '';
+      if (!sector && !equipo && !num) continue;
+      items.push({
+        id: Math.random().toString(36).slice(2,9),
+        ubicacion: lastUb, num: num ? String(Math.floor(Number(num))) : '',
+        sector, equipo, tipo, estado: '', observaciones: '',
+      });
+    }
+    return { name, items, meta: { frequency, riskLevel } };
+  }).filter(s => s.items.length > 0);
+}
+
+// ── Embedded sheet data (from Excel) ──
+const EMBEDDED_DATA = [{"name":"Trimestral","f":"Trimestral","r":"1.0","items":[{"u":"Dep. Aux. HPS","n":"1","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"2","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"3","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"4","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"5","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"6","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"7","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"8","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"9","s":"Comedor","e":"Reloj","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"10","s":"Comedor","e":"Horno","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"11","s":"Comedor","e":"Microondas","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"12","s":"Comedor","e":"Microondas","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"13","s":"Comedor","e":"Dispensers de agua","t":"Plástico"},{"u":"Dep. Aux. HPS","n":"15","s":"Pasillo","e":"Puerta al exterior","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"16","s":"Pasillo","e":"Política de la empresa","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"18","s":"Vestuario hombres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"19","s":"Vestuario hombres","e":"Vetana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"20","s":"Vestuario mujeres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"21","s":"Vestuario mujeres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"22","s":"Lavado de manos hombres","e":"Espejo","t":"Espejo"},{"u":"Dep. Aux. HPS","n":"25","s":"Baño hombres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"26","s":"Baño hombres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"27","s":"Lavado de manos mujeres","e":"Espejo","t":"Espejo"},{"u":"Dep. Aux. HPS","n":"30","s":"Baño mujeres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"31","s":"Baño mujeres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"35","s":"Archivo","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS","n":"36","s":"Archivo","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"1","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"2","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"3","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"4","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"5","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"6","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"7","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"8","s":"Comedor","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"9","s":"Comedor","e":"Jabón líquido","t":"Plástico"},{"u":"Dep. Aux. Producto terminado","n":"11","s":"Comedor","e":"Reloj","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"12","s":"Comedor","e":"Microondas","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"14","s":"Pasillo","e":"Política de la empresa","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"15","s":"Lavado de manos hombres","e":"Espejo","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"18","s":"Lavado de manos hombres","e":"Papel para manos","t":"Plástico"},{"u":"Dep. Aux. Producto terminado","n":"19","s":"Baño de hombres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"20","s":"Baño de hombres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"21","s":"Baño de hombres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"22","s":"Baño de hombres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"23","s":"Vestuario mujeres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"24","s":"Vestuario mujeres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"25","s":"Lavado de manos mujeres","e":"Espejo","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"28","s":"Lavado de manos mujeres","e":"Papel para manos","t":"Plástico"},{"u":"Dep. Aux. Producto terminado","n":"29","s":"Lavado de manos mujeres","e":"Caja de electricidad","t":"Plástico"},{"u":"Dep. Aux. Producto terminado","n":"30","s":"Vestuario hombres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"31","s":"Vestuario hombres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"32","s":"Ducha hombres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"33","s":"Ducha hombres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"34","s":"Baño de mujeres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. Producto terminado","n":"35","s":"Baño de mujeres","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"10","s":"Oficina","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"11","s":"Oficina","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"12","s":"Oficina","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"13","s":"Ingreso","e":"Puerta","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"14","s":"Ingreso","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"15","s":"Ingreso","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"16","s":"Ingreso Filtro sanitario","e":"Puerta","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"17","s":"Ingreso Filtro sanitario","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"18","s":"Ingreso Filtro sanitario","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"19","s":"Ingreso Depósito Insumo","e":"Puerta","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"20","s":"Ingreso Depósito Insumo","e":"Racks","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"21","s":"Filtro baños","e":"Puerta","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"22","s":"Filtro baños","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"23","s":"Filtro baños","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"24","s":"Filtro baños","e":"Espejo","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"25","s":"Filtro baños","e":"Divisorio","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"26","s":"Filtro baños","e":"Puerta","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"27","s":"Filtro baños","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"28","s":"Filtro baños","e":"Espejo","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"29","s":"Filtro cocina","e":"Puerta","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"30","s":"Filtro cocina","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"31","s":"Filtro cocina","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"32","s":"Filtro cocina","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"33","s":"Oficina Jefe","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"34","s":"Oficina Jefe","e":"Puerta","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"35","s":"Oficina reuniones","e":"Puerta","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"36","s":"Oficina reuniones","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"37","s":"Oficina reuniones","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"38","s":"Oficina reuniones","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"39","s":"Filtro","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"40","s":"Filtro","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"41","s":"Filtro","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux. HPS 2","n":"42","s":"Filtro","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"1","s":"Ingreso","e":"Puerta","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"2","s":"Ingreso","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"3","s":"Ingreso","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"4","s":"Ingreso","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"5","s":"Ingreso","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"6","s":"Cocina","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"7","s":"Cocina","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"8","s":"Cocina","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"9","s":"Cocina","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"10","s":"Cocina","e":"Ventana","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"11","s":"Cocina","e":"Microhonda","t":"Plástico"},{"u":"Dep. Aux.Planta con TACC","n":"12","s":"Cocina","e":"Ventana sup-puerta","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"13","s":"Cocina","e":"Dispenser Jabón","t":"Plástico"},{"u":"Dep. Aux.Planta con TACC","n":"15","s":"Cocina","e":"Porta papel","t":"Plástico"},{"u":"Dep. Aux.Planta con TACC","n":"16","s":"Depósito","e":"Ventana sup-puerta","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"17","s":"Depósito","e":"Caja de termicas","t":"Plástico"},{"u":"Dep. Aux.Planta con TACC","n":"18","s":"Baños-Vestuarios","e":"Ventana sup-puerta","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"19","s":"Baños-Vestuarios","e":"Dispenser Jabón","t":"Plástico"},{"u":"Dep. Aux.Planta con TACC","n":"20","s":"Baños-Vestuarios","e":"Porta papel","t":"Plástico"},{"u":"Dep. Aux.Planta con TACC","n":"21","s":"Baños-Vestuarios","e":"Porta papel higiénico","t":"Plástico"},{"u":"Dep. Aux.Planta con TACC","n":"22","s":"Baños-Vestuarios","e":"Porta papel higiénico","t":"Plástico"},{"u":"Dep. Aux.Planta con TACC","n":"23","s":"Baños-Vestuarios","e":"Vidrio sup-puerta","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"24","s":"Baños-Vestuarios","e":"Dispenser Jabón","t":"Plástico"},{"u":"Dep. Aux.Planta con TACC","n":"25","s":"Baños-Vestuarios","e":"Porta papel","t":"Plástico"},{"u":"Dep. Aux.Planta con TACC","n":"26","s":"Baños-Vestuarios","e":"Papel higiénico","t":"Plástico"},{"u":"Dep. Aux.Planta con TACC","n":"27","s":"Baños-Vestuarios","e":"Espejo","t":"Vidrio"},{"u":"Dep. Aux.Planta con TACC","n":"28","s":"Baños-Vestuarios","e":"Espejo","t":"Vidrio"}]},{"name":"Mensual ","f":"Mensual","r":"2.0","items":[{"u":"Descarga N° 1 - Prelimpieza","n":"1","s":"Descarga 1","e":"Panel de puerta","t":"Plástico"},{"u":"Descarga N° 1 - Prelimpieza","n":"2","s":"Descarga 1","e":"Panel de puerta","t":"Plástico"},{"u":"Descarga N° 1 - Prelimpieza","n":"3","s":"Descarga 1","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 1 - Prelimpieza","n":"4","s":"Descarga 1","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 1 - Prelimpieza","n":"5","s":"Descarga 1","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 1 - Prelimpieza","n":"6","s":"Descarga 1","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 1 - Prelimpieza","n":"7","s":"Descarga 1","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 1 - Prelimpieza","n":"8","s":"Descarga 1","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 1 - Prelimpieza","n":"9","s":"Descarga 1","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 1 - Prelimpieza","n":"10","s":"Descarga 1","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 1 - Prelimpieza","n":"11","s":"Descarga 1","e":"Noria D1NO01","t":"Plástico"},{"u":"Descarga N° 1 - Prelimpieza","n":"12","s":"Prelimpieza de HPS1","e":"Multiaspirador de prelimpieza CD1PR01","t":"Plástico"},{"u":"Descarga N° 1 - Prelimpieza","n":"13","s":"Prelimpieza de HPS1","e":"Multiaspirador de prelimpieza CD1PR01","t":"Plástico"},{"u":"Descarga N° 1 - Prelimpieza","n":"15","s":"Prelimpieza de HPS1","e":"Elevador CD1NO06","t":"Plástico"},{"u":"Descarga N° 1 - Prelimpieza","n":"14","s":"Salida de emergencia","e":"Puerta","t":"Plástico"},{"u":"Descarga N° 2","n":"1","s":"Descarga 2","e":"Panel de puerta","t":"Plástico"},{"u":"Descarga N° 2","n":"2","s":"Descarga 2","e":"Panel de puerta","t":"Plástico"},{"u":"Descarga N° 2","n":"3","s":"Descarga 2","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 2","n":"4","s":"Descarga 2","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 2","n":"5","s":"Descarga 2","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 2","n":"6","s":"Descarga 2","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 2","n":"7","s":"Descarga 2","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 2","n":"8","s":"Descarga 2","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 2","n":"9","s":"Descarga 2","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 2","n":"10","s":"Descarga 2","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 2","n":"11","s":"Descarga 2","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 2","n":"12","s":"Descarga 2","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 2","n":"13","s":"Descarga 2","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 2","n":"14","s":"Descarga 2","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 2","n":"15","s":"Descarga 2","e":"Panel de pared","t":"Plástico"},{"u":"Descarga N° 2","n":"16","s":"Descarga 2","e":"Visor de tolva DE2TO01","t":"Plástico"},{"u":"Descarga N° 2","n":"17","s":"Descarga 2","e":"Sensor de tolva DE2TO01","t":"Plástico"},{"u":"Descarga N° 2","n":"18","s":"Descarga 2","e":"Multiaspirador de prelimpieza DE2PR01","t":"Plástico"},{"u":"Descarga N° 2","n":"19","s":"Descarga 2","e":"Multiaspirador de prelimpieza DE2PR01","t":"Plástico"},{"u":"Descarga N° 2","n":"20","s":"Descarga 2","e":"Multiaspirador de prelimpieza DE2PR01","t":"Plástico"},{"u":"Descarga N° 2","n":"21","s":"Descarga 2","e":"Multiaspirador de prelimpieza DE2PR01","t":"Plástico"},{"u":"Descarga N° 2","n":"22","s":"Descarga 2","e":"Multiaspirador de prelimpieza DE2PR01","t":"Plástico"},{"u":"Descarga N° 2","n":"27","s":"Descarga 2","e":"Máquina de control","t":"Vidrio"},{"u":"Descarga N° 3","n":"1","s":"Descarga 3","e":"Visor tolva DE3TO02","t":"Plástico"},{"u":"Descarga N° 3","n":"2","s":"Descarga 3","e":"Visor tolva DE3TO02","t":"Plástico"},{"u":"Descarga N° 3","n":"3","s":"Descarga 3","e":"Visor tolva DE3TO02","t":"Plástico"},{"u":"Descarga N° 3","n":"4","s":"Descarga 3","e":"Visor tolva DE3TO02","t":"Plástico"},{"u":"Descarga N° 3","n":"5","s":"Descarga 3","e":"Visor tolva DE3TO01","t":"Plástico"},{"u":"Descarga N° 3","n":"6","s":"Descarga 3","e":"Visor tolva DE3TO01","t":"Plástico"},{"u":"Descarga N° 3","n":"7","s":"Descarga 3","e":"Visor tolva DE3TO01","t":"Plástico"},{"u":"Descarga N° 3","n":"8","s":"Descarga 3","e":"Visor tolva DE3TO01","t":"Plástico"},{"u":"Descarga N° 3","n":"9","s":"Descarga 3","e":"Máquina de control","t":"Vidrio"},{"u":"Descarga N° 3","n":"10","s":"Descarga 3","e":"Máquina de control","t":"Vidrio"},{"u":"Descarga N° 3","n":"11","s":"Descarga 3","e":"Sensor tolva DE3TO02","t":"Plástico"},{"u":"Descarga N° 3","n":"12","s":"Descarga 3","e":"Sensor tolva DE3TO01","t":"Plástico"},{"u":"Descarga N° 3","n":"13","s":"Cabina de tableros","e":"Ventana","t":"Vidrio"},{"u":"Descarga N° 3","n":"14","s":"Cabina de tableros","e":"Ventana","t":"Vidrio"},{"u":"Descarga N° 3","n":"15","s":"Cabina de tableros","e":"Ventana","t":"Vidrio"},{"u":"Descarga N° 3","n":"16","s":"Cabina de tableros","e":"Puerta","t":"Vidrio"},{"u":"Descarga N° 3","n":"17","s":"Cabina de tableros","e":"Ventana","t":"Vidrio"},{"u":"Descarga N° 3","n":"18","s":"Cabina de tableros","e":"Ventana","t":"Vidrio"},{"u":"Descarga N° 3","n":"19","s":"Cabina de tableros","e":"Ventana","t":"Vidrio"},{"u":"Descarga N° 3","n":"20","s":"Cabina de tableros","e":"Ventana","t":"Vidrio"},{"u":"Descarga N° 3","n":"21","s":"Cabina de tableros","e":"Ventana","t":"Vidrio"},{"u":"Descarga N° 3","n":"22","s":"Cabina de tableros","e":"Ventana","t":"Vidrio"},{"u":"Descarga N° 3","n":"23","s":"Descarga 3","e":"Puerta","t":"Vidrio"},{"u":"Descarga N° 4","n":"1","s":"Cabina de tableros","e":"Ventana","t":"Vidrio"},{"u":"Descarga N° 4","n":"2","s":"Descarga 4","e":"Visor tolva DE4TO01","t":"Plástico"},{"u":"Descarga N° 4","n":"3","s":"Descarga 4","e":"Sensor tolva DE4TO01","t":"Plástico"},{"u":"Descarga N° 4","n":"4","s":"Descarga 4","e":"Sensor tolva DE4TO01","t":"Plástico"},{"u":"Descarga N° 4","n":"5","s":"Descarga 4","e":"Reloj multiaspirador","t":"Vidrio"},{"u":"Descarga N° 5","n":"1","s":"Descarga 5","e":"Ventana","t":"Vidrio"},{"u":"Descarga N° 5","n":"2","s":"Descarga 5","e":"Ventana","t":"Vidrio"},{"u":"Descarga N° 5","n":"3","s":"Descarga 5","e":"Ventana","t":"Vidrio"},{"u":"Descarga N° 5","n":"4","s":"Descarga 5","e":"Ventana","t":"Vidrio"},{"u":"Descarga N° 5","n":"5","s":"Descarga 5","e":"Puerta","t":"Vidrio"},{"u":"Descarga N° 5","n":"6","s":"Descarga 5","e":"Puerta","t":"Vidrio"},{"u":"Descarga N° 5","n":"7","s":"Descarga 5","e":"Computadora","t":"Vidrio"},{"u":"Descarga N° 5","n":"8","s":"Descarga 5","e":"Rack","t":"Vidrio"}]},{"name":"Diario-Blanchado","f":"Diario","r":"4.0","items":[{"u":"Blanchado 1","n":"1","s":"Ingreso horno","e":"Visor Tolva BL1TO01","t":"Plástico"},{"u":"Blanchado 1","n":"2","s":"Ingreso horno","e":"Visor Tolva BL1TO01","t":"Plástico"},{"u":"Blanchado 1","n":"3","s":"Ingreso horno","e":"Visor Tolva BL1TO01","t":"Plástico"},{"u":"Blanchado 1","n":"4","s":"Horno - Blanchadoras","e":"Elevador BL1EL02","t":"Vidrio"},{"u":"Blanchado 1","n":"5","s":"Horno - Blanchadoras","e":"Elevador BL1EL02","t":"Vidrio"},{"u":"Blanchado 1","n":"6","s":"Ingreso Blanchado","e":"Sensor Tolva BL1TO02","t":"Plástico"},{"u":"Blanchado 1","n":"7","s":"Ingreso Blanchado","e":"Sensor Tolva BL1TO02","t":"Plástico"},{"u":"Blanchado 1","n":"8","s":"Ingreso Blanchado","e":"Sensor Tolva BL1TO02","t":"Plástico"},{"u":"Blanchado 1","n":"9","s":"Ingreso Blanchado","e":"Sensor Tolva BL1TO02","t":"Plástico"},{"u":"Blanchado 1","n":"60","s":"Blanchado","e":"Protección luminaria","t":"Plástico"},{"u":"Blanchado 1","n":"61","s":"Blanchado","e":"Protección luminaria","t":"Plástico"},{"u":"Blanchado 1","n":"10","s":"Blanchado","e":"Tapa blanchadoras","t":"Plástico"},{"u":"Blanchado 1","n":"11","s":"Blanchado","e":"Tapa blanchadoras","t":"Plástico"},{"u":"Blanchado 1","n":"12","s":"Blanchado","e":"Tapa blanchadoras","t":"Plástico"},{"u":"Blanchado 1","n":"13","s":"Blanchado","e":"Tapa blanchadoras","t":"Plástico"},{"u":"Blanchado 1","n":"14","s":"Blanchado","e":"Tapa blanchadoras","t":"Plástico"},{"u":"Blanchado 1","n":"15","s":"Blanchado","e":"Tapa blanchadoras","t":"Plástico"},{"u":"Blanchado 1","n":"16","s":"Blanchado","e":"Tapa blanchadoras","t":"Plástico"},{"u":"Blanchado 1","n":"17","s":"Blanchado","e":"Tapa blanchadoras","t":"Plástico"},{"u":"Blanchado 1","n":"18","s":"Blanchado","e":"Tapa blanchadoras","t":"Plástico"},{"u":"Blanchado 1","n":"19","s":"Blanchado","e":"Tapa blanchadoras","t":"Plástico"},{"u":"Blanchado 1","n":"20","s":"Blanchado","e":"Tapa blanchadoras","t":"Plástico"},{"u":"Blanchado 1","n":"21","s":"Blanchado","e":"Tapa blanchadoras","t":"Plástico"},{"u":"Blanchado 1","n":"22","s":"Blanchado-Selección","e":"Elevador BL1EL03","t":"Vidrio"},{"u":"Blanchado 1","n":"23","s":"Blanchado-Selección","e":"Elevador BL1EL03","t":"Vidrio"},{"u":"Seleccionadora","n":"1","s":"Selecciónadora","e":"Cubre vistas","t":"Plástico"},{"u":"Seleccionadora","n":"2","s":"Selecciónadora","e":"Cubre vistas","t":"Plástico"},{"u":"Seleccionadora","n":"3","s":"Selecciónadora","e":"Pantalla Seleccionadora","t":"Plástico"},{"u":"Seleccionadora","n":"4","s":"Selecciónadora","e":"Puerta de Pantalla","t":"Plástico"},{"u":"Seleccionadora","n":"5","s":"Selecciónadora","e":"Alarma","t":"Plástico"},{"u":"Seleccionadora","n":"6","s":"Enfriador","e":"Relojes de manometro","t":"Plástico"},{"u":"Seleccionadora","n":"7","s":"Enfriador","e":"Display","t":"Plástico"},{"u":"Seleccionadora","n":"8","s":"Balanza","e":"Visor","t":"Plástico"},{"u":"Seleccionadora","n":"9","s":"Detector","e":"Display","t":"Plástico"},{"u":"Línea Embolse Blanch 1","n":"64","s":"Picoteo","e":"Protección luminaria BL1CT01","t":"Plástico"},{"u":"Línea Embolse Blanch 1","n":"33","s":"Cinta de picoteo - Embolse","e":"Elevador BL1EL05","t":"Vidrio"},{"u":"Línea Embolse Blanch 1","n":"34","s":"Cinta de picoteo - Embolse","e":"Elevador BL1EL05","t":"Vidrio"},{"u":"Línea Embolse Blanch 1","n":"67","s":"Cinta de picoteo - Embolse","e":"Elevador BL1EL05","t":"Vidrio"},{"u":"Línea Embolse Blanch 1","n":"40","s":"Embolse","e":"Visor tolva BL1EL04","t":"Plástico"},{"u":"Línea Embolse Blanch 1","n":"41","s":"Embolse","e":"Visor tolva BL1EL04","t":"Plástico"},{"u":"Línea Embolse Blanch 1","n":"42","s":"Embolse","e":"Visor tolva BL1EL04","t":"Plástico"},{"u":"Línea Embolse Blanch 1","n":"43","s":"Embolse","e":"Visor tolva BL1EL04","t":"Plástico"},{"u":"Línea Embolse Blanch 1","n":"44","s":"Embolse","e":"Sensor tolva BL1EL04","t":"Plástico"},{"u":"Línea Embolse Blanch 1","n":"45","s":"Embolse","e":"Sensor tolva BL1EL04","t":"Plástico"},{"u":"Línea Embolse Blanch 1","n":"65","s":"Rechazo Selección","e":"Elevador BL1EL06","t":"Plástico"},{"u":"Línea Embolse Blanch 1","n":"66","s":"Rechazo Selección","e":"Elevador BL1EL06","t":"Plástico"},{"u":"Cabina Tableros","n":"1","s":"Cabina tableros","e":"Puerta","t":"Vidrio"},{"u":"Cabina Tableros","n":"2","s":"Cabina tableros","e":"Ventana fija","t":"Vidrio"},{"u":"Cabina Tableros","n":"3","s":"Cabina tableros","e":"Ventana fija","t":"Vidrio"},{"u":"Cabina de Análisis","n":"1","s":"Cabina de análisis","e":"Puerta","t":"Vidrio"},{"u":"Cabina de Análisis","n":"2","s":"Cabina de análisis","e":"Ventana paño fijo","t":"Vidrio"},{"u":"Cabina de Análisis","n":"3","s":"Cabina de análisis","e":"Ventana paño fijo","t":"Vidrio"},{"u":"Cabina de Análisis","n":"4","s":"Cabina de análisis","e":"Ventana","t":"Vidrio"},{"u":"Cabina de Análisis","n":"5","s":"Cabina de análisis","e":"Venta paño fijo","t":"Vidrio"},{"u":"Cabina de Análisis","n":"6","s":"Cabina de análisis","e":"Venta paño fijo","t":"Vidrio"},{"u":"Cabina de Análisis","n":"7","s":"Cabina de análisis","e":"Ventana","t":"Vidrio"},{"u":"Cabina de Análisis","n":"8","s":"Cabina de análisis","e":"Ventana paño fijo","t":"Plástico"},{"u":"Cabina de Análisis","n":"9","s":"Cabina de análisis","e":"Monitor PLC 1","t":"Plástico"},{"u":"Cabina de Análisis","n":"10","s":"Cabina de análisis","e":"Monitor balanza 1 y 2","t":"Plástico"},{"u":"Cabina de Análisis","n":"11","s":"Cabina de análisis","e":"Monitor PLC 2","t":"Plástico"},{"u":"Cabina de Análisis","n":"12","s":"Cabina de análisis","e":"Notebock","t":"Plástico"},{"u":"Cabina de Análisis","n":"13","s":"Cabina de análisis","e":"Monitor 1","t":"Plástico"},{"u":"Cabina de Análisis","n":"14","s":"Cabina de análisis","e":"Monitor 2","t":"Plástico"},{"u":"Cabina de Análisis","n":"15","s":"Cabina de análisis","e":"Reloj","t":"Plástico"},{"u":"Blanchado 2","n":"71","s":"Ingreso horno","e":"Visor Tolva BL2TO01","t":"Plástico"},{"u":"Blanchado 2","n":"72","s":"Ingreso horno","e":"Visor Tolva BL2TO01","t":"Plástico"},{"u":"Blanchado 2","n":"73","s":"Ingreso horno","e":"Visor Tolva BL2TO01","t":"Plástico"},{"u":"Blanchado 2","n":"74","s":"Ingreso horno","e":"Visor Tolva BL2TO01","t":"Plástico"},{"u":"Blanchado 2","n":"75","s":"Salida horno","e":"Panel punta BL2HO02","t":"Plástico"},{"u":"Blanchado 2","n":"76","s":"Salida horno","e":"Panel punta BL2HO02","t":"Plástico"},{"u":"Blanchado 2","n":"77","s":"Salida horno","e":"Panel punta BL2HO02","t":"Plástico"},{"u":"Blanchado 2","n":"78","s":"Salida horno","e":"Panel punta BL2HO02","t":"Plástico"},{"u":"Blanchado 2","n":"79","s":"Horno - Blanchado","e":"Elevador BL2EL02","t":"Vidrio"},{"u":"Blanchado 2","n":"80","s":"Horno - Blanchado","e":"Elevador BL2EL02","t":"Vidrio"},{"u":"Blanchado 2","n":"81","s":"Ingreso Blanchado","e":"Sensor Tolva BL2TO02","t":"Plástico"},{"u":"Blanchado 2","n":"82","s":"Ingreso Blanchado","e":"Sensor Tolva BL2TO02","t":"Plástico"},{"u":"Blanchado 2","n":"83","s":"Ingreso Blanchado","e":"Sensor Tolva BL2TO02","t":"Plástico"},{"u":"Blanchado 2","n":"84","s":"Blanchado","e":"Tapa BL2BL03","t":"Plástico"},{"u":"Blanchado 2","n":"85","s":"Blanchado","e":"Tapa BL2BL03","t":"Plástico"},{"u":"Blanchado 2","n":"86","s":"Blanchado","e":"Tapa BL2BL01","t":"Plástico"},{"u":"Blanchado 2","n":"87","s":"Blanchado","e":"Tapa BL2BL01","t":"Plástico"},{"u":"Blanchado 2","n":"88","s":"Blanchado","e":"Tapa BL2BL02","t":"Plástico"},{"u":"Blanchado 2","n":"89","s":"Blanchado","e":"Tapa BL2BL02","t":"Plástico"},{"u":"Blanchado 2","n":"90","s":"Blanchado","e":"Tapa BL2BL05","t":"Plástico"},{"u":"Blanchado 2","n":"91","s":"Blanchado","e":"Tapa BL2BL05","t":"Plástico"},{"u":"Blanchado 2","n":"92","s":"Blanchado","e":"Tapa BL2BL06","t":"Plástico"},{"u":"Blanchado 2","n":"93","s":"Blanchado","e":"Tapa BL2BL06","t":"Plástico"},{"u":"Blanchado 2","n":"94","s":"Blanchado","e":"Tapa BL2BL04","t":"Plástico"},{"u":"Blanchado 2","n":"95","s":"Blanchado","e":"Tapa BL2BL04","t":"Plástico"},{"u":"Blanchado 2","n":"96","s":"Blanchado-Selección","e":"Elevador BL2EL03","t":"Vidrio"},{"u":"Blanchado 2","n":"97","s":"Blanchado-Selección","e":"Elevador BL2EL03","t":"Vidrio"},{"u":"Blanchado 2","n":"122","s":"Selección","e":"Visor tolva","t":"Plástico"},{"u":"Blanchado 2","n":"123","s":"Selección","e":"Visor tolva","t":"Plástico"},{"u":"Blanchado 2","n":"124","s":"Selección","e":"Pantalla electrónica","t":"Plástico"},{"u":"Blanchado 2","n":"125","s":"Selección","e":"Protección lateral electrónica","t":"Plástico"},{"u":"Blanchado 2","n":"126","s":"Selección","e":"Protección lateral electrónica","t":"Plástico"},{"u":"Blanchado 2","n":"127","s":"Selección","e":"Proteccion interior electrónica","t":"Plástico"},{"u":"Blanchado 2","n":"128","s":"Selección","e":"Proteccion interior electrónica","t":"Plástico"},{"u":"Blanchado 2","n":"129","s":"Selección","e":"Visor aspiración","t":"Plástico"},{"u":"Blanchado 2","n":"130","s":"Selección","e":"Elevador rechazo","t":"Plástico"},{"u":"Blanchado 2","n":"131","s":"Selección","e":"Elevador rechazo","t":"Plástico"},{"u":"Blanchado 2","n":"102","s":"Cinta de picoteo - Embolse","e":"Elevador BL2EL04","t":"Vidrio"},{"u":"Blanchado 2","n":"103","s":"Cinta de picoteo - Embolse","e":"Elevador BL2EL04","t":"Vidrio"},{"u":"Blanchado 2","n":"119","s":"Cinta de picoteo - Embolse","e":"Elevador BL2EL05","t":"Vidrio"},{"u":"Blanchado 2","n":"120","s":"Cinta de picoteo - Embolse","e":"Elevador BL2EL05","t":"Vidrio"},{"u":"Blanchado 2","n":"104","s":"Embolse","e":"Visor tolva BL2TO03","t":"Plástico"},{"u":"Blanchado 2","n":"105","s":"Embolse","e":"Visor tolva BL2TO03","t":"Plástico"},{"u":"Blanchado 2","n":"106","s":"Embolse","e":"Visor tolva BL2TO03","t":"Plástico"},{"u":"Blanchado 2","n":"107","s":"Embolse","e":"Visor tolva BL2TO03","t":"Plástico"},{"u":"Blanchado 2","n":"108","s":"Embolse","e":"Visor tolva BL2TO03","t":"Plástico"},{"u":"Blanchado 2","n":"109","s":"Embolse","e":"Visor tolva BL2TO03","t":"Plástico"},{"u":"Blanchado 2","n":"110","s":"Embolse","e":"Visor tolva BL2TO04","t":"Plástico"},{"u":"Blanchado 2","n":"60","s":"Detector de rayo x","e":"Pantalla","t":"Plástico"},{"u":"Blanchado 2","n":"61","s":"Detector de rayo x","e":"Alarma","t":"Plástico"},{"u":"Blanchado 2","n":"62","s":"Detector de rayo x","e":"Alarma","t":"Plástico"},{"u":"Blanchado 2","n":"63","s":"Detector de rayo x","e":"Manometro","t":"Vidrio"},{"u":"Blanchado 2","n":"27","s":"Detector de rayo x (enfriador)","e":"Manometro","t":"Vidrio"},{"u":"Blanchado 2","n":"28","s":"Detector de rayo x (enfriador)","e":"Manometro","t":"Vidrio"}]},{"name":"Diario-HPS1","f":"Diario","r":"4.0","items":[{"u":"Descascarado 1","n":"1","s":"Cabina de tableros","e":"Panel de pared","t":"Vidrio"},{"u":"Descascarado 1","n":"2","s":"Cabina de tableros","e":"Panel de pared","t":"Vidrio"},{"u":"Descascarado 1","n":"3","s":"Cabina de tableros","e":"Panel de pared","t":"Vidrio"},{"u":"Descascarado 1","n":"4","s":"Cabina de tableros","e":"Panel de pared","t":"Vidrio"},{"u":"Descascarado 1","n":"5","s":"Cabina de tableros","e":"Panel de pared","t":"Vidrio"},{"u":"Descascarado 1","n":"6","s":"Cabina de tableros","e":"Panel de pared","t":"Vidrio"},{"u":"Descascarado 1","n":"7","s":"Cabina de tableros","e":"Panel de pared","t":"Vidrio"},{"u":"Descascarado 1","n":"8","s":"Cabina de tableros","e":"Panel de pared","t":"Vidrio"},{"u":"Descascarado 1","n":"9","s":"Cabina de tableros","e":"Panel de pared","t":"Vidrio"},{"u":"Descascarado 1","n":"10","s":"Cabina de tableros","e":"Panel de pared","t":"Vidrio"},{"u":"Descascarado 1","n":"11","s":"Cabina de tableros","e":"Panel de puerta","t":"Vidrio"},{"u":"Descascarado 1","n":"12","s":"Cabina de tableros","e":"Panel de puerta","t":"Vidrio"},{"u":"Descascarado 1","n":"16","s":"Cabina de tableros","e":"Computadora","t":"Vidrio"},{"u":"Descascarado 1","n":"61","s":"Cabina de tableros","e":"Computadora","t":"Vidrio"},{"u":"Descascarado 1","n":"13","s":"Prelimpieza-Descascarado","e":"Puerta","t":"Vidrio"},{"u":"Descascarado 1","n":"14","s":"Descascarado y Limpieza","e":"Visor","t":"Plástico"},{"u":"Descascarado 1","n":"15","s":"Descascarado y Limpieza","e":"Visor","t":"Plástico"},{"u":"Descascarado 1","n":"20","s":"Descascarado y Limpieza","e":"Sensor tolva CD1TO23","t":"Plástico"},{"u":"Descascarado 1","n":"21","s":"Descascarado y Limpieza","e":"Noria Chi Visor","t":"Plástico"},{"u":"Descascarado 1","n":"22","s":"Descascarado y Limpieza","e":"Noria Alimentacion (visor)","t":"Plástico"},{"u":"Descascarado 1","n":"23","s":"Descascarado y Limpieza","e":"Visor tolva CD1TO06","t":"Plástico"},{"u":"Descascarado 1","n":"24","s":"Descascarado y Limpieza","e":"Visor tolva CD1TO06","t":"Plástico"},{"u":"Descascarado 1","n":"25","s":"Descascarado y Limpieza","e":"Mesa densimétrica CD1DN02","t":"Plástico"},{"u":"Descascarado 1","n":"26","s":"Descascarado y Limpieza","e":"Mesa densimétrica CD1DN02","t":"Plástico"},{"u":"Descascarado 1","n":"28","s":"Descascarado y Limpieza","e":"Elevador CD1EL05","t":"Plástico"},{"u":"Descascarado 1","n":"29","s":"Descascarado y Limpieza","e":"Noria Alimentacion Elec (visor)","t":"Plástico"},{"u":"Descascarado 1","n":"31","s":"Descascarado 1 Salida","e":"Cartel Salida de emergencia","t":"Plástico"},{"u":"Descascarado 1","n":"32","s":"Descascarado y Limpieza","e":"Sensor tolva CD1DTO24","t":"Plástico"},{"u":"Descascarado 1","n":"33","s":"Descascarado y Limpieza","e":"Mesa densimétrica CD1DN04","t":"Plástico"},{"u":"Descascarado 1","n":"34","s":"Descascarado y Limpieza","e":"Mesa densimétrica CD1DN04","t":"Plástico"},{"u":"Descascarado 1","n":"42","s":"Descascarado y Limpieza","e":"Noria CD1NO02","t":"Plástico"},{"u":"HPS1","n":"40","s":"Selección","e":"Protector lateral","t":"Plástico"},{"u":"HPS1","n":"41","s":"Selección","e":"Protector lateral","t":"Plástico"},{"u":"HPS1","n":"42","s":"Selección","e":"Zumbador de alarma","t":"Plástico"},{"u":"HPS1","n":"43","s":"Selección","e":"Puerta de pantalla","t":"Plástico"},{"u":"HPS1","n":"44","s":"Selección","e":"Pantalla","t":"Plástico"},{"u":"HPS1","n":"45","s":"Selección","e":"Manometro refrigerador","t":"vidrio"},{"u":"HPS1","n":"46","s":"Selección","e":"Manometro refrigerador","t":"vidrio"},{"u":"HPS1","n":"47","s":"Selección","e":"Manometro nitrogeno","t":"vidrio"},{"u":"HPS1","n":"48","s":"Selección","e":"Manometro nitrogeno","t":"vidrio"},{"u":"HPS1","n":"100","s":"Noria Alimentador de tamañado","e":"Visor","t":"Plástico"},{"u":"HPS1","n":"101","s":"Tamañado","e":"Sensor tolva CD1TO09","t":"Plástico"},{"u":"HPS1","n":"102","s":"Tamañado","e":"Sensor tolva CD1TO09","t":"Plástico"},{"u":"HPS1","n":"103","s":"Tamañado","e":"Visor tolva CD1TO09","t":"Plástico"},{"u":"HPS1","n":"104","s":"Tamañado","e":"Visor tolva CD1TO09","t":"Plástico"},{"u":"HPS1","n":"105","s":"Tamañado","e":"Visor tolva CD1TO09","t":"Plástico"},{"u":"HPS1","n":"106","s":"Tamañado","e":"Visor tolva CD1TO09","t":"Plástico"},{"u":"HPS1","n":"107","s":"Tamañado","e":"Sensor de tolva CD1TO12","t":"Plástico"},{"u":"HPS1","n":"108","s":"Tamañado","e":"Sensor de tolva CD1TO13","t":"Plástico"},{"u":"HPS1","n":"109","s":"Tamañado","e":"Sensor de tolva CD1TO10","t":"Plástico"},{"u":"HPS1","n":"110","s":"Tamañado","e":"Sensor de tolva CD1TO11","t":"Plástico"},{"u":"HPS1","n":"111","s":"Tamañado","e":"Sensor de tolva CD1TO16","t":"Plástico"},{"u":"HPS1","n":"112","s":"Tamañado","e":"Sensor de tolva CD1TO15","t":"Plástico"},{"u":"HPS1","n":"113","s":"Tamañado","e":"Sensor de tolva CD1TO14","t":"Plástico"},{"u":"HPS1","n":"114","s":"Selección electrónica","e":"Computadora CD1ET02","t":"Plástico"},{"u":"HPS1","n":"115","s":"Equipo Donaldson","e":"Reloj manómetro","t":"Vidrio"},{"u":"HPS1","n":"116","s":"Equipo Donaldson","e":"Reloj manómetro","t":"Vidrio"},{"u":"HPS1","n":"117","s":"Selección electrónica","e":"Computadora CD1ET03","t":"Plástico"},{"u":"HPS1","n":"147","s":"Selección manual","e":"Protección luminaria CD1CT05 y CD1CT06","t":"Plástico"},{"u":"HPS1","n":"53","s":"Zona de inspección","e":"Tolva inspección PCC 3","t":"Plástico"},{"u":"HPS1","n":"54","s":"Zona de inspección","e":"Tolva inspección PCC 3","t":"Plástico"},{"u":"HPS1","n":"55","s":"Zona de inspección","e":"Tolva inspección PCC 3","t":"Plástico"},{"u":"HPS1","n":"122","s":"Embolse","e":"Pantalla embolse","t":"Plástico"},{"u":"HPS1","n":"123","s":"Rack","e":"Rack","t":"Plástico"},{"u":"HPS1","n":"172","s":"Embolse","e":"Caja de electricidad","t":"Plástico"},{"u":"HPS1","n":"150","s":"Zona rechazos","e":"Protección luminaria CD1TV04","t":"Plástico"},{"u":"HPS1","n":"124","s":"Cabina jefes de producción","e":"Panel de pared","t":"Vidrio"},{"u":"HPS1","n":"125","s":"Cabina jefes de producción","e":"Panel de pared","t":"Vidrio"},{"u":"HPS1","n":"126","s":"Cabina jefes de producción","e":"Panel de pared","t":"Vidrio"},{"u":"HPS1","n":"127","s":"Cabina jefes de producción","e":"Panel de pared","t":"Vidrio"},{"u":"HPS1","n":"128","s":"Cabina jefes de producción","e":"Panel de puerta","t":"Vidrio"},{"u":"HPS1","n":"129","s":"Cabina jefes de producción","e":"Panel de pared","t":"Vidrio"},{"u":"HPS1","n":"167","s":"Cabina jefes de producción","e":"Computadora","t":"Plástico"},{"u":"HPS1","n":"169","s":"Cabina jefes de producción","e":"Computadora","t":"Plástico"},{"u":"HPS1","n":"168","s":"Cabina jefes de producción","e":"Computadora","t":"Plástico"},{"u":"HPS1","n":"130","s":"Cabina de análisis","e":"Panel de pared","t":"Vidrio"},{"u":"HPS1","n":"131","s":"Cabina de análisis","e":"Panel de pared","t":"Vidrio"},{"u":"HPS1","n":"132","s":"Cabina de análisis","e":"Panel de puerta","t":"Vidrio"},{"u":"HPS1","n":"133","s":"Cabina de análisis","e":"Panel de pared","t":"Vidrio"},{"u":"HPS1","n":"134","s":"Cabina de análisis","e":"Panel de pared","t":"Vidrio"},{"u":"HPS1","n":"135","s":"Cabina de análisis","e":"Panel de pared","t":"Vidrio"},{"u":"HPS1","n":"136","s":"Cabina de análisis","e":"Panel de pared","t":"Vidrio"},{"u":"HPS1","n":"137","s":"Cabina de análisis","e":"Panel de pared","t":"Vidrio"},{"u":"HPS1","n":"138","s":"Cabina de análisis","e":"Panel de pared","t":"Vidrio"},{"u":"HPS1","n":"139","s":"Cabina de análisis","e":"Panel de pared","t":"Vidrio"},{"u":"HPS1","n":"140","s":"Cabina de análisis","e":"Fichado","t":"Plástico"},{"u":"HPS1","n":"168","s":"Cabina de análisis","e":"Panel de ventana","t":"Plástico"},{"u":"HPS1","n":"169","s":"Cabina de análisis","e":"Panel de pared","t":"Plástico"},{"u":"HPS1","n":"170","s":"Cabina de análisis","e":"Computadora","t":"Plástico"},{"u":"HPS1","n":"171","s":"Cabina de análisis","e":"Reloj","t":"Vidrio"},{"u":"HPS1","n":"164","s":"Cabina de análisis","e":"Computadora","t":"Plástico"},{"u":"HPS1","n":"141","s":"HPS1-Blanchado","e":"Panel de puerta","t":"Vidrio"},{"u":"HPS1","n":"142","s":"HPS1-Blanchado","e":"Panel de ventana","t":"Vidrio"},{"u":"HPS1","n":"143","s":"HPS1-Blanchado","e":"Panel de ventana","t":"Vidrio"},{"u":"HPS1","n":"144","s":"HPS1-Blanchado","e":"Panel de ventana","t":"Vidrio"},{"u":"HPS1","n":"145","s":"HPS1-Salida","e":"Cartel de salida de emergencia","t":"Plástico"},{"u":"Línea recupero rechazo de las electrónicas","n":"35","s":"Limpieza","e":"Visor tolva CD1TO26","t":"Plástico"},{"u":"Línea recupero rechazo de las electrónicas","n":"36","s":"Limpieza","e":"Visor tolva CD1TO26","t":"Plástico"},{"u":"Línea recupero rechazo de las electrónicas","n":"37","s":"Limpieza","e":"Sensor tolva CD1TO26","t":"Plástico"},{"u":"Línea recupero rechazo de las electrónicas","n":"38","s":"Limpieza","e":"Mesa densimétrica CD1DN05","t":"Plástico"},{"u":"Línea recupero rechazo de las electrónicas","n":"39","s":"Limpieza","e":"Mesa densimétrica CD1DN05","t":"Plástico"},{"u":"Línea recupero rechazo de las electrónicas","n":"82","s":"Selección electrónica","e":"Panel","t":"Vidrio"},{"u":"Línea recupero rechazo de las electrónicas","n":"83","s":"Selección electrónica","e":"Computadora CD1ET01","t":"Plástico"},{"u":"Línea recupero rechazo de las electrónicas","n":"159","s":"Embolse","e":"Visor de tolva CD1TO29/CD1TO28","t":"Vidrio"}]},{"name":"Diario-HPS2","f":"Diario","r":"4.0","items":[{"u":"Descascarado 2","n":"1","s":"Prelimpieza","e":"Visor Tolva CD2TO01","t":"Vidrio"},{"u":"Descascarado 2","n":"2","s":"Prelimpieza","e":"Sensor Tolva CD2TO01","t":"Vidrio"},{"u":"Descascarado 2","n":"3","s":"Prelimpieza","e":"Mesa densimétrica CD2DN01","t":"Plástico"},{"u":"Descascarado 2","n":"4","s":"Prelimpieza","e":"Mesa densimétrica CD2DN01","t":"Plástico"},{"u":"Descascarado 2","n":"5","s":"Prelimpieza","e":"Mesa densimétrica CD2DN01","t":"Plástico"},{"u":"Descascarado 2","n":"6","s":"Prelimpieza","e":"Sensor tolva CD2TO03","t":"Plástico"},{"u":"Descascarado 2","n":"7","s":"Prelimpieza","e":"Mesa densimétrica CD2DN03","t":"Plástico"},{"u":"Descascarado 2","n":"8","s":"Prelimpieza","e":"Mesa densimétrica CD2DN03","t":"Plástico"},{"u":"Descascarado 2","n":"9","s":"Descascarado y Limpieza","e":"Mesa densimétrica CD2DN04","t":"Plástico"},{"u":"Descascarado 2","n":"10","s":"Descascarado y Limpieza","e":"Mesa densimétrica CD2DN04","t":"Plástico"},{"u":"Descascarado 2","n":"11","s":"Descascarado y Limpieza","e":"Sensor tolva CD2TO04","t":"Plástico"},{"u":"Descascarado 2","n":"12","s":"Descascarado y Limpieza","e":"Panel tablero eléctrico","t":"Plástico"},{"u":"Descascarado 2","n":"13","s":"Descascarado y Limpieza","e":"Panel tablero eléctrico","t":"Plástico"},{"u":"Descascarado 2","n":"43","s":"Descascarado y Limpieza","e":"Salida de emergencia","t":"Plástico"},{"u":"Descascarado 2","n":"26","s":"Descascarado y Limpieza","e":"Tablero eléctrico","t":"Vidrio"},{"u":"HPS2","n":"31","s":"Selección","e":"Pantalla CD2ET01","t":"Plástico"},{"u":"HPS2","n":"32","s":"Selección","e":"Visor aspiración CD2ET01","t":"Plástico"},{"u":"HPS2","n":"33","s":"Selección","e":"Visor aspiración CD2ET01","t":"Plástico"},{"u":"HPS2","n":"34","s":"Selección","e":"Visor aspiración CD2ET01","t":"Plástico"},{"u":"HPS2","n":"35","s":"Selección","e":"Visor aspiración CD2ET01","t":"Plástico"},{"u":"HPS2","n":"79","s":"Selección","e":"Protección Luz CD2ET01","t":"Plástico"},{"u":"HPS2","n":"80","s":"Selección","e":"Protección luminaria","t":"Plástico"},{"u":"HPS2","n":"36","s":"Selección","e":"Lauda frío","t":"Vidrio"},{"u":"HPS2","n":"37","s":"Selección","e":"Lauda frío","t":"Vidrio"},{"u":"HPS2","n":"38","s":"Embolse","e":"Visor Tolva Split CD2TO06","t":"Vidrio"},{"u":"HPS2","n":"39","s":"Embolse","e":"Visor Tolva Split CD2TO06","t":"Vidrio"},{"u":"HPS2","n":"40","s":"Embolse","e":"Visor Tolva Split CD2TO06","t":"Vidrio"},{"u":"HPS2","n":"41","s":"Embolse","e":"Visor Tolva Split CD2TO06","t":"Vidrio"},{"u":"HPS2","n":"42","s":"Embolse","e":"Visor Tolva 38/42 o Bird food CD2TO06","t":"Vidrio"},{"u":"HPS2","n":"43","s":"Embolse","e":"Visor Tolva 38/42 o Bird food CD2TO06","t":"Vidrio"},{"u":"HPS2","n":"52","s":"Embolse","e":"Visor Tolva en desuso","t":"Vidrio"},{"u":"HPS2","n":"53","s":"Embolse","e":"Visor Tolva en desuso","t":"Vidrio"},{"u":"HPS2","n":"54","s":"Embolse","e":"Visor Tolva en desuso","t":"Vidrio"},{"u":"HPS2","n":"55","s":"Embolse","e":"Visor Tolva en desuso","t":"Vidrio"},{"u":"HPS2","n":"56","s":"Embolse","e":"Visor Tolva 40/50 CD2TO06","t":"Vidrio"},{"u":"HPS2","n":"57","s":"Embolse","e":"Visor Tolva 40/50 CD2TO06","t":"Vidrio"},{"u":"HPS2","n":"58","s":"Embolse","e":"Visor Tolva 50/60 CD2TO06","t":"Vidrio"},{"u":"HPS2","n":"59","s":"Embolse","e":"Visor Tolva 50/60 CD2TO06","t":"Vidrio"},{"u":"HPS2","n":"60","s":"Embolse","e":"Visor Tolva 60/70 CD2TO06","t":"Vidrio"},{"u":"HPS2","n":"61","s":"Embolse","e":"Visor Tolva 60/70 CD2TO06","t":"Vidrio"},{"u":"HPS2","n":"62","s":"Embolse","e":"Visor Tolva 70/80 CD2TO06","t":"Vidrio"},{"u":"HPS2","n":"63","s":"Embolse","e":"Visor Tolva 70/80 CD2TO06","t":"Vidrio"},{"u":"HPS2","n":"64","s":"Embolse","e":"Visor Tolva en desuso","t":"Vidrio"},{"u":"HPS2","n":"65","s":"Embolse","e":"Visor Tolva en desuso","t":"Vidrio"},{"u":"HPS2","n":"66","s":"Embolse","e":"Display CD2BZ01","t":"Plástico"},{"u":"HPS2","n":"67","s":"Cabina análisis","e":"Panel puerta","t":"Vidrio"},{"u":"HPS2","n":"68","s":"Cabina análisis","e":"Panel pared","t":"Vidrio"},{"u":"HPS2","n":"69","s":"Cabina análisis","e":"Panel pared","t":"Vidrio"},{"u":"HPS2","n":"70","s":"Cabina análisis","e":"Panel pared","t":"Vidrio"},{"u":"HPS2","n":"71","s":"Cabina análisis","e":"Panel puerta","t":"Vidrio"},{"u":"HPS2","n":"72","s":"Cabina análisis","e":"Reloj","t":"Vidrio"},{"u":"HPS2","n":"73","s":"Cabina análisis","e":"Computadora","t":"Plástico"},{"u":"HPS2","n":"164","s":"Cabina análisis","e":"Fichado","t":"Plástico"},{"u":"HPS2","n":"74","s":"Control","e":"PLC","t":"Plástico"},{"u":"HPS2","n":"75","s":"Control","e":"Computadora","t":"Plástico"},{"u":"Línea de recupero 2","n":"14","s":"Limpieza","e":"Sensor tolva CD2TO08","t":"Plástico"},{"u":"Línea de recupero 2","n":"15","s":"Limpieza","e":"Reloj manómetro CD2MU02","t":"Vidrio"},{"u":"Línea de recupero 2","n":"16","s":"Limpieza","e":"Sensor tolva CD2TO10","t":"Plástico"},{"u":"Línea de recupero 2","n":"17","s":"Limpieza","e":"Sensor tolva CD2TO11","t":"Plástico"},{"u":"Línea de recupero 2","n":"18","s":"Limpieza","e":"Mesa densimétrica CD2MD05","t":"Plástico"},{"u":"Línea de recupero 2","n":"19","s":"Limpieza","e":"Mesa densimétrica CD2MD05","t":"Plástico"},{"u":"Línea de recupero 2","n":"20","s":"Limpieza","e":"Mesa densimétrica CD2MD06","t":"Plástico"},{"u":"Línea de recupero 2","n":"21","s":"Limpieza","e":"Mesa densimétrica CD2MD06","t":"Plástico"},{"u":"Línea de recupero 2","n":"22","s":"Limpieza","e":"Sensor tolva CD2TO12","t":"Plástico"},{"u":"Línea de recupero 2","n":"23","s":"Limpieza","e":"Sensor tolva CD2TO12","t":"Plástico"},{"u":"Línea de recupero 2","n":"24","s":"Limpieza","e":"Sensor tolva CD2TO13","t":"Plástico"},{"u":"Línea de recupero 2","n":"25","s":"Limpieza","e":"Sensor tolva CD2TO13","t":"Plástico"},{"u":"Línea de recupero 2","n":"95","s":"Selección","e":"Seleccionadora electrónica CD2ET02","t":"Vidrio"},{"u":"Línea de recupero 2","n":"96","s":"Selección","e":"Seleccionadora electrónica CD2ET02","t":"Vidrio"},{"u":"Línea de recupero 2","n":"81","s":"Selección","e":"Seleccionadora electrónica CD2ET02","t":"Vidrio"},{"u":"Línea de recupero 2","n":"82","s":"Selección","e":"Seleccionadora electrónica CD2ET02","t":"Vidrio"},{"u":"Línea de recupero 2","n":"83","s":"Selección","e":"Seleccionadora electrónica CD2ET02","t":"Vidrio"},{"u":"Línea de recupero 2","n":"84","s":"Selección","e":"Seleccionadora electrónica CD2ET03","t":"Vidrio"},{"u":"Línea de recupero 2","n":"85","s":"Selección","e":"Seleccionadora electrónica CD2ET03","t":"Vidrio"},{"u":"Línea de recupero 2","n":"86","s":"Selección","e":"Seleccionadora electrónica CD2ET03","t":"Vidrio"},{"u":"Línea de recupero 2","n":"87","s":"Selección","e":"Seleccionadora electrónica CD2ET03","t":"Vidrio"},{"u":"Línea de recupero 2","n":"88","s":"Selección","e":"Seleccionadora electrónica CD2ET03","t":"Vidrio"},{"u":"Línea de recupero 2","n":"97","s":"Selección","e":"Manómetro","t":"Vidrio"},{"u":"Línea de recupero 2","n":"91","s":"Embolse","e":"Elevador CD2EL21","t":"Plástico"},{"u":"Línea de recupero 2","n":"92","s":"Embolse","e":"Elevador CD2EL21","t":"Plástico"},{"u":"Línea de recupero 2","n":"93","s":"Embolse","e":"Elevador CD2EL22","t":"Plástico"},{"u":"Línea de recupero 2","n":"94","s":"Embolse","e":"Elevador CD2EL22","t":"Plástico"},{"u":"Línea de recupero 2","n":"44","s":"Embolse","e":"Visor Tolva 60/70 y 70/80 línea recupero CD2TO06","t":"Vidrio"},{"u":"Línea de recupero 2","n":"45","s":"Embolse","e":"Visor Tolva 60/70 y 70/80 línea recupero CD2TO06","t":"Vidrio"},{"u":"Línea de recupero 2","n":"46","s":"Embolse","e":"Visor Tolva Split línea de recupero CD2TO06","t":"Vidrio"},{"u":"Línea de recupero 2","n":"47","s":"Embolse","e":"Visor Tolva Split línea de recupero CD2TO06","t":"Vidrio"},{"u":"Línea de recupero 2","n":"48","s":"Embolse","e":"Visor Tolva 38/42 y 40/50 línea de recupero CD2TO06","t":"Vidrio"},{"u":"Línea de recupero 2","n":"49","s":"Embolse","e":"Visor Tolva 38/42 y 40/50 línea de recupero CD2TO06","t":"Vidrio"},{"u":"Línea de recupero 2","n":"50","s":"Embolse","e":"Visor Tolva 50/60 línea de recupero CD2TO06","t":"Vidrio"},{"u":"Línea de recupero 2","n":"51","s":"Embolse","e":"Visor Tolva 50/60 línea de recupero CD2TO06","t":"Vidrio"},{"u":"Línea de recupero 2","n":"52","s":"Detector de metal","e":"Puerta de control detector penta","t":"Plástico"},{"u":"Ingreso/Filtro Oficina","n":"1","s":"Ingreso Planta","e":"Puerta","t":"Vidrio"},{"u":"Ingreso/Filtro Oficina","n":"2","s":"Ingreso Oficina","e":"Puerta","t":"Vidrio"},{"u":"Ingreso/Filtro Oficina","n":"3","s":"Oficina/Filtro","e":"Ventana","t":"Vidrio"},{"u":"Ingreso/Filtro Oficina","n":"4","s":"Oficina/Filtro","e":"Ventana","t":"Vidrio"},{"u":"Ingreso/Filtro Oficina","n":"5","s":"Oficina/Filtro","e":"Ventana","t":"Vidrio"},{"u":"Ingreso/Filtro Oficina","n":"6","s":"Oficina/Filtro","e":"Ventana","t":"Vidrio"},{"u":"Ingreso/Filtro Oficina","n":"7","s":"Oficina/Filtro","e":"Ventana","t":"Vidrio"},{"u":"Ingreso/Filtro Oficina","n":"8","s":"Oficina/Filtro","e":"Ventana","t":"Vidrio"},{"u":"Ingreso/Filtro Oficina","n":"9","s":"Oficina/Filtro","e":"Ventana","t":"Vidrio"}]},{"name":"Diaria-Depósitos","f":"Diario","r":"4.0","items":[{"u":"Pasillo D2-D3","n":"1","s":"Pasillo D2-D3","e":"Visor Portón","t":"Plástico"},{"u":"Pasillo D2-D3","n":"2","s":"Pasillo D2-D3","e":"Visor Portón","t":"Plástico"},{"u":"Pasillo D2-D3","n":"3","s":"Pasillo D2-D3","e":"Visor Portón","t":"Plástico"},{"u":"Pasillo D2-D3","n":"4","s":"Rack eléctrico","e":"Visor Portón","t":"Plástico"},{"u":"Pasillo D2-D3","n":"5","s":"Puerta","e":"Cartel Salida de emergencia","t":"Plástico"},{"u":"Pasillo D2-D3","n":"6","s":"Puerta","e":"Vidrio de inpección","t":"Vidrio"},{"u":"Depósito D2","n":"1","s":"Depósito D2","e":"Visor Portón","t":"Plástico"},{"u":"Depósito D2","n":"2","s":"Depósito D2","e":"Visor Portón","t":"Plástico"},{"u":"Depósito D2","n":"3","s":"Rack eléctrico","e":"Visor","t":"Plástico"},{"u":"Depósito D1","n":"1","s":"Depósito D1","e":"Visor Portón","t":"Plástico"},{"u":"Depósito carga exportación","n":"1","s":"Depósito carga exportación","e":"Visor Portón","t":"Plástico"},{"u":"Depósito carga exportación","n":"2","s":"Depósito carga exportación","e":"Visor Portón","t":"Plástico"},{"u":"Depósito carga exportación","n":"7","s":"Depósito carga exportación","e":"Cartel salida","t":"Plástico"},{"u":"Depósito carga exportación","n":"8","s":"Depósito carga exportación","e":"Computadora","t":"Plástico"},{"u":"Depósito carga exportación","n":"9","s":"Depósito carga exportación","e":"Cámara","t":"Plástico"},{"u":"Depósito carga exportación","n":"10","s":"Depósito carga exportación","e":"Cámara","t":"Plástico"},{"u":"Depósito carga exportación","n":"11","s":"Depósito carga exportación","e":"Cámara","t":"Plástico"},{"u":"Depósito carga exportación","n":"12","s":"Depósito carga exportación","e":"Cámara","t":"Plástico"},{"u":"Depósito carga exportación","n":"13","s":"Depósito carga exportación","e":"Reloj","t":"Vidrio"},{"u":"Insumos","n":"1","s":"Insumos","e":"Visor Portón","t":"Plástico"},{"u":"Insumos","n":"2","s":"Insumos","e":"Visor Portón","t":"Plástico"},{"u":"Insumos","n":"3","s":"Insumos","e":"Computadora","t":"Plástico"},{"u":"Insumos","n":"4","s":"Rack eléctrico","e":"Visor","t":"Plástico"},{"u":"Insumos","n":"5","s":"Insumos","e":"Panel puerta","t":"Vidrio"},{"u":"Insumos","n":"6","s":"Insumos","e":"Panel ventana","t":"Vidrio"},{"u":"Insumos","n":"7","s":"Insumos","e":"Panel ventana","t":"Vidrio"},{"u":"Insumos","n":"8","s":"Insumos","e":"Panel ventana","t":"Vidrio"},{"u":"Insumos","n":"9","s":"Insumos","e":"Protección luminaria","t":"Vidrio"},{"u":"Insumos","n":"10","s":"Insumos","e":"Protección luminaria","t":"Vidrio"},{"u":"Insumos","n":"11","s":"Insumos","e":"Cartel salida emergencia","t":"Plástico"},{"u":"Insumos","n":"12","s":"Insumos","e":"Dispenser","t":"Plástico"},{"u":"Cabina Depósito de PE","n":"1","s":"Depósito","e":"Puerta","t":"Vidrio"},{"u":"Cabina Depósito de PE","n":"2","s":"Depósito","e":"Ventana","t":"Vidrio"},{"u":"Cabina Depósito de PE","n":"3","s":"Depósito","e":"Ventana","t":"Vidrio"},{"u":"Cabina Depósito de PE","n":"4","s":"Depósito","e":"Ventana","t":"Vidrio"},{"u":"Cabina Depósito de PE","n":"5","s":"Depósito","e":"Ventana","t":"Vidrio"},{"u":"Cabina Depósito Carga de Exportación","n":"1","s":"Cabina","e":"Puerta","t":"Vidrio"},{"u":"Cabina Depósito Carga de Exportación","n":"2","s":"Cabina","e":"Ventana","t":"Vidrio"},{"u":"Cabina Depósito Carga de Exportación","n":"3","s":"Cabina","e":"Ventana","t":"Vidrio"},{"u":"Cabina Depósito Carga de Exportación","n":"4","s":"Cabina","e":"Ventana","t":"Vidrio"},{"u":"Cabina Depósito Carga de Exportación","n":"5","s":"Cabina","e":"Ventana","t":"Vidrio"}]},{"name":"Diario-Tostado-Pasta-Frito","f":"Diario","r":"4.0","items":[{"u":"Línea tostado","n":"1","s":"Tostado II-Depósito D1","e":"Cartel de salida de emergencia","t":"Plástico"},{"u":"Línea tostado","n":"2","s":"Horno tostado","e":"Reloj manómetro horno TO1HO01","t":"Vidrio"},{"u":"Línea tostado","n":"3","s":"Horno tostado","e":"Reloj manómetro horno TO1HO01","t":"Vidrio"},{"u":"Línea tostado","n":"4","s":"Horno tostado","e":"Detector de metal","t":"Plástico"},{"u":"Línea tostado","n":"5","s":"Tableros eléctricos","e":"Pantalla táctil","t":"Vidrio"},{"u":"Línea tostado","n":"7","s":"Envasado","e":"Elevador","t":"Plástico"},{"u":"Línea tostado","n":"8","s":"Envasado","e":"Elevador","t":"Plástico"},{"u":"Línea Pasta","n":"6","s":"Molienda","e":"Reloj","t":"Plástico"},{"u":"Línea Pasta","n":"9","s":"Moledora","e":"Pantalla moledora PA1MO01","t":"Plástico"},{"u":"Línea Pasta","n":"10","s":"Moledora","e":"Reloj manómetro moledora PA1MO01","t":"Vidrio"},{"u":"Línea Pasta","n":"34","s":"Moledora","e":"Reloj manómetro moledora PA1MO02","t":"Vidrio"},{"u":"Línea Pasta","n":"35","s":"Moledora","e":"Pantalla moledora PA1MO02","t":"Vidrio"},{"u":"Línea Pasta","n":"36","s":"Moledora","e":"Pantalla moledora PA1MO02","t":"Vidrio"},{"u":"Línea Pasta","n":"11","s":"Mezclado I","e":"Reloj temperatura tanque agitado PA1TQ01","t":"Vidrio"},{"u":"Línea Pasta","n":"12","s":"Mezclado II","e":"Reloj temperatura tanque agitado PA1TQ02","t":"Vidrio"},{"u":"Línea Pasta","n":"13","s":"Envasado","e":"Luminaria azul de aire comprimido","t":"Plástico"},{"u":"Línea Pasta","n":"14","s":"Envasado","e":"Pantalla detector de metal PA1DM02","t":"Vidrio"},{"u":"Línea Pasta","n":"21","s":"Cabina de envasado","e":"Panel de pared","t":"Vidrio"},{"u":"Línea Pasta","n":"22","s":"Cabina de envasado","e":"Panel de pared","t":"Vidrio"},{"u":"Línea Pasta","n":"30","s":"Mezclado II","e":"Tapa de inpeccion tanque de agitado II","t":"Vidrio"},{"u":"Línea Pasta","n":"18","s":"Linea pasta","e":"Computadora","t":"Plástico"},{"u":"Sistema de enfriado","n":"15","s":"Sistema de enfriamiento","e":"Reloj temperatura tanque líquido refrigerante PA1TQ03","t":"Vidrio"},{"u":"Sistema de enfriado","n":"16","s":"Sistema de enfriamiento","e":"Reloj indicador equipo frío PA1SR01","t":"Vidrio"},{"u":"Sistema de enfriado","n":"17","s":"Sistema de enfriamiento","e":"Reloj indicador equipo frío PA1SR01","t":"Vidrio"},{"u":"Sistema de enfriado","n":"18","s":"Sistema de enfriamiento","e":"Reloj indicador equipo frío PA1SR01","t":"Vidrio"},{"u":"Sistema de enfriado","n":"19","s":"Sistema de enfriamiento","e":"Reloj indicador equipo frío PA1SR01","t":"Vidrio"},{"u":"Linea Pasta Pote","n":"43","s":"Envasado","e":"Manómetro (reloj)","t":"Plästico"},{"u":"Linea Pasta Pote","n":"44","s":"Envasado","e":"Manómetro (reloj)","t":"Plästico"},{"u":"Linea Pasta Pote","n":"45","s":"Envasado","e":"Manómetro","t":"Vidrio"},{"u":"Linea Pasta Pote","n":"46","s":"Envasado","e":"Panel Envasadora","t":"Vidrio"},{"u":"Linea Pasta Pote","n":"47","s":"Envasado","e":"Panel Envasadora","t":"Vidrio"},{"u":"Linea Pasta Pote","n":"48","s":"Envasado","e":"Panel Envasadora","t":"Vidrio"},{"u":"Linea Pasta Pote","n":"49","s":"Envasado","e":"Panel Envasadora","t":"Vidrio"},{"u":"Linea Pasta Pote","n":"50","s":"Envasado","e":"Panel Envasadora","t":"Vidrio"},{"u":"Linea Pasta Pote","n":"51","s":"Envasado","e":"Panel Envasadora","t":"Vidrio"},{"u":"Linea Pasta Pote","n":"52","s":"Envasado","e":"Panel Envasadora","t":"Vidrio"},{"u":"Linea Pasta Pote","n":"53","s":"Envasado","e":"Panel Envasadora","t":"Vidrio"},{"u":"Linea Pasta Pote","n":"54","s":"Envasado","e":"Panel Envasadora","t":"Vidrio"},{"u":"Linea Pasta Pote","n":"55","s":"Envasado","e":"Panel Envasadora","t":"Vidrio"},{"u":"Linea Pasta Pote","n":"56","s":"Envasado","e":"Luz","t":"Plástico"},{"u":"Cabina de análisis","n":"37","s":"Cabina de análisis","e":"Computadora","t":"Plástico"},{"u":"Cabina de análisis","n":"18","s":"Cabina de análisis","e":"Computadora","t":"Plástico"},{"u":"Cabina de análisis","n":"58","s":"Cabina de análisis","e":"Computadora","t":"Plástico"},{"u":"Cabina de análisis","n":"40","s":"Cabina de análisis","e":"Panel de pared","t":"Vidrio"},{"u":"Cabina de análisis","n":"41","s":"Cabina de análisis","e":"Panel de pared","t":"Vidrio"},{"u":"Cabina de análisis","n":"42","s":"Cabina de análisis","e":"Panel de pared","t":"Vidrio"},{"u":"Cabina de análisis","n":"43","s":"Cabina de análisis","e":"Panel de pared","t":"Vidrio"},{"u":"Cabina de análisis","n":"44","s":"Cabina de análisis","e":"Panel de puerta","t":"Vidrio"},{"u":"Cabina de análisis","n":"49","s":"Cabina de análisis","e":"Reloj","t":"Plástico"},{"u":"Cabina de análisis","n":"1","s":"Cabina de análisis","e":"Placas de Petri","t":"Vidrío"},{"u":"Cabina de análisis","n":"2","s":"Cabina de análisis","e":"Placas de Petri","t":"Vidrío"},{"u":"Cabina de análisis","n":"3","s":"Cabina de análisis","e":"Placas de Petri","t":"Vidrío"},{"u":"Cabina de análisis","n":"4","s":"Cabina de análisis","e":"Placas de Petri","t":"Vidrío"},{"u":"Cabina de análisis","n":"5","s":"Cabina de análisis","e":"Placas de Petri","t":"Vidrío"},{"u":"Cabina de análisis","n":"6","s":"Cabina de análisis","e":"Placas de Petri","t":"Vidrío"},{"u":"Cabina de análisis","n":"7","s":"Cabina de análisis","e":"Placas de Petri","t":"Vidrío"},{"u":"Cabina de análisis","n":"8","s":"Cabina de análisis","e":"Placas de Petri","t":"Vidrío"},{"u":"Ingreso a dependencias","n":"1","s":"Tostado-Dep Aux Producto terminado","e":"Cartel de salida de emergencia","t":"Plástico"},{"u":"Depósito PE","n":"2","s":"Depósito PE","e":"Protección luminaria","t":"Plástico"},{"u":"Depósito PE","n":"16","s":"Depósito PE","e":"Manguera de incendio","t":"Plástico"},{"u":"Depósito PE","n":"4","s":"Depósito PE","e":"Manometro","t":"Vidrio"},{"u":"Depósito PE","n":"22","s":"Salida de emergencia","e":"Salidad de emergencia","t":"Plástico"}]},{"name":"Diario-Planta PE II","f":"Diario","r":"4.0","items":[{"u":"Filtro","n":"86","s":"Filtro","e":"Puerta","t":"Vidrio"},{"u":"Filtro","n":"87","s":"Filtro","e":"Panel ventana","t":"Vidrio"},{"u":"Filtro","n":"88","s":"Filtro","e":"Panel ventana","t":"Vidrio"},{"u":"Filtro","n":"25","s":"Filtro","e":"Guardapolvos","t":"Plástico"},{"u":"Filtro","n":"89","s":"Filtro","e":"Tapaboca y cofia","t":"Plástico"},{"u":"Filtro","n":"90","s":"Filtro","e":"Monitor de TV","t":"Plástico"},{"u":"Cabina de control","n":"1","s":"Cabina de control","e":"Monitor de PC","t":"Plástico"},{"u":"Cabina de control","n":"2","s":"Cabina de control","e":"Notebook","t":"Plástico"},{"u":"Cabina de control","n":"81","s":"Cabina de control","e":"Puerta","t":"Vidrio"},{"u":"Cabina de control","n":"82","s":"Cabina de control","e":"Puerta","t":"Vidrio"},{"u":"Cabina de control","n":"83","s":"Cabina de control","e":"Panel ventana","t":"Vidrio"},{"u":"Cabina de control","n":"84","s":"Cabina de control","e":"Panel ventana","t":"Vidrio"},{"u":"Cabina de control","n":"85","s":"Cabina de control","e":"Panel ventana","t":"Vidrio"},{"u":"Cabina de control","n":"44","s":"Cabina de control","e":"Computadora","t":"Plástico"},{"u":"Cabina de control","n":"17","s":"Cabina de control","e":"Computadora","t":"Plástico"},{"u":"Cabina de control","n":"40","s":"Cabina de control","e":"Pizarra","t":"Vidrio"},{"u":"Cabina control de calidad","n":"91","s":"Cabina control de calidad","e":"Puerta","t":"Vidrio"},{"u":"Cabina control de calidad","n":"92","s":"Cabina control de calidad","e":"Puerta","t":"Vidrio"},{"u":"Cabina control de calidad","n":"93","s":"Cabina control de calidad","e":"Panel ventana","t":"Vidrio"},{"u":"Cabina control de calidad","n":"94","s":"Cabina control de calidad","e":"Panel ventana","t":"Vidrio"},{"u":"Cabina control de calidad","n":"95","s":"Cabina control de calidad","e":"Monitor de PC","t":"Plástico"},{"u":"Cabina control de calidad","n":"29","s":"Cabina control de calidad","e":"Reloj","t":"Plástico"},{"u":"Cabina control de calidad","n":"30","s":"Cabina control de calidad","e":"Monitor de PC","t":"Plástico"},{"u":"Cabina control de calidad","n":"31","s":"Cabina control de calidad","e":"Notebook","t":"Plástico"},{"u":"Tostado","n":"3","s":"Ingreso Horno","e":"Elevador","t":"Plástico"},{"u":"Tostado","n":"4","s":"Ingreso Horno","e":"Elevador","t":"Plástico"},{"u":"Tostado","n":"27","s":"Ingreso Horno","e":"Computadora","t":"Plástico"},{"u":"Tostado","n":"28","s":"Salida Embolse","e":"Computadora","t":"Plástico"},{"u":"Tostado","n":"5","s":"Ingreso Horno","e":"Aspiración","t":"Plástico"},{"u":"Tostado","n":"77","s":"Ingreso Horno","e":"Aspiración","t":"Plástico"},{"u":"Tostado","n":"96","s":"Ingreso Horno","e":"Aspiración","t":"Plástico"},{"u":"Tostado","n":"6","s":"Manómetro","e":"Tubería de gas","t":"Vidrio"},{"u":"Tostado","n":"7","s":"Ingreso Horno","e":"Tolva Ingreso Horno","t":"Plástico"},{"u":"Tostado","n":"8","s":"Ingreso Horno","e":"Tolva Ingreso Horno","t":"Plástico"},{"u":"Tostado","n":"9","s":"Ingreso Horno","e":"Tolva Ingreso Horno","t":"Plástico"},{"u":"Tostado","n":"10","s":"Horno","e":"Manómetro","t":"Vidrio"},{"u":"Tostado","n":"11","s":"Horno","e":"Manómetro","t":"Vidrio"},{"u":"Tostado","n":"12","s":"Horno","e":"Manómetro","t":"Vidrio"},{"u":"Tostado","n":"13","s":"Horno","e":"Manómetro","t":"Vidrio"},{"u":"Tostado","n":"14","s":"Horno","e":"Manómetro","t":"Vidrio"},{"u":"Tostado","n":"15","s":"Horno","e":"Manómetro","t":"Vidrio"},{"u":"Tostado","n":"16","s":"Horno","e":"Manómetro","t":"Vidrio"},{"u":"Tostado","n":"17","s":"Horno","e":"Manómetro","t":"Vidrio"},{"u":"Tostado","n":"18","s":"Horno","e":"Manómetro","t":"Vidrio"},{"u":"Tostado","n":"19","s":"Horno","e":"Manómetro","t":"Vidrio"},{"u":"Tostado","n":"20","s":"Horno","e":"Manómetro","t":"Vidrio"},{"u":"Tostado","n":"21","s":"Horno","e":"Manómetro","t":"Vidrio"},{"u":"Tostado","n":"22","s":"Horno","e":"Puerta/Visor","t":"Vidrio"},{"u":"Tostado","n":"23","s":"Horno","e":"Puerta/Visor","t":"Vidrio"},{"u":"Tostado","n":"24","s":"Salida Horno","e":"Aspiración","t":"Plástico"},{"u":"Tostado","n":"25","s":"Salida Horno","e":"Elevador","t":"Plástico"},{"u":"Tostado","n":"26","s":"Salida Horno","e":"Elevador","t":"Plástico"},{"u":"Tostado","n":"28","s":"Reloj","e":"Reloj","t":"Plástico"},{"u":"Tolva","n":"27","s":"Tolva","e":"Tolva","t":"Plástico"},{"u":"Tolva","n":"28","s":"Tolva","e":"Tolva","t":"Plástico"},{"u":"Tolva","n":"29","s":"Tolva","e":"Tolva","t":"Plástico"},{"u":"Tolva","n":"30","s":"Tolva","e":"Tolva","t":"Plástico"},{"u":"Tolva","n":"31","s":"Tolva","e":"Tolva","t":"Plástico"},{"u":"Tolva","n":"32","s":"Tolva","e":"Tolva","t":"Plástico"},{"u":"Tolva","n":"33","s":"Tolva","e":"Tolva","t":"Plástico"},{"u":"Tolva","n":"34","s":"Salida Conveyer","e":"Aspiración","t":"Plástico"},{"u":"Tolva","n":"74","s":"Salida Conveyer","e":"Aspiración","t":"Plástico"},{"u":"Tolva","n":"75","s":"Salida Conveyer","e":"Aspiración","t":"Plástico"},{"u":"Tolva","n":"76","s":"Salida Conveyer","e":"Aspiración","t":"Plástico"},{"u":"Tolva","n":"35","s":"Elevador","e":"Elevador","t":"Plástico"},{"u":"Tolva","n":"36","s":"Elevador","e":"Elevador","t":"Plástico"},{"u":"Tolva","n":"37","s":"Elevador","e":"Elevador","t":"Plástico"},{"u":"Tolva","n":"38","s":"Elevador","e":"Elevador","t":"Plástico"},{"u":"Tolva","n":"39","s":"UPS","e":"UPS","t":"Plástico"},{"u":"Tolva","n":"74","s":"Visor","e":"Tolva","t":"Plástico"},{"u":"Tolva","n":"75","s":"Visor","e":"Tolva","t":"Plástico"},{"u":"Selección electrónica","n":"40","s":"Electrónica","e":"Panel","t":"Vidrio"},{"u":"Selección electrónica","n":"41","s":"Electrónica","e":"Panel","t":"Vidrio"},{"u":"Selección electrónica","n":"42","s":"Electrónica","e":"Panel","t":"Vidrio"},{"u":"Selección electrónica","n":"43","s":"Electrónica","e":"Panel","t":"Vidrio"},{"u":"Selección electrónica","n":"44","s":"Electrónica","e":"Tablero","t":"Vidrio"},{"u":"Selección electrónica","n":"45","s":"Electrónica","e":"Tablero","t":"Vidrio"},{"u":"Selección electrónica","n":"46","s":"Electrónica","e":"Display","t":"Vidrio"},{"u":"Selección electrónica","n":"47","s":"Electrónica","e":"Display","t":"Vidrio"},{"u":"Selección electrónica","n":"48","s":"Electrónica","e":"Tolva de ingreso","t":"Plástico"},{"u":"Selección electrónica","n":"49","s":"Electrónica","e":"Tolva de ingreso","t":"Plástico"},{"u":"Selección electrónica","n":"50","s":"Electrónica","e":"Tolva de ingreso","t":"Plástico"},{"u":"Selección electrónica","n":"51","s":"Electrónica","e":"Aspiración","t":"Plástico"},{"u":"Embolse","n":"97","s":"Tolva de embolse","e":"Aspiración","t":"Plástico"},{"u":"Embolse","n":"52","s":"Tolva de embolse","e":"Elevador","t":"Plástico"},{"u":"Embolse","n":"53","s":"Tolva de embolse","e":"Elevador","t":"Plástico"},{"u":"Embolse","n":"54","s":"Tolva de embolse","e":"Tolva","t":"Plástico"},{"u":"Embolse","n":"55","s":"Tolva de embolse","e":"Tolva","t":"Plástico"},{"u":"Embolse","n":"56","s":"Tolva de embolse","e":"Tolva","t":"Plástico"},{"u":"Embolse","n":"57","s":"Tolva de embolse","e":"Tolva","t":"Plástico"},{"u":"Embolse","n":"58","s":"Tolva de embolse","e":"Tolva","t":"Plástico"},{"u":"Embolse","n":"26","s":"Reloj","e":"Reloj","t":"Plástico"},{"u":"Embolse","n":"28","s":"Computadora","e":"Notebook","t":"Plástico"},{"u":"Embolse","n":"31","s":"Pantalla","e":"Pantalla","t":"Plástico"},{"u":"Embolse","n":"59","s":"Tolva de embolse","e":"Tolva","t":"Plástico"},{"u":"Embolse","n":"60","s":"Tolva de embolse","e":"Detector de metales","t":"Plástico"},{"u":"Embolse","n":"98","s":"Tolva de embolse","e":"Detector de metales","t":"Plástico"},{"u":"Envasado con Nitrógeno","n":"61","s":"Sistema de envasado","e":"Puertas control de gases","t":"Plástico"},{"u":"Envasado con Nitrógeno","n":"62","s":"Sistema de envasado","e":"Puertas control de gases","t":"Plástico"},{"u":"Envasado con Nitrógeno","n":"63","s":"Sistema de envasado","e":"Manómetro","t":"Vidrio"},{"u":"Envasado con Nitrógeno","n":"64","s":"Sistema de envasado","e":"Manómetro","t":"Vidrio"},{"u":"Envasado con Nitrógeno","n":"65","s":"Sistema de envasado","e":"Manómetro","t":"Vidrio"},{"u":"Envasado con Nitrógeno","n":"66","s":"Sistema de envasado","e":"Manómetro","t":"Vidrio"},{"u":"Envasado con Nitrógeno","n":"67","s":"Sistema de envasado","e":"Manómetro","t":"Vidrio"},{"u":"Envasado con Nitrógeno","n":"68","s":"Sistema de envasado","e":"Manómetro","t":"Vidrio"},{"u":"Envasado con Nitrógeno","n":"69","s":"Sistema de envasado","e":"Manómetro","t":"Vidrio"},{"u":"Envasado con Nitrógeno","n":"70","s":"Sistema de envasado","e":"PC","t":"Vidrio"},{"u":"Envasado con Nitrógeno","n":"71","s":"Sistema de envasado","e":"Lector de código QR","t":"Vidrio"},{"u":"Envasado con Nitrógeno","n":"72","s":"Portón","e":"Visor Portón","t":"Plástico"},{"u":"Envasado con Nitrógeno","n":"73","s":"Portón","e":"Visor Portón","t":"Plástico"},{"u":"Envasado con Nitrógeno","n":"74","s":"Visor","e":"Tolva","t":"Plástico"},{"u":"Envasado con Nitrógeno","n":"75","s":"Visor","e":"Tolva","t":"Plástico"},{"u":"Envasado con Nitrógeno","n":"76","s":"Visor","e":"Tolva","t":"Plástico"},{"u":"Envasado con Nitrógeno","n":"77","s":"Visor","e":"Tolva","t":"Plástico"},{"u":"Envasado con Nitrógeno","n":"78","s":"Visor","e":"Elevador","t":"Plástico"},{"u":"Envasado con Nitrógeno","n":"79","s":"Visor","e":"Elevador","t":"Plástico"},{"u":"Envasado con Nitrógeno","n":"80","s":"Visor","e":"Bajada tolva","t":"Plástico"},{"u":"Embolsado de productos elaborados","n":"23","s":"Embolsado","e":"Elevador","t":"Plástico"},{"u":"Embolsado de productos elaborados","n":"24","s":"Embolsado","e":"Elevador","t":"Plástico"},{"u":"Embolsado de productos elaborados","n":"25","s":"Detector de metales","e":"Caño de salida detector","t":"Plástico"},{"u":"Embolsado de productos elaborados","n":"45","s":"Embolsado","e":"Reloj","t":"Vidrio"},{"u":"Embolsado de productos elaborados","n":"26","s":"Embolsado","e":"Tolva","t":"Plástico"},{"u":"Envasadora 4","n":"1","s":"Empaquetado","e":"Noria","t":"Plástico"},{"u":"Envasadora 4","n":"2","s":"Empaquetado","e":"Noria","t":"Plástico"},{"u":"Envasadora 4","n":"3","s":"Pollera","e":"Pollera de distribución","t":"Plástico"},{"u":"Envasadora 4","n":"4","s":"Empaquetado","e":"Protección","t":"Plástico"},{"u":"Envasadora 4","n":"5","s":"Empaquetado","e":"Protección","t":"Plástico"},{"u":"Envasadora 4","n":"6","s":"Empaquetado","e":"Protección","t":"Plástico"},{"u":"Envasadora 4","n":"7","s":"Empaquetado","e":"Protección","t":"Plástico"},{"u":"Envasadora 4","n":"8","s":"Empaquetado","e":"Protección","t":"Plástico"},{"u":"Envasadora 4","n":"9","s":"Empaquetado","e":"Protección","t":"Plástico"},{"u":"Envasadora 4","n":"10","s":"Empaquetado","e":"Pantalla","t":"Plástico"},{"u":"Envasadora 4","n":"11","s":"Empaquetado","e":"Pantalla","t":"Plástico"},{"u":"Envasadora 4","n":"12","s":"Empaquetado","e":"Pantalla","t":"Plástico"},{"u":"Envasadora 4","n":"13","s":"Detector","e":"Caño de salida detector","t":"Plástico"},{"u":"Envasadora 4","n":"14","s":"Cabina de Notebook","e":"Puerta","t":"Vidrio"},{"u":"Envasadora 2","n":"1","s":"Empaquetado","e":"Noria","t":"Plástico"},{"u":"Envasadora 2","n":"2","s":"Empaquetado","e":"Noria","t":"Plástico"},{"u":"Envasadora 2","n":"3","s":"Empaquetado","e":"Manómetro","t":"Vidrio"},{"u":"Envasadora 2","n":"4","s":"Empaquetado","e":"Pantalla","t":"Plástico"},{"u":"Envasadora 2","n":"5","s":"Empaquetado","e":"Detector de metales","t":"Plástico"},{"u":"Envasadora 2","n":"6","s":"Empaquetado","e":"Protección","t":"Plástico"},{"u":"Envasadora 2","n":"7","s":"Empaquetado","e":"Protección","t":"Plástico"},{"u":"Envasadora 2","n":"8","s":"Empaquetado","e":"Protección","t":"Plástico"},{"u":"Envasadora 2","n":"9","s":"Empaquetado","e":"Protección","t":"Plástico"},{"u":"Envasadora 2","n":"10","s":"Empaquetado","e":"Protección","t":"Plástico"},{"u":"Envasadora 2","n":"11","s":"Empaquetado","e":"Protección","t":"Plástico"},{"u":"Envasadora 2","n":"12","s":"Empaquetado","e":"Protección","t":"Plástico"},{"u":"Envasadora 2","n":"13","s":"Empaquetado","e":"Pantalla","t":"Plástico"},{"u":"Envasadora 2","n":"14","s":"Empaquetado","e":"Caño de salida detector","t":"Plástico"},{"u":"Envasadora 2","n":"15","s":"Empaquetado","e":"Pantalla","t":"Plástico"},{"u":"Envasadora 2","n":"16","s":"Empaquetado","e":"Pantalla","t":"Plástico"},{"u":"Envasadora 2","n":"17","s":"Pollera","e":"Pollera de distribución","t":"Plástico"},{"u":"Envasadora 2","n":"18","s":"Notebook","e":"Notebook","t":"Plástico"},{"u":"Envasadora 5","n":"1","s":"Noria","e":"Visor","t":"Plástico"},{"u":"Envasadora 5","n":"2","s":"Noria","e":"Visor","t":"Plástico"},{"u":"Envasadora 5","n":"3","s":"Noria","e":"Cubre","t":"Plástico"},{"u":"Envasadora 5","n":"4","s":"Desbobinador","e":"Desbobinador","t":"Plástico"},{"u":"Envasadora 5","n":"5","s":"Pantalla","e":"Fechador","t":"Plástico"},{"u":"Envasadora 5","n":"6","s":"Cubre pistones de aire","e":"Cobertor","t":"Plástico"},{"u":"Envasadora 5","n":"7","s":"Envasadora 5","e":"Protección","t":"Plástico"},{"u":"Envasadora 5","n":"8","s":"Envasadora 5","e":"Protección","t":"Plástico"},{"u":"Envasadora 5","n":"9","s":"Envasadora 5","e":"Protección","t":"Plástico"},{"u":"Envasadora 5","n":"10","s":"Envasadora 5","e":"Protección","t":"Plástico"},{"u":"Envasadora 5","n":"11","s":"Envasadora 5","e":"Protección","t":"Plástico"},{"u":"Envasadora 5","n":"12","s":"Envasadora 5","e":"Protección","t":"Plástico"},{"u":"Envasadora 5","n":"13","s":"Tablero de DM","e":"Protección","t":"Plástico"},{"u":"Envasadora 5","n":"14","s":"Envasadora 5","e":"Protección","t":"Plástico"},{"u":"Envasadora 5","n":"15","s":"Envasadora 5","e":"Protección","t":"Plástico"},{"u":"Envasadora 5","n":"16","s":"Envasadora 5","e":"Protección","t":"Plástico"},{"u":"Envasadora 5","n":"17","s":"Ducto de detector","e":"Ducto de detector","t":"Plástico"},{"u":"Envasadora 5","n":"18","s":"Visor de DM","e":"Visor de DM","t":"Plástico"},{"u":"Envasadora 5","n":"19","s":"Cubre cilindro","e":"Protección","t":"Plástico"},{"u":"Envasadora 5","n":"20","s":"Cubre cilindro","e":"Protección","t":"Plástico"},{"u":"Envasadora 5","n":"21","s":"Pantalla Balanza","e":"Cabezal","t":"Plástico"},{"u":"Envasadora 5","n":"22","s":"Pantalla Envasadora","e":"Pantalla Envasadora","t":"Plástico"},{"u":"Envasadora 5","n":"23","s":"Controlador de baliza","e":"Controlador de baliza","t":"Plástico"},{"u":"Envasadora 5","n":"24","s":"Controlador de baliza","e":"Controlador de baliza","t":"Plástico"},{"u":"Envasadora 5","n":"25","s":"Controlador de baliza","e":"Controlador de baliza","t":"Plástico"},{"u":"Envasadora 5","n":"26","s":"Controlador de internet","e":"Controlador de internet","t":"Plástico"},{"u":"Envasadora 5","n":"27","s":"Controlador sonoro y luminoso","e":"Envasadora 5","t":"Plástico"},{"u":"Envasadora 5","n":"28","s":"Controlador sonoro y luminoso","e":"Balanza","t":"Plástico"},{"u":"Envasadora 5","n":"29","s":"Pantalla balanza","e":"pantalla balanza","t":"Plástico"},{"u":"Envasadora 5","n":"30","s":"Protección Balanza","e":"Protección","t":"Plástico"},{"u":"Envasadora 5","n":"31","s":"Protección Envasadora","e":"Protección Interna","t":"Plástico"},{"u":"Envasadora 5","n":"32","s":"Cabina de Notebook","e":"Puerta","t":"Vidrio"},{"u":"Envasado al vacio","n":"1","s":"Noria","e":"Visor","t":"Plástico"},{"u":"Envasado al vacio","n":"2","s":"Noria","e":"Visor","t":"Plástico"},{"u":"Envasado al vacio","n":"3","s":"Noria","e":"Protector","t":"Plástico"},{"u":"Envasado al vacio","n":"4","s":"Tolva","e":"Visor de Sensor","t":"Plástico"},{"u":"Envasado al vacio","n":"5","s":"Tolva","e":"Visor","t":"Plástico"},{"u":"Envasado al vacio","n":"6","s":"Ducto de detector","e":"Ducto de detector","t":"Plástico"},{"u":"Envasado al vacio","n":"7","s":"Comando","e":"Detector de metales","t":"Plástico"},{"u":"Envasado al vacio","n":"8","s":"Pantalla","e":"Comando","t":"Plástico"},{"u":"Envasado al vacio","n":"9","s":"Cubre filtro","e":"Protector","t":"Plástico"},{"u":"Envasado al vacio","n":"10","s":"Cubre filtro","e":"Protector","t":"Plástico"},{"u":"Envasado al vacio","n":"11","s":"Cubre filtro","e":"Protector","t":"Plástico"},{"u":"Envasado al vacio","n":"12","s":"Manometro","e":"Protector","t":"Vidrio"},{"u":"Envasado al vacio","n":"13","s":"Manometro (hermeticidad)","e":"Protector","t":"Vidrio"},{"u":"Generador de Nitrógeno","n":"1","s":"Filtro","e":"Manómetro","t":"Plástico"},{"u":"Generador de Nitrógeno","n":"2","s":"Filtro","e":"Manómetro","t":"Plástico"},{"u":"Generador de Nitrógeno","n":"3","s":"Tanque","e":"Manómetro","t":"Vidrio"},{"u":"Generador de Nitrógeno","n":"4","s":"Tablero","e":"Manómetro","t":"Vidrio"},{"u":"Generador de Nitrógeno","n":"5","s":"Tablero","e":"Manómetro","t":"Vidrio"},{"u":"Generador de Nitrógeno","n":"6","s":"Tanque","e":"Manómetro","t":"Vidrio"},{"u":"Generador de Nitrógeno","n":"7","s":"Display","e":"Pantalla","t":"Plástico"},{"u":"Generador de Nitrógeno","n":"8","s":"Tanque","e":"Manómetro","t":"Vidrio"},{"u":"Línea salado","n":"23","s":"Salador","e":"Pantalla","t":"Vidrio"},{"u":"Línea salado","n":"24","s":"Salador","e":"Protección luz del salador","t":"Plástico"},{"u":"Línea salado","n":"25","s":"Tolva sal","e":"Sensor tolva de sal","t":"Plástico"},{"u":"Línea salado","n":"26","s":"Tolva sal","e":"Sensor tolva de sal","t":"Plástico"},{"u":"Línea salado","n":"27","s":"Ventana","e":"Paño fijo","t":"Vidrio"},{"u":"Cabina de Logística","n":"13","s":"Cabina Logística","e":"Ventana","t":"Vidrio"},{"u":"Cabina de Logística","n":"14","s":"Cabina Logística","e":"Ventana","t":"Vidrio"},{"u":"Cabina de Logística","n":"15","s":"Cabina Logística","e":"Ventana","t":"Vidrio"},{"u":"Cabina de Logística","n":"16","s":"Cabina Logística","e":"Caja de luz","t":"Plástico"}]},{"name":"Planta Tacc","f":"Diario","r":"4.0","items":[{"u":"Filtro","n":"27","s":"Filtro","e":"Puerta","t":"Vidrio"},{"u":"Filtro","n":"28","s":"Filtro","e":"Puerta","t":"Vidrio"},{"u":"Filtro","n":"29","s":"Filtro","e":"Puerta","t":"Vidrio"},{"u":"Filtro","n":"30","s":"Filtro","e":"Porta guardapolvo","t":"Plástico"},{"u":"Filtro","n":"31","s":"Filtro","e":"Porta tapaboca y cofía","t":"Plástico"},{"u":"Filtro","n":"32","s":"Filtro","e":"Dispenser Alcohol en gel","t":"Plástico"},{"u":"Filtro","n":"33","s":"Filtro","e":"Dispenser Alcohol en gel","t":"Plástico"},{"u":"Filtro","n":"34","s":"Filtro","e":"Dispenser Jabón","t":"Plástico"},{"u":"Filtro","n":"35","s":"Filtro","e":"Dispenser Jabón","t":"Plástico"},{"u":"Filtro","n":"36","s":"Filtro","e":"Porta papel","t":"Plástico"},{"u":"Filtro","n":"37","s":"Filtro","e":"Porta papel","t":"Plástico"},{"u":"Portones","n":"38","s":"Portones","e":"ventana de inpección","t":"Plástico"},{"u":"Portones","n":"39","s":"Portones","e":"ventana de inpección","t":"Plástico"},{"u":"Horno- Enfriado","n":"1","s":"Horno","e":"Puerta","t":"Vidrio"},{"u":"Horno- Enfriado","n":"2","s":"Horno","e":"Puerta","t":"Vidrio"},{"u":"Horno- Enfriado","n":"3","s":"Horno","e":"Manometro","t":"Vidrio"},{"u":"Horno- Enfriado","n":"4","s":"Horno","e":"Manometro","t":"Vidrio"},{"u":"Horno- Enfriado","n":"5","s":"Enfriador","e":"Timer","t":"Plástico"},{"u":"Horno- Enfriado","n":"6","s":"Horno","e":"Puerta","t":"Vidrio"},{"u":"Horno- Enfriado","n":"7","s":"Horno","e":"Manometro","t":"Vidrio"},{"u":"Mezcladora-Selladora-Embolse","n":"5","s":"Rechazo de DM","e":"Tapa de tolva","t":"Plástico"},{"u":"Mezcladora-Selladora-Embolse","n":"6","s":"Mezcladora","e":"Noria","t":"Plástico"},{"u":"Mezcladora-Selladora-Embolse","n":"7","s":"Mezcladora","e":"Noria","t":"Plástico"},{"u":"Mezcladora-Selladora-Embolse","n":"8","s":"Embolse","e":"Noria","t":"Plástico"},{"u":"Mezcladora-Selladora-Embolse","n":"9","s":"Embolse","e":"Noria","t":"Plástico"},{"u":"Mezcladora-Selladora-Embolse","n":"10","s":"Selladora","e":"Manometro","t":"Vidrio"},{"u":"Mezcladora-Selladora-Embolse","n":"20","s":"Embolse","e":"Detector","t":"Plástico"},{"u":"Empaquetadora 6","n":"1","s":"Empaquetadora 6","e":"Noria visor","t":"Plástico"},{"u":"Empaquetadora 6","n":"2","s":"Empaquetadora 6","e":"Cubre cadena","t":"Plástico"},{"u":"Empaquetadora 6","n":"3","s":"Empaquetadora 6","e":"Monitor fechador","t":"Plástico"},{"u":"Empaquetadora 6","n":"4","s":"Empaquetadora 6","e":"Muticabezal","t":"Plástico"},{"u":"Empaquetadora 6","n":"12","s":"Empaquetadora 6","e":"Monitor principal","t":"Plástico"},{"u":"Empaquetadora 6","n":"15","s":"Empaquetadora 6","e":"Detector","t":"Plástico"},{"u":"Empaquetadora 6","n":"14","s":"Empaquetadora 6","e":"Monitor de detector","t":"Plástico"},{"u":"Empaquetadora 6","n":"10","s":"Empaquetadora 6","e":"Manometro","t":"Vidrio"},{"u":"Empaquetadora 6","n":"11","s":"Empaquetadora 6","e":"Manometro","t":"Vidrio"},{"u":"Empaquetadora 6","n":"27","s":"Empaquetadora 6","e":"Proteccion","t":"Plástico"},{"u":"Empaquetadora 6","n":"28","s":"Empaquetadora 6","e":"Proteccion","t":"Plástico"},{"u":"Empaquetadora 6","n":"29","s":"Empaquetadora 6","e":"Proteccion","t":"Plástico"},{"u":"Empaquetadora 6","n":"30","s":"Empaquetadora 6","e":"Proteccion","t":"Plástico"},{"u":"Empaquetadora 6","n":"31","s":"Empaquetadora 6","e":"Manometro","t":"Plástico"},{"u":"Empaquetadora 6","n":"32","s":"Empaquetadora 6","e":"Manometro","t":"Plástico"},{"u":"Empaquetadora 7","n":"17","s":"Empaquetadora 7","e":"Puerta","t":"Plástico"},{"u":"Empaquetadora 7","n":"18","s":"Empaquetadora 7","e":"Puerta","t":"Plástico"},{"u":"Empaquetadora 7","n":"19","s":"Empaquetadora 7","e":"Protector fijo","t":"Plástico"},{"u":"Empaquetadora 7","n":"20","s":"Empaquetadora 7","e":"Protector fijo","t":"Plástico"},{"u":"Empaquetadora 7","n":"21","s":"Empaquetadora 7","e":"Protector fijo","t":"Plástico"},{"u":"Empaquetadora 7","n":"22","s":"Empaquetadora 7","e":"Monitor fechador","t":"Plástico"},{"u":"Empaquetadora 7","n":"23","s":"Empaquetadora 7","e":"Monitor de envadora","t":"Plástico"},{"u":"Empaquetadora 8","n":"1","s":"Empaquetadora 8","e":"Puerta","t":"Plástico"},{"u":"Empaquetadora 8","n":"2","s":"Empaquetadora 8","e":"Protector fijo","t":"Plástico"},{"u":"Empaquetadora 8","n":"3","s":"Empaquetadora 8","e":"Protector de monitor DM","t":"Plástico"},{"u":"Empaquetadora 8","n":"4","s":"Empaquetadora 8","e":"Puerta","t":"Plástico"},{"u":"Empaquetadora 8","n":"5","s":"Empaquetadora 8","e":"Puerta","t":"Plástico"},{"u":"Empaquetadora 8","n":"6","s":"Empaquetadora 8","e":"Protector fijo","t":"Plástico"},{"u":"Empaquetadora 8","n":"7","s":"Empaquetadora 8","e":"Monitor de fechador","t":"Plástico"},{"u":"Empaquetadora 8","n":"8","s":"Empaquetadora 8","e":"Display de balanza","t":"Plástico"},{"u":"Empaquetadora 8","n":"9","s":"Empaquetadora 8","e":"Monitor de empaquetadora","t":"Plástico"},{"u":"Empaquetadora 8","n":"10","s":"Empaquetadora 8","e":"Protector fijo","t":"Plástico"},{"u":"Empaquetadora 8","n":"11","s":"Empaquetadora 8","e":"Puerta","t":"Plástico"},{"u":"Empaquetadora 8","n":"12","s":"Empaquetadora 8","e":"Protector fijo superior","t":"Plástico"},{"u":"Empaquetadora 8","n":"13","s":"Empaquetadora 8","e":"Visor de noria","t":"Plástico"},{"u":"Empaquetadora 8","n":"14","s":"Empaquetadora 8","e":"Potector de noria","t":"Plástico"},{"u":"Empaquetadora 8","n":"15","s":"Empaquetadora 8","e":"Manometros","t":"Plástico"},{"u":"Empaquetadora 8","n":"16","s":"Empaquetadora 8","e":"Pollera  PVC integridad","t":"Plástico"},{"u":"Empaquetadora 8","n":"17","s":"Rack","e":"Puerta de rack de noteboock","t":"Vidrio"},{"u":"Estuchadora","n":"1","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"2","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"3","s":"Estunchadora","e":"Panel de control","t":"Plástico"},{"u":"Estuchadora","n":"4","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"5","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"6","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"7","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"8","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"9","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"10","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"11","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"12","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"3","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"14","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"15","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"16","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"17","s":"Estunchadora","e":"Puerta","t":"Plástico"},{"u":"Estuchadora","n":"18","s":"Estunchadora","e":"Paño fijo","t":"Plástico"},{"u":"Estuchadora","n":"19","s":"Manometro","e":"Manometro","t":"Vidrio"},{"u":"Linea de Grageado","n":"1","s":"Linea de grageado","e":"Grageadora (Cabina)","t":"Plástico"},{"u":"Linea de Grageado","n":"2","s":"Linea de grageado","e":"Grageadora (Cabina)","t":"Plástico"},{"u":"Linea de Grageado","n":"3","s":"Linea de grageado","e":"Grageadora (Cabina)","t":"Plástico"},{"u":"Linea de Grageado","n":"4","s":"Linea de grageado","e":"Grageadora (Cabina)","t":"Plástico"},{"u":"Linea de Grageado","n":"5","s":"Linea de grageado","e":"Grageadora (Cabina)","t":"Plástico"},{"u":"Linea de Grageado","n":"6","s":"Linea de grageado","e":"Grageadora (Cabina)","t":"Plástico"},{"u":"Linea de Grageado","n":"7","s":"Linea de grageado","e":"Grageadora (Cabina)","t":"Plástico"},{"u":"Linea de Grageado","n":"8","s":"Linea de grageado","e":"Grageadora (Cabina)","t":"Plástico"},{"u":"Linea de Grageado","n":"9","s":"Linea de grageado","e":"Grageadora (Cabina)","t":"Plástico"},{"u":"Linea de Grageado","n":"10","s":"Linea de grageado","e":"Grageadora (Cabina)","t":"Plástico"},{"u":"Linea de Grageado","n":"11","s":"Linea de grageado","e":"Dosificador liquido","t":"Plástico"},{"u":"Linea de Grageado","n":"12","s":"Linea de grageado","e":"Dosificador polvo","t":"Plástico"},{"u":"Linea de Grageado","n":"13","s":"Linea de grageado","e":"Dosificador polvo","t":"Plástico"},{"u":"Linea de Grageado","n":"14","s":"Linea de grageado","e":"Pantalla","t":"Plástico"},{"u":"Linea de Grageado","n":"15","s":"Linea de grageado","e":"Zumbador de alarma","t":"Plástico"},{"u":"Linea de Grageado","n":"16","s":"Linea de grageado","e":"Noria visor","t":"Plástico"},{"u":"Linea de Grageado","n":"17","s":"Linea de grageado","e":"Noria cubre","t":"Plástico"},{"u":"Linea de Grageado","n":"18","s":"Linea de grageado","e":"Tabor rotativo","t":"Plástico"},{"u":"Linea de Grageado","n":"19","s":"Linea de grageado","e":"Noria visor (horno)","t":"Plástico"},{"u":"Linea de Grageado","n":"20","s":"Linea de grageado","e":"Noria cubre (horno)","t":"Plástico"},{"u":"Linea de Grageado","n":"21","s":"Linea de grageado","e":"Manometro","t":"Vidrio"},{"u":"Linea de Grageado","n":"22","s":"Linea de grageado","e":"Manometro","t":"Vidrio"},{"u":"Linea de Grageado","n":"23","s":"Linea de grageado","e":"Zumbador de alarma (horno)","t":"Plástico"},{"u":"Linea de Grageado","n":"24","s":"Linea de grageado","e":"Pantalla (horno)","t":"Plástico"},{"u":"Linea de Grageado","n":"25","s":"Linea de grageado","e":"Paño fijo","t":"Vidrio"},{"u":"Linea de Grageado","n":"26","s":"Linea de grageado","e":"Paño fijo","t":"Vidrio"}]}];
+
+function loadEmbeddedData() {
+  let counter = 0;
+  state.sheets = EMBEDDED_DATA.map(s => ({
+    name: s.name,
+    meta: { frequency: s.f, riskLevel: s.r },
+    items: s.items.map(it => ({
+      id: String(counter++),
+      ubicacion: it.u, num: it.n, sector: it.s, equipo: it.e, tipo: it.t,
+      estado: '', observaciones: '',
+    })),
+  }));
+}
+
+// ── File upload (for updating data) ──
+function handleXLSX(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  state.loading = true; render();
+  const reader = new FileReader();
+  reader.onload = async (ev) => {
+    try {
+      await loadSheetJS();
+      const wb = XLSX.read(new Uint8Array(ev.target.result), {type:'array', cellDates:true});
+      state.sheets = parseWorkbook(wb);
+      showToast(state.sheets.length + ' formulario(s) cargado(s)');
+    } catch(err) { showToast('Error: ' + err.message, 'err'); }
+    state.loading = false; render();
+  };
+  reader.readAsArrayBuffer(file);
+  e.target.value = '';
+}
+
+// ── Extract folder ID from URL or raw ID ──
+function extractFolderId(input) {
+  if (!input) return '';
+  const m = input.match(/folders\/([a-zA-Z0-9_-]+)/);
+  return m ? m[1] : input.trim();
+}
+
+// ── Google Auth ──
+// ── Update Drive badge in header without full re-render ──
+function updateDriveBadge() {
+  const badge = document.getElementById('drive-badge');
+  if (!badge) { render(); return; } // fallback if badge not found
+  if (state.token) {
+    badge.innerHTML = '<span style="display:inline-flex;align-items:center;gap:4px;font-family:IBM Plex Mono,monospace;font-size:10px;color:#4A8556"><span style="width:6px;height:6px;border-radius:50%;background:#4A8556;display:inline-block"></span> Drive ✓</span>';
+  } else {
+    badge.innerHTML = '<button class="btn btn-s btn-accent" onclick="authenticate(false)" style="font-size:11px;padding:5px 10px">Conectar</button>';
+  }
+}
+
+function authenticate(silent) {
+  if (!state.config.clientId) { if(!silent) showToast('Ingresa Client ID en ⚙','err'); return; }
+  function doAuth() {
+    const savedHint = localStorage.getItem('fv_login_hint') || '';
+    const clientCfg = {
+      client_id: state.config.clientId, scope: SCOPES,
+      prompt: silent ? '' : 'select_account',
+      callback: (r) => {
+        if (r.access_token) {
+          state.token = r.access_token;
+          localStorage.setItem('fv_token', r.access_token);
+          localStorage.setItem('fv_token_time', Date.now().toString());
+          if (r.hint) localStorage.setItem('fv_login_hint', r.hint);
+          if (!silent) showToast('✓ Conectado a Drive');
+          // Actualizar solo el badge del header sin destruir el formulario
+          updateDriveBadge();
+        } else {
+          if (!silent) showToast('Error al conectar — intentá de nuevo', 'err');
+        }
+      },
+    };
+    // Use login_hint if we know the account — skips account picker on silent re-auth
+    if (savedHint) clientCfg.login_hint = savedHint;
+    const client = google.accounts.oauth2.initTokenClient(clientCfg);
+    client.requestAccessToken();
+  }
+  if (!window.google?.accounts) {
+    const s = document.createElement('script');
+    s.src = 'https://accounts.google.com/gsi/client';
+    s.onload = doAuth; document.head.appendChild(s);
+  } else doAuth();
+}
+
+// Auto-connect on startup
+async function autoConnect() {
+  // Garantizar que los defaults siempre estén cargados
+  if (!state.config.clientId) { state.config.clientId = DEFAULT_CLIENT_ID; saveConfig(); }
+  if (!state.config.folderId) { state.config.folderId = DEFAULT_FOLDER_ID; saveConfig(); }
+
+  const savedToken = localStorage.getItem('fv_token');
+  const savedTime  = localStorage.getItem('fv_token_time');
+  const age = savedTime ? (Date.now() - parseInt(savedTime)) / 1000 : 99999;
+
+  // 1. Intentar reutilizar token guardado si tiene menos de 50 min
+  if (savedToken && age < 3000) {
+    try {
+      const res = await fetch('https://www.googleapis.com/drive/v3/about?fields=user', {
+        headers: { Authorization: 'Bearer ' + savedToken }
+      });
+      if (res.ok) {
+        state.token = savedToken;
+        updateDriveBadge();
+        return; // ✓ conectado sin interacción
+      }
+    } catch {}
+  }
+
+  // 2. Token vencido o ausente → intentar silent re-auth (sin popup)
+  //    Solo funciona si el navegador ya tiene sesión Google activa
+  function loadGSIandTrySilent() {
+    function trySilent() {
+      try {
+        const hint = localStorage.getItem('fv_login_hint') || '';
+        const cfg = {
+          client_id: DEFAULT_CLIENT_ID,
+          scope: SCOPES,
+          prompt: '',          // vacío = sin popup (el navegador resuelve solo)
+          callback: (r) => {
+            if (r.access_token) {
+              state.token = r.access_token;
+              localStorage.setItem('fv_token', r.access_token);
+              localStorage.setItem('fv_token_time', Date.now().toString());
+              if (r.hint) localStorage.setItem('fv_login_hint', r.hint);
+              updateDriveBadge();
+            }
+            // Si falla en silencio → el botón "Conectar" queda disponible
+          },
+        };
+        if (hint) cfg.login_hint = hint;
+        google.accounts.oauth2.initTokenClient(cfg).requestAccessToken();
+      } catch(e) { /* fallo silencioso — usuario puede conectar manual */ }
+    }
+    if (window.google?.accounts) { trySilent(); }
+    else {
+      const s = document.createElement('script');
+      s.src = 'https://accounts.google.com/gsi/client';
+      s.onload = trySilent;
+      document.head.appendChild(s);
+    }
+  }
+  loadGSIandTrySilent();
+}
+
+// ── Upload to Drive ──
+async function uploadToDrive(blob, fileName, folderId) {
+  const meta = { name: fileName, mimeType: 'application/pdf' };
+  if (folderId) meta.parents = [folderId];
+  const form = new FormData();
+  form.append('metadata', new Blob([JSON.stringify(meta)], {type:'application/json'}));
+  form.append('file', blob, fileName);
+  console.log('uploadToDrive → token presente:', !!state.token, '| folder:', folderId);
+  const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+    method:'POST', headers:{Authorization:'Bearer '+state.token}, body:form,
+  });
+  if (!res.ok) {
+    const errBody = await res.text().catch(()=>'');
+    console.error('Drive API error:', res.status, errBody);
+    if (res.status === 401) {
+      state.token = null;
+      localStorage.removeItem('fv_token');
+      render();
+      throw new Error('Token expirado — volvé a tocar Conectar');
+    }
+    if (res.status === 403) throw new Error('Sin permiso para subir a Drive (403) — reconectá la app');
+    throw new Error('Drive error '+res.status+': '+errBody.slice(0,120));
+  }
+  const data = await res.json();
+  console.log('Drive upload OK — file id:', data.id);
+  return data;
+}
+
+async function uploadAttachment(file, folderId) {
+  const meta = { name: file.name, mimeType: file.type||'application/octet-stream' };
+  if (folderId) meta.parents = [folderId];
+  const form = new FormData();
+  form.append('metadata', new Blob([JSON.stringify(meta)], {type:'application/json'}));
+  form.append('file', file, file.name);
+  await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+    method:'POST', headers:{Authorization:'Bearer '+state.token}, body:form,
+  });
+}
+
+// ── PDF Generation ──
+async function generatePDF() {
+  await loadJsPDF();
+  const sheet = state.activeSheet;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'mm', format:'a4', orientation:'landscape'});
+  const PW=297, PH=210, M=12, CW=PW-2*M;
+  let y = M;
+
+  // Header
+  doc.setFillColor(27,25,21);
+  doc.rect(0,0,PW,30,'F');
+  // Logo
+  try { doc.addImage(LOGO_B64,'JPEG',M,3,24,24); } catch{}
+  doc.setTextColor(244,241,236);
+  doc.setFontSize(13); doc.setFont('helvetica','bold');
+  doc.text('REGISTRO DE CONTROL DE VIDRIOS Y PLÁSTICOS', M+28, 13);
+  doc.setFontSize(8); doc.setFont('helvetica','normal');
+  doc.setTextColor(180,175,163);
+  doc.text('R-SIG-GVP 01 | Rev. 7 | '+sheet.name+' | '+sheet.meta.frequency, M+28, 21);
+  doc.text('Riesgo: '+(sheet.meta.riskLevel||'-'), M+28, 26);
+  doc.setTextColor(200,195,180);
+  doc.text('Fecha: '+state.controlDate+'  Hora: '+(state.controlTime||''), PW-M, 13, {align:'right'});
+  doc.text('Responsable de control: '+(state.inspector||'-'), PW-M, 21, {align:'right'});
+  y = 36;
+
+  const cols = [
+    {l:'Ubicación',w:38},{l:'N°',w:11},{l:'Sector',w:40},{l:'Equipo/Superficie',w:56},
+    {l:'Tipo',w:20},{l:'Estado',w:28},{l:'Observaciones',w:CW-38-11-40-56-20-28}
+  ];
+
+  function drawTH(yy) {
+    doc.setFillColor(122,99,50);
+    doc.rect(M,yy,CW,7,'F');
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(6.5); doc.setFont('helvetica','bold');
+    let x = M+1.5;
+    for (const c of cols) { doc.text(c.l.toUpperCase(), x, yy+5); x += c.w; }
+    return yy+7;
+  }
+  y = drawTH(y);
+
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
+  let lastUb = '', stripe = false;
+  for (const item of sheet.items) {
+    if (y > PH-18) { doc.addPage(); y=M; y=drawTH(y); lastUb=''; }
+    const rh = 6;
+    if (stripe) { doc.setFillColor(248,247,244); doc.rect(M,y,CW,rh,'F'); }
+    doc.setDrawColor(218,213,203); doc.setLineWidth(.15); doc.line(M,y+rh,M+CW,y+rh);
+    let x = M+1.5; doc.setTextColor(44,40,32);
+    const showUb = item.ubicacion!==lastUb?item.ubicacion:'';
+    if (showUb) { doc.setFont('helvetica','bold'); doc.setFontSize(6.5); }
+    doc.text(doc.splitTextToSize(showUb,cols[0].w-2).slice(0,1).join(''), x, y+4); 
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
+    lastUb = item.ubicacion; x+=cols[0].w;
+    doc.text(String(item.num), x, y+4); x+=cols[1].w;
+    doc.text(doc.splitTextToSize(item.sector,cols[2].w-2).slice(0,1).join(''), x, y+4); x+=cols[2].w;
+    doc.text(doc.splitTextToSize(item.equipo,cols[3].w-2).slice(0,1).join(''), x, y+4); x+=cols[3].w;
+    doc.text(item.tipo, x, y+4); x+=cols[4].w;
+    if (item.estado==='Conforme') { doc.setTextColor(74,133,86); doc.setFont('helvetica','bold'); }
+    else if (item.estado==='No Conforme') { doc.setTextColor(179,64,51); doc.setFont('helvetica','bold'); }
+    else doc.setTextColor(145,139,127);
+    doc.text(item.estado||'—', x, y+4);
+    doc.setTextColor(44,40,32); doc.setFont('helvetica','normal'); x+=cols[5].w;
+    doc.setFontSize(6); doc.text(doc.splitTextToSize(item.observaciones||'',cols[6].w-2).slice(0,1).join(''), x, y+4);
+    doc.setFontSize(6.5);
+    y += rh; stripe = !stripe;
+  }
+
+  // Summary
+  y += 6;
+  if (y > PH-25) { doc.addPage(); y=M; }
+  const conf = sheet.items.filter(i=>i.estado==='Conforme').length;
+  const nc = sheet.items.filter(i=>i.estado==='No Conforme').length;
+  const pend = sheet.items.filter(i=>!i.estado).length;
+  doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(122,99,50);
+  doc.text('RESUMEN', M, y); y+=5;
+  doc.setFont('helvetica','normal'); doc.setTextColor(44,40,32); doc.setFontSize(7.5);
+  doc.text('Total: '+sheet.items.length+'  |  Conforme: '+conf+'  |  No Conforme: '+nc+'  |  Pendiente: '+pend, M, y);
+  y+=8;
+
+  // General observations
+  if (state.generalObs) {
+    if (y > PH-30) { doc.addPage(); y=M; }
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(122,99,50);
+    doc.text('OBSERVACIONES GENERALES', M, y); y+=5;
+    doc.setFont('helvetica','normal'); doc.setTextColor(44,40,32); doc.setFontSize(8);
+    const obsLines = doc.splitTextToSize(state.generalObs, CW);
+    doc.text(obsLines, M, y);
+    y += obsLines.length * 4 + 6;
+  }
+
+  // Signature + Date/Time
+  y += 4;
+  if (y > PH-50) { doc.addPage(); y=M; }
+  doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(122,99,50);
+  doc.text('RESPONSABLE DE CONTROL', M, y);
+
+  // Col positions
+  const col1X = M, col2X = M + 100;
+  const sigStartY = y + 4;
+
+  // — Inspector signature (left col) —
+  if (state.signatureData) {
+    try { doc.addImage(state.signatureData, 'PNG', col1X, sigStartY, 55, 22); } catch{}
+  } else {
+    doc.setDrawColor(180,175,163); doc.setLineWidth(.3);
+    doc.line(col1X, sigStartY+16, col1X+70, sigStartY+16);
+  }
+  doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(44,40,32);
+  doc.text(state.inspector || '________________', col1X, sigStartY+22);
+  doc.setFontSize(6.5); doc.setTextColor(145,139,127);
+  doc.text('Firma responsable de control', col1X, sigStartY+27);
+
+  // — Verificó signature (right col) — rotated upright
+  try { doc.addImage(FIRMA_NATACHA_B64, 'PNG', col2X, sigStartY, 28, 44); } catch{}
+  doc.setFontSize(6.5); doc.setTextColor(145,139,127);
+  doc.text('Verificó', col2X, sigStartY+49);
+
+  y = sigStartY + 54;
+  doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(145,139,127);
+  doc.text('Fecha: '+state.controlDate+'    Hora: '+(state.controlTime||''), M, y);
+
+  // Images
+  if (state.attachedFiles.length > 0) {
+    doc.addPage('p'); let iy=14;
+    doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(122,99,50);
+    doc.text('EVIDENCIA FOTOGRÁFICA', 20, iy); iy+=10;
+    for (const af of state.attachedFiles) {
+      if (af.dataUrl && (af.type||af.file?.type||'').startsWith('image/')) {
+        try {
+          if (iy > 230) { doc.addPage('p'); iy=14; }
+          doc.addImage(af.dataUrl, 'JPEG', 20, iy, 90, 60);
+          iy += 62;
+          doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(145,139,127);
+          doc.text(af.name, 20, iy); iy+=10;
+        } catch(imgErr) {
+          doc.setFontSize(7); doc.text('[Imagen: '+af.name+']', 20, iy); iy+=8;
+        }
+      } else {
+        if (iy > 270) { doc.addPage('p'); iy=14; }
+        doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(92,85,74);
+        doc.text('📎 '+af.name, 20, iy); iy+=8;
+      }
+    }
+  }
+
+  const pages = doc.internal.getNumberOfPages();
+  for (let i=1;i<=pages;i++) {
+    doc.setPage(i);
+    const pw=doc.internal.pageSize.getWidth(), ph=doc.internal.pageSize.getHeight();
+    doc.setFontSize(6.5); doc.setFont('helvetica','normal'); doc.setTextColor(180,175,163);
+    doc.text('R-SIG-GVP 01 — '+sheet.name+' — Pág. '+i+'/'+pages, pw/2, ph-5, {align:'center'});
+  }
+  return doc.output('blob');
+}
+
+// ── Save & Upload ──
+async function handleSave() {
+  if (!state.activeSheet) return;
+  const pend = state.activeSheet.items.filter(i=>!i.estado).length;
+  if (pend > 0 && !confirm('Hay '+pend+' ítems sin completar. ¿Guardar igual?')) return;
+
+  // Si no hay token, pedir conexión antes de continuar
+  if (!state.token) {
+    showToast('Primero conectate a Drive tocando "Conectar"', 'err');
+    return;
+  }
+
+  state.uploading = true; render();
+  try {
+    const ts = new Date();
+    const d = state.controlDate;
+    const t = (state.controlTime||ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})).replace(':','');
+    const fileName = 'R-SIG-GVP_01_'+state.activeSheet.name+'_'+d+'_'+t+'.pdf';
+
+    showToast('Generando PDF...');
+    const blob = await generatePDF();
+
+    const folderId = getFolderForSheet(state.activeSheet.name);
+    // Token check justo antes de subir
+    if (!state.token) {
+      state.uploading = false; render();
+      showToast('Token perdido — tocá Conectar de nuevo', 'err');
+      return;
+    }
+    showToast('Subiendo a Drive...');
+    await uploadToDrive(blob, fileName, folderId);
+
+    // Adjuntos no-imagen
+    for (const af of state.attachedFiles) {
+      if (af.file && !(af.type||af.file.type||'').startsWith('image/')) {
+        try { await uploadAttachment(af.file, folderId); } catch(e){ console.warn('Adjunto falló:', e); }
+      }
+    }
+    showToast('✓ PDF guardado en Drive correctamente');
+
+    state.history.unshift({
+      sheet:state.activeSheet.name, date:ts.toISOString(), fileName,
+      total:state.activeSheet.items.length,
+      ok:state.activeSheet.items.filter(i=>i.estado==='Conforme').length,
+      nc:state.activeSheet.items.filter(i=>i.estado==='No Conforme').length,
+    });
+    saveHistory();
+    state.attachedFiles = [];
+    state.signatureData = null;
+    state.generalObs = '';
+  } catch(err) {
+    console.error('Save error:', err);
+    showToast('Error: '+err.message,'err');
+  }
+  state.uploading = false; render();
+}
+
+async function handlePreview() {
+  if (!state.activeSheet) return;
+  try {
+    const blob = await generatePDF();
+    const url = URL.createObjectURL(blob);
+    // On mobile, open in new tab works better than download
+    if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
+      window.open(url, '_blank');
+    } else {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'preview_'+state.activeSheet.name+'.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  } catch(err) { showToast('Error: '+err.message,'err'); }
+}
+
+// ── Set all statuses ──
+function setAllStatus(status) {
+  if (!state.activeSheet) return;
+  state.activeSheet.items.forEach(i => i.estado = status);
+  render();
+}
+
+// ── Attachments ──
+function handleAttach(e) {
+  const files = Array.from(e.target.files);
+  files.forEach(f => {
+    const entry = {
+      id: Math.random().toString(36).slice(2,9), file:f, name:f.name, type:f.type, size:f.size,
+      preview: null, dataUrl: null,
+    };
+    // Convert to base64 immediately (mobile files can become stale)
+    const reader = new FileReader();
+    reader.onload = () => {
+      entry.dataUrl = reader.result;
+      if (f.type.startsWith('image/')) entry.preview = reader.result;
+      render();
+    };
+    reader.readAsDataURL(f);
+    state.attachedFiles.push(entry);
+  });
+  render(); e.target.value = '';
+}
+function removeAttach(id) {
+  state.attachedFiles = state.attachedFiles.filter(f=>f.id!==id);
+  render();
+}
+
+// ── GAS Code ──
+function gasCode() {
+  const h = parseInt(state.config.deadline?.split(':')[0])||9;
+  const m = parseInt(state.config.deadline?.split(':')[1])||0;
+  return `// FormVault GVP — Recordatorio
+const FOLDER_ID = "${state.config.folderId||'TU_FOLDER_ID'}";
+const RESPONSIBLE_EMAIL = "${state.config.email||'email@empresa.com'}";
+const DEADLINE_HOUR = ${h};
+const DEADLINE_MINUTE = ${m};
+
+function checkSubmissions() {
+  const now = new Date();
+  if (now.getHours() < DEADLINE_HOUR || (now.getHours()===DEADLINE_HOUR && now.getMinutes()<DEADLINE_MINUTE)) return;
+  const folder = DriveApp.getFolderById(FOLDER_ID);
+  const today = Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyy-MM-dd");
+  const files = folder.getFilesByType("application/pdf");
+  let found = false;
+  while (files.hasNext()) {
+    if (Utilities.formatDate(files.next().getDateCreated(), Session.getScriptTimeZone(), "yyyy-MM-dd") === today) { found = true; break; }
+  }
+  if (!found) {
+    MailApp.sendEmail({
+      to: RESPONSIBLE_EMAIL,
+      subject: "⚠️ R-SIG-GVP 01: Registro pendiente — " + today,
+      body: "No se cargó el registro de Control de Vidrios y Plásticos para hoy ("+today+").\\nHora límite: "+DEADLINE_HOUR+":"+String(DEADLINE_MINUTE).padStart(2,'0')+"\\n\\n— FormVault"
+    });
+  }
+}
+function testReminder() {
+  MailApp.sendEmail({to:RESPONSIBLE_EMAIL, subject:"🧪 Test FormVault", body:"Email de prueba del sistema de recordatorio."});
+}`;
+}
+
+// ═══════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════
+function h(tag, props, ...children) {
+  const el = document.createElement(tag);
+  if (props) Object.entries(props).forEach(([k,v]) => {
+    if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(), v);
+    else if (k === 'className') el.className = v;
+    else if (k === 'innerHTML') el.innerHTML = v;
+    else if (k === 'disabled' || k === 'checked' || k === 'selected' || k === 'multiple') el[k] = !!v;
+    else if (v === false || v === null || v === undefined) { /* skip */ }
+    else el.setAttribute(k, v);
+  });
+  children.flat(Infinity).forEach(c => {
+    if (c == null || c === false) return;
+    el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+  });
+  return el;
+}
+
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+
+  // Toast
+  if (state.toast) {
+    app.appendChild(h('div', {className:'toast toast-'+(state.toast.type==='err'?'err':'ok')}, state.toast.msg));
+  }
+
+  // Header
+  const header = h('div', {className:'header'},
+    h('div', {className:'header-logo', onClick:()=>{state.view='home';state.activeSheet=null;render();}},
+      h('img', {src:LOGO_B64, style:{width:'36px',height:'36px',borderRadius:'6px',objectFit:'cover'}}),
+      h('div', null,
+        h('span', {className:'name'}, 'Maniagro'),
+        h('span', {className:'badge', style:{marginLeft:'6px'}}, 'GVP'),
+      ),
+    ),
+    h('div', {className:'header-actions'},
+      h('span', {id:'drive-badge'},
+        state.token
+          ? h('span', {className:'drive-badge', style:{color:'#4A8556'}}, h('span',{className:'drive-dot',style:{background:'#4A8556'}}), ' Drive ✓')
+          : h('button', {className:'btn btn-s btn-accent', onClick:()=>authenticate(false)}, 'Conectar')
+      ),
+      h('button', {className:'btn btn-s btn-ghost', style:{color:'rgba(255,255,255,.5)',fontSize:'18px'}, onClick:()=>{state.view='config';render();}}, '⚙'),
+    ),
+  );
+  app.appendChild(header);
+
+  const content = h('div', {className:'content'});
+
+  // ══ HOME ══
+  if (state.view === 'home') {
+    content.className = 'content fade-up';
+    content.appendChild(h('h1', {style:{fontFamily:"'Instrument Serif',serif",fontSize:'30px',marginBottom:'4px',lineHeight:'1.15'}}, 'Control de Vidrios y Plásticos'));
+    content.appendChild(h('p', {style:{color:'var(--text-mu)',fontSize:'13px',marginBottom:'20px'}}, 'R-SIG-GVP 01'));
+
+    if (state.sheets.length === 0) {
+      const empty = h('div', {className:'card', style:{textAlign:'center',padding:'40px 20px'}});
+      empty.appendChild(h('div', {style:{fontSize:'44px',marginBottom:'8px'}}, '📋'));
+      empty.appendChild(h('div', {style:{fontSize:'16px',fontWeight:'600',marginBottom:'4px'}}, 'Cargá tu archivo Excel'));
+      empty.appendChild(h('div', {style:{color:'var(--text-mu)',fontSize:'13px',marginBottom:'20px',lineHeight:'1.5'}}, 'Subí el .xlsx con los registros de control. Cada hoja se mostrará como formulario.'));
+      const fileInput = h('input', {type:'file', accept:'.xlsx,.xls', style:{display:'none'}, onChange:handleXLSX});
+      const btn = h('button', {className:'btn btn-accent', onClick:()=>fileInput.click()},
+        state.loading ? h('span',{className:'spinner'}) : '📁',
+        state.loading ? ' Cargando...' : ' Seleccionar archivo'
+      );
+      empty.appendChild(fileInput);
+      empty.appendChild(btn);
+      content.appendChild(empty);
+    } else {
+      // Sheets grid
+      const reloadRow = h('div', {style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'12px'}});
+      reloadRow.appendChild(h('span', {className:'mono', style:{fontSize:'11px',color:'var(--text-d)'}}, state.sheets.length+' hojas'));
+      const ri = h('input', {type:'file', accept:'.xlsx,.xls', style:{display:'none'}, onChange:handleXLSX});
+      reloadRow.appendChild(ri);
+      reloadRow.appendChild(h('button', {className:'btn btn-s btn-ghost', onClick:()=>ri.click()}, '↻ Otro archivo'));
+      content.appendChild(reloadRow);
+
+      const grid = h('div', {className:'sheets-grid'});
+      state.sheets.forEach((s, i) => {
+        const isDiario = s.meta.frequency?.toLowerCase().includes('diario');
+        const isMensual = s.meta.frequency?.toLowerCase().includes('mensual');
+        const dotColor = isDiario ? '#B34033' : isMensual ? '#C8A832' : '#4A8556';
+
+        const card = h('div', {className:'sheet-card', style:{animationDelay:i*.04+'s'}, onClick:()=>{
+          state.activeSheet = s; state.view='fill'; state.attachedFiles=[]; state.controlDate=new Date().toISOString().slice(0,10); state.controlTime=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); state.generalObs=''; state.signatureData=null; render();
+        }},
+          h('div', {className:'freq'}, h('span',{className:'dot',style:{background:dotColor}}), s.meta.frequency||'—'),
+          h('div', {className:'sname'}, displayName(s.name)),
+          h('div', {className:'sitems'}, s.items.length+' ítems'),
+        );
+        grid.appendChild(card);
+      });
+      content.appendChild(grid);
+
+      // History
+      if (state.history.length > 0) {
+        content.appendChild(h('h3', {style:{fontSize:'11px',fontWeight:'600',color:'var(--text-mu)',textTransform:'uppercase',letterSpacing:'.06em',marginTop:'28px',marginBottom:'10px'}}, 'Últimos envíos'));
+        state.history.slice(0,6).forEach(hi => {
+          content.appendChild(h('div', {className:'history-item'},
+            h('div', {style:{display:'flex',alignItems:'center',gap:'8px'}},
+              h('span', {style:{color:'var(--ok)'}}, '✓'),
+              h('span', {style:{fontWeight:'600'}}, displayName(hi.sheet)),
+              h('span', {className:'mono', style:{fontSize:'10px',color:'var(--text-d)'}}, hi.ok+'/'+hi.total),
+            ),
+            h('span', {className:'mono', style:{fontSize:'10px',color:'var(--text-d)'}},
+              new Date(hi.date).toLocaleDateString('es-AR',{day:'2-digit',month:'short'})),
+          ));
+        });
+      }
+    }
+  }
+
+  // ══ FILL ══
+  else if (state.view === 'fill' && state.activeSheet) {
+    const sheet = state.activeSheet;
+    content.className = 'content fade-up';
+    content.style.padding = '0';
+    content.style.paddingBottom = '0';
+
+    // Top section
+    const top = h('div', {style:{padding:'16px'}});
+    top.appendChild(h('button', {className:'btn btn-s btn-ghost', style:{marginBottom:'8px'}, onClick:()=>{state.view='home';state.activeSheet=null;render();}}, '← Volver'));
+    top.appendChild(h('h1', {style:{fontFamily:"'Instrument Serif',serif",fontSize:'20px',marginBottom:'2px'}}, displayName(sheet.name)));
+    top.appendChild(h('div', {className:'mono', style:{fontSize:'10px',color:'var(--text-d)',marginBottom:'12px'}}, (sheet.meta.frequency||'—')+' • Riesgo '+(sheet.meta.riskLevel||'—')+' • '+sheet.items.length+' ítems'));
+
+    // Folder indicator
+    const sheetFolder = getFolderForSheet(sheet.name);
+    if (sheetFolder) {
+      top.appendChild(h('div', {style:{fontSize:'11px',color:'var(--ok)',marginBottom:'10px',display:'flex',alignItems:'center',gap:'5px'}},
+        h('span', null, '📂'),
+        h('span', null, 'Carpeta asignada'),
+        h('span', {className:'mono', style:{fontSize:'9px',color:'var(--text-d)'}}, '('+sheetFolder.slice(0,12)+'...)')
+      ));
+    } else {
+      top.appendChild(h('div', {style:{fontSize:'11px',color:'var(--nc)',marginBottom:'10px'}}, '⚠ Sin carpeta asignada — se usará la carpeta por defecto ('+DEFAULT_FOLDER_ID.slice(0,8)+'...)'));
+    }
+
+    // Responsable/Date/Time
+    const metaRow = h('div', {style:{display:'flex',gap:'10px',marginBottom:'12px',flexWrap:'wrap'}});
+    const inspDiv = h('div', {style:{flex:'2 1 150px'}});
+    inspDiv.appendChild(h('label', {className:'config-label'}, 'Responsable de control'));
+    const inspInput = h('input', {placeholder:'Nombre completo', value:state.inspector, style:{fontSize:'14px',padding:'10px 12px'}});
+    inspInput.addEventListener('input', e => { state.inspector = e.target.value; saveInspector(); });
+    inspDiv.appendChild(inspInput);
+    metaRow.appendChild(inspDiv);
+
+    const dateDiv = h('div', {style:{flex:'1 1 100px'}});
+    dateDiv.appendChild(h('label', {className:'config-label'}, 'Fecha'));
+    const dateInput = h('input', {type:'date', value:state.controlDate, style:{fontSize:'14px',padding:'10px 12px'}});
+    dateInput.addEventListener('input', e => { state.controlDate = e.target.value; });
+    dateDiv.appendChild(dateInput);
+    metaRow.appendChild(dateDiv);
+
+    const timeDiv = h('div', {style:{flex:'1 1 80px'}});
+    timeDiv.appendChild(h('label', {className:'config-label'}, 'Hora'));
+    const timeInput = h('input', {type:'time', value:state.controlTime, style:{fontSize:'14px',padding:'10px 12px'}});
+    timeInput.addEventListener('input', e => { state.controlTime = e.target.value; });
+    timeDiv.appendChild(timeInput);
+    metaRow.appendChild(timeDiv);
+    top.appendChild(metaRow);
+
+    // Progress
+    const completed = sheet.items.filter(i=>i.estado).length;
+    const pct = sheet.items.length > 0 ? (completed/sheet.items.length)*100 : 0;
+    const progRow = h('div', {style:{display:'flex',justifyContent:'space-between',marginBottom:'4px'}});
+    progRow.appendChild(h('span', {className:'mono', style:{fontSize:'11px',color:'var(--text-m)'}}, completed+'/'+sheet.items.length));
+    progRow.appendChild(h('span', {className:'mono', style:{fontSize:'11px',color:'var(--accent)'}}, Math.round(pct)+'%'));
+    top.appendChild(progRow);
+    const progBar = h('div', {className:'progress-bar'}, h('div',{className:'progress-fill',style:{width:pct+'%'}}));
+    top.appendChild(progBar);
+
+    // Quick actions
+    const qa = h('div', {style:{display:'flex',gap:'6px',marginTop:'12px',flexWrap:'wrap'}});
+    qa.appendChild(h('button', {className:'btn btn-s btn-ok', onClick:()=>{setAllStatus('Conforme');}}, '✓ Todo Conforme'));
+    qa.appendChild(h('button', {className:'btn btn-s btn-default', onClick:()=>{setAllStatus('N/A');}}, 'Todo N/A'));
+    qa.appendChild(h('button', {className:'btn btn-s btn-ghost', onClick:()=>{setAllStatus('');}}, 'Limpiar'));
+    top.appendChild(qa);
+    content.appendChild(top);
+
+    // Group by ubicacion
+    const groups = {};
+    sheet.items.forEach(item => {
+      const k = item.ubicacion || 'General';
+      if (!groups[k]) groups[k] = [];
+      groups[k].push(item);
+    });
+
+    Object.entries(groups).forEach(([ub, items]) => {
+      const groupOk = items.filter(i=>i.estado).length;
+      content.appendChild(h('div', {className:'section-header'},
+        h('span', null, ub),
+        h('span', {className:'count'}, groupOk+'/'+items.length),
+      ));
+
+      items.forEach((item, idx) => {
+        const row = h('div', {className:'inspect-row'});
+        const rowTop = h('div', {className:'row-top'});
+        const info = h('div', {className:'row-info'});
+        info.appendChild(h('div', null,
+          h('span', {className:'row-num'}, '#'+item.num),
+          h('span', {className:'row-equipo'}, item.equipo),
+        ));
+        info.appendChild(h('div', {className:'row-sector'}, item.sector));
+        info.appendChild(h('span', {className:'row-tipo'}, item.tipo));
+        rowTop.appendChild(info);
+
+        // Status pills
+        const sg = h('div', {className:'status-group'});
+        STATUS_OPT.forEach(st => {
+          const cls = item.estado===st ? (st==='Conforme'?'active-ok':st==='No Conforme'?'active-nc':'active-na') : '';
+          const label = st==='Conforme'?'✓':st==='No Conforme'?'✗':'—';
+          sg.appendChild(h('button', {
+            className:'status-pill '+cls,
+            onClick:()=>{ item.estado = item.estado===st?'':st; render(); }
+          }, label));
+        });
+        rowTop.appendChild(sg);
+        row.appendChild(rowTop);
+
+        // Obs input (only show if NC or always?)
+        const obsInput = h('input', {
+          className:'obs-input', placeholder:'Observaciones...', value:item.observaciones,
+          style:{fontSize:'13px'},
+        });
+        obsInput.addEventListener('input', e => { item.observaciones = e.target.value; });
+        row.appendChild(obsInput);
+        content.appendChild(row);
+      });
+    });
+
+    // General observations section
+    const obsSection = h('div', {style:{padding:'16px',borderTop:'1.5px solid var(--border)'}});
+    obsSection.appendChild(h('label', {style:{display:'block',fontSize:'12px',fontWeight:'600',color:'var(--text-m)',textTransform:'uppercase',letterSpacing:'.04em',marginBottom:'8px'}}, '📝 Observaciones generales'));
+    const genObs = h('textarea', {placeholder:'Escribí observaciones generales sobre la inspección...', value:state.generalObs, style:{fontSize:'14px',padding:'12px',minHeight:'80px',borderRadius:'8px',border:'1.5px solid var(--border)',width:'100%',fontFamily:"'DM Sans',sans-serif",resize:'vertical'}});
+    genObs.addEventListener('input', e => { state.generalObs = e.target.value; });
+    obsSection.appendChild(genObs);
+    content.appendChild(obsSection);
+
+    // Attachments section
+    const attachSection = h('div', {style:{padding:'16px',borderTop:'1.5px solid var(--border)'}});
+    const attachHeader = h('div', {style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'10px'}});
+    attachHeader.appendChild(h('span', {style:{fontSize:'12px',fontWeight:'600',color:'var(--text-m)',textTransform:'uppercase',letterSpacing:'.04em'}},
+      '📎 Evidencia' + (state.attachedFiles.length > 0 ? ' ('+state.attachedFiles.length+')' : '')));
+    const afi = h('input', {type:'file', multiple:'true', accept:'image/*,.pdf,.doc,.docx,.xls,.xlsx', style:{display:'none'}, onChange:handleAttach});
+    attachHeader.appendChild(afi);
+    // Camera button + file button
+    const cameraInput = h('input', {type:'file', accept:'image/*', capture:'environment', style:{display:'none'}, onChange:handleAttach});
+    const attachBtns = h('div', {style:{display:'flex',gap:'4px'}});
+    attachBtns.appendChild(h('button', {className:'btn btn-s btn-default', onClick:()=>cameraInput.click()}, '📸'));
+    attachBtns.appendChild(h('button', {className:'btn btn-s btn-default', onClick:()=>afi.click()}, '📁 Adjuntar'));
+    attachHeader.appendChild(cameraInput);
+    attachHeader.appendChild(attachBtns);
+    attachSection.appendChild(attachHeader);
+
+    if (state.attachedFiles.length === 0) {
+      const dropZone = h('div', {
+        style:{border:'2px dashed var(--border)',borderRadius:'10px',padding:'20px',textAlign:'center',cursor:'pointer'},
+        onClick:()=>afi.click(),
+      });
+      dropZone.appendChild(h('div', {style:{fontSize:'28px',marginBottom:'4px'}}, '📷'));
+      dropZone.appendChild(h('div', {style:{color:'var(--text-mu)',fontSize:'12px'}}, 'Tocar para adjuntar fotos o archivos'));
+      attachSection.appendChild(dropZone);
+    } else {
+      const agrid = h('div', {className:'attach-grid'});
+      state.attachedFiles.forEach(af => {
+        const item = h('div', {className:'attach-item'});
+        if (af.preview) item.appendChild(h('img', {src:af.preview}));
+        else item.appendChild(h('div', {className:'attach-placeholder'}, '📄'));
+        item.appendChild(h('div', {className:'attach-name'}, af.name));
+        item.appendChild(h('button', {className:'attach-remove', onClick:()=>removeAttach(af.id)}, '✕'));
+        agrid.appendChild(item);
+      });
+      // Add more button inside grid
+      const addMore = h('div', {className:'attach-item', style:{cursor:'pointer',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:'90px',border:'2px dashed var(--border)',background:'transparent'}, onClick:()=>afi.click()});
+      addMore.appendChild(h('div', {style:{fontSize:'24px',color:'var(--text-d)'}}, '+'));
+      addMore.appendChild(h('div', {style:{fontSize:'9px',color:'var(--text-d)'}}, 'Agregar más'));
+      agrid.appendChild(addMore);
+      attachSection.appendChild(agrid);
+    }
+    content.appendChild(attachSection);
+
+    // Signature section
+    const sigSection = h('div', {style:{padding:'16px',borderTop:'1.5px solid var(--border)'}});
+    sigSection.appendChild(h('label', {style:{display:'block',fontSize:'12px',fontWeight:'600',color:'var(--text-m)',textTransform:'uppercase',letterSpacing:'.04em',marginBottom:'8px'}}, '✍ Firma — Responsable de control'));
+    const sigCanvas = h('canvas', {width:'640', height:'240', style:{border:'1.5px solid var(--border)',borderRadius:'10px',background:'var(--surface)',width:'100%',maxWidth:'400px',height:'120px',touchAction:'none',cursor:'crosshair'}});
+    let isDrawing = false;
+    function getPos(e) {
+      const r = sigCanvas.getBoundingClientRect();
+      const touch = e.touches ? e.touches[0] : e;
+      return { x: (touch.clientX - r.left) * (sigCanvas.width / r.width), y: (touch.clientY - r.top) * (sigCanvas.height / r.height) };
+    }
+    function startDraw(e) { e.preventDefault(); isDrawing = true; const ctx = sigCanvas.getContext('2d'); ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); }
+    function draw(e) { if (!isDrawing) return; e.preventDefault(); const ctx = sigCanvas.getContext('2d'); ctx.strokeStyle = '#2C2820'; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }
+    function endDraw() { if (isDrawing) { isDrawing = false; state.signatureData = sigCanvas.toDataURL('image/png'); } }
+    sigCanvas.addEventListener('mousedown', startDraw); sigCanvas.addEventListener('mousemove', draw); sigCanvas.addEventListener('mouseup', endDraw); sigCanvas.addEventListener('mouseleave', endDraw);
+    sigCanvas.addEventListener('touchstart', startDraw, {passive:false}); sigCanvas.addEventListener('touchmove', draw, {passive:false}); sigCanvas.addEventListener('touchend', endDraw);
+    sigSection.appendChild(sigCanvas);
+    // Restore previous signature after canvas is in DOM
+    if (state.signatureData) {
+      setTimeout(() => {
+        try {
+          const img = new Image();
+          img.onload = () => { sigCanvas.getContext('2d').drawImage(img, 0, 0); };
+          img.src = state.signatureData;
+        } catch(e) {}
+      }, 50);
+    }
+    const clearSig = h('button', {className:'btn btn-s btn-ghost', style:{marginTop:'6px'}, onClick:()=>{ const ctx=sigCanvas.getContext('2d'); ctx.clearRect(0,0,sigCanvas.width,sigCanvas.height); state.signatureData=null; }}, '✕ Borrar firma');
+    sigSection.appendChild(clearSig);
+    content.appendChild(sigSection);
+
+    // Bottom bar
+    const bottomBar = h('div', {className:'bottom-bar'});
+    const saveBtn = h('button', {
+      className:'btn btn-accent', style:{flex:'1'},
+      disabled: state.uploading,
+      onClick: handleSave,
+    }, state.uploading ? h('span',{className:'spinner'}) : '💾', state.uploading ? ' Guardando...' : ' GUARDAR');
+    bottomBar.appendChild(saveBtn);
+    bottomBar.appendChild(h('button', {className:'btn btn-default', onClick:handlePreview}, '👁 Preview'));
+    content.appendChild(bottomBar);
+  }
+
+  // ══ CONFIG ══
+  else if (state.view === 'config') {
+    content.className = 'content fade-up';
+    content.appendChild(h('button', {className:'btn btn-s btn-ghost', style:{marginBottom:'8px'}, onClick:()=>{state.view='home';render();}}, '← Volver'));
+    content.appendChild(h('h1', {style:{fontFamily:"'Instrument Serif',serif",fontSize:'22px',marginBottom:'4px'}}, 'Configuración'));
+    content.appendChild(h('p', {style:{color:'var(--text-mu)',fontSize:'13px',marginBottom:'20px'}}, 'Google Drive y avisos por email'));
+
+    // Drive section
+    const driveCard = h('div', {className:'card config-section'});
+    driveCard.appendChild(h('div', {className:'config-title'}, '🔑 Google Drive'));
+
+    const cidLabel = h('label', {className:'config-label'}, 'Client ID OAuth 2.0');
+    const cidInput = h('input', {placeholder:'xxxxx.apps.googleusercontent.com', value:state.config.clientId});
+    cidInput.addEventListener('input', e => { state.config.clientId = e.target.value; saveConfig(); });
+    driveCard.appendChild(cidLabel); driveCard.appendChild(cidInput);
+    driveCard.appendChild(h('div', {style:{height:'12px'}}));
+
+    const fidLabel = h('label', {className:'config-label'}, 'Carpeta general (fallback)');
+    const fidInput = h('input', {placeholder:'Pegá la URL o ID de la carpeta', value:state.config.folderId});
+    fidInput.addEventListener('input', e => { state.config.folderId = extractFolderId(e.target.value); saveConfig(); });
+    driveCard.appendChild(fidLabel); driveCard.appendChild(fidInput);
+    driveCard.appendChild(h('div', {className:'config-hint'}, 'Se usa si la hoja no tiene carpeta asignada'));
+    driveCard.appendChild(h('div', {style:{height:'12px'}}));
+
+    driveCard.appendChild(h('button', {className:'btn btn-s '+(state.token?'btn-ok':'btn-accent'), onClick:authenticate},
+      state.token ? '✓ Reconectar' : 'Conectar con Google'));
+    content.appendChild(driveCard);
+
+    // Per-sheet folder mapping
+    if (state.sheets.length > 0) {
+      const folderCard = h('div', {className:'card config-section'});
+      folderCard.appendChild(h('div', {className:'config-title'}, '📂 Carpeta por formulario'));
+      folderCard.appendChild(h('p', {style:{fontSize:'12px',color:'var(--text-mu)',marginBottom:'14px',lineHeight:'1.5'}}, 'Asigná una carpeta de Drive distinta para cada hoja. Copiá el ID de la URL de cada carpeta.'));
+
+      state.sheets.forEach(s => {
+        const row = h('div', {style:{marginBottom:'10px'}});
+        row.appendChild(h('label', {className:'config-label'}, '📋 '+displayName(s.name)));
+        const folderInput = h('input', {placeholder:'URL o ID de carpeta', value:state.config.folderMap[s.name]||'', style:{fontSize:'13px',padding:'9px 12px'}});
+        folderInput.addEventListener('input', e => {
+          state.config.folderMap[s.name] = extractFolderId(e.target.value);
+          saveConfig();
+        });
+        row.appendChild(folderInput);
+        if (state.config.folderMap[s.name]) {
+          row.appendChild(h('div', {className:'config-hint', style:{color:'var(--ok)'}}, '✓ Carpeta asignada'));
+        }
+        folderCard.appendChild(row);
+      });
+
+      folderCard.appendChild(h('div', {className:'config-hint', style:{marginTop:'6px'}}, 'drive.google.com/drive/folders/[ESTE_ID]'));
+      content.appendChild(folderCard);
+    }
+
+    // Email section
+    const emailCard = h('div', {className:'card config-section'});
+    emailCard.appendChild(h('div', {className:'config-title'}, '📧 Aviso por email'));
+
+    const emRow = h('div', {style:{display:'flex',gap:'10px',flexWrap:'wrap',marginBottom:'12px'}});
+    const emDiv = h('div', {style:{flex:'2 1 180px'}});
+    emDiv.appendChild(h('label', {className:'config-label'}, 'Email responsable'));
+    const emInput = h('input', {type:'email', placeholder:'email@empresa.com', value:state.config.email});
+    emInput.addEventListener('input', e => { state.config.email = e.target.value; saveConfig(); });
+    emDiv.appendChild(emInput);
+    emRow.appendChild(emDiv);
+
+    const dlDiv = h('div', {style:{flex:'1 1 100px'}});
+    dlDiv.appendChild(h('label', {className:'config-label'}, 'Hora límite'));
+    const dlInput = h('input', {type:'time', value:state.config.deadline});
+    dlInput.addEventListener('input', e => { state.config.deadline = e.target.value; saveConfig(); });
+    dlDiv.appendChild(dlInput);
+    emRow.appendChild(dlDiv);
+    emailCard.appendChild(emRow);
+
+    emailCard.appendChild(h('button', {className:'btn btn-s btn-default', onClick:()=>{state.view='script';render();}}, '📜 Ver script de recordatorio'));
+    content.appendChild(emailCard);
+
+    // Instructions
+    const instCard = h('div', {className:'card', style:{background:'var(--accent-bg)',border:'1px solid var(--accent-bd)'}});
+    instCard.innerHTML = `
+      <div class="mono" style="font-size:11px;color:var(--text-m);line-height:1.8">
+        <strong style="color:var(--accent)">Pasos en Google Cloud (console.cloud.google.com):</strong><br>
+        1. Proyecto APP POES → <strong>Habilitar APIs</strong> → Google Drive API<br>
+        2. <strong>Credenciales</strong> → Crear ID OAuth 2.0 → Aplicación Web<br>
+        3. En <strong>Orígenes autorizados</strong>, agregar la URL donde alojás esta app<br>
+        4. Copiar el Client ID y pegarlo arriba
+      </div>
+    `;
+    content.appendChild(instCard);
+  }
+
+  // ══ SCRIPT ══
+  else if (state.view === 'script') {
+    content.className = 'content fade-up';
+    content.appendChild(h('button', {className:'btn btn-s btn-ghost', style:{marginBottom:'8px'}, onClick:()=>{state.view='config';render();}}, '← Config'));
+    content.appendChild(h('h1', {style:{fontFamily:"'Instrument Serif',serif",fontSize:'22px',marginBottom:'4px'}}, 'Script de recordatorio'));
+    content.appendChild(h('p', {style:{color:'var(--text-mu)',fontSize:'13px',marginBottom:'16px'}}, 'Pegar en script.google.com'));
+
+    const instCard = h('div', {className:'card', style:{marginBottom:'14px'}});
+    instCard.innerHTML = `<ol style="font-size:12px;color:var(--text-m);line-height:2;padding-left:18px">
+      <li>Ir a <strong>script.google.com</strong> → Nuevo proyecto</li>
+      <li>Pegar el código</li>
+      <li>Activadores → checkSubmissions → Diario</li>
+      <li>Autorizar y listo</li>
+    </ol>`;
+    content.appendChild(instCard);
+
+    const codeCard = h('div', {className:'card'});
+    const codeHeader = h('div', {style:{display:'flex',justifyContent:'space-between',marginBottom:'10px'}});
+    codeHeader.appendChild(h('span', {className:'mono', style:{fontSize:'11px',color:'var(--text-d)'}}, 'Google Apps Script'));
+    codeHeader.appendChild(h('button', {className:'btn btn-s btn-accent', onClick:()=>{navigator.clipboard.writeText(gasCode());showToast('Copiado');}}, '📋 Copiar'));
+    codeCard.appendChild(codeHeader);
+    codeCard.appendChild(h('pre', {className:'script-block'}, gasCode()));
+    content.appendChild(codeCard);
+  }
+
+  app.appendChild(content);
+}
+
+// Load embedded data and render
+loadEmbeddedData();
+render();
+// Auto-connect to Drive
+autoConnect();
+</script>
+</body>
+</html>
