@@ -1,181 +1,118 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#1B1915">
-<meta name="mobile-web-app-capable" content="yes">
-<title>FormVault GVP — Control de Vidrios y Plásticos</title>
-<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRm9ybVZhdWx0IEdWUCIsInNob3J0X25hbWUiOiJGb3JtVmF1bHQiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzFCMTkxNSIsInRoZW1lX2NvbG9yIjoiIzFCMTkxNSJ9">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg: #F2EFEA;
-  --surface: #FFFFFF;
-  --surface-alt: #F8F7F4;
-  --card: #FFFFFF;
-  --border: #DDD8CE;
-  --border-s: #C8C2B6;
-  --border-f: #7A6332;
-  --accent: #7A6332;
-  --accent-l: #9E8550;
-  --accent-bg: rgba(122,99,50,.06);
-  --accent-bd: rgba(122,99,50,.2);
-  --text: #2C2820;
-  --text-m: #5C554A;
-  --text-mu: #918B7F;
-  --text-d: #B5AFA3;
-  --ok: #4A8556;
-  --ok-bg: rgba(74,133,86,.08);
-  --nc: #B34033;
-  --nc-bg: rgba(179,64,51,.08);
-  --na: #918B7F;
-  --white: #FFF;
-  --radius: 10px;
-  --safe-b: env(safe-area-inset-bottom, 0px);
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { -webkit-tap-highlight-color: transparent; }
-body {
-  font-family: 'DM Sans', -apple-system, sans-serif;
-  background: var(--bg); color: var(--text);
-  min-height: 100vh; min-height: 100dvh;
-  -webkit-font-smoothing: antialiased;
-  overscroll-behavior: none;
-}
-input, select, textarea {
-  font-family: 'DM Sans', sans-serif; font-size: 16px;
-  background: var(--surface); color: var(--text);
-  border: 1.5px solid var(--border); border-radius: 8px;
-  padding: 12px 14px; width: 100%; outline: none;
-  transition: border-color .2s;
-  -webkit-appearance: none;
-}
-input:focus, select:focus, textarea:focus {
-  border-color: var(--border-f);
-  box-shadow: 0 0 0 3px var(--accent-bg);
-}
-textarea { resize: vertical; min-height: 60px; }
-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23918B7F' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 12px center;
-  padding-right: 32px;
-}
-button { font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-::placeholder { color: var(--text-d); }
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: var(--border-s); border-radius: 2px; }
-@keyframes fadeUp { from { opacity:0; transform:translateY(16px) } to { opacity:1; transform:translateY(0) } }
-@keyframes spin { to { transform:rotate(360deg) } }
-.fade-up { animation: fadeUp .35s ease both; }
-.app { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
-.header {
-  background: #1B1915; color: var(--white);
-  padding: 14px 16px; padding-top: max(14px, env(safe-area-inset-top));
-  display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 50;
-}
-.header-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-.header-logo .icon {
-  width: 32px; height: 32px; border-radius: 8px; background: var(--accent);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Instrument Serif', serif; font-size: 16px; font-weight: 400; color: var(--white);
-}
-.header-logo .name { font-size: 16px; font-weight: 700; }
-.header-logo .badge { font-size: 9px; color: rgba(255,255,255,.4); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
-.header-actions { display: flex; gap: 8px; align-items: center; }
-.content { flex: 1; padding: 16px; padding-bottom: calc(16px + var(--safe-b)); max-width: 800px; width: 100%; margin: 0 auto; }
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  font-weight: 600; font-size: 13px; padding: 10px 18px; border-radius: 8px;
-  border: none; transition: all .15s; white-space: nowrap;
-  touch-action: manipulation;
-}
-.btn-s { padding: 7px 12px; font-size: 12px; }
-.btn-full { width: 100%; }
-.btn-accent { background: var(--accent); color: var(--white); }
-.btn-default { background: var(--surface); color: var(--text); border: 1.5px solid var(--border); }
-.btn-ghost { background: transparent; color: var(--text-mu); padding: 6px 10px; }
-.btn-ok { background: var(--ok-bg); color: var(--ok); }
-.btn-nc { background: var(--nc-bg); color: var(--nc); }
-.btn:disabled { opacity: .4; pointer-events: none; }
-.btn:active { transform: scale(.97); }
-.card {
-  background: var(--card); border: 1.5px solid var(--border);
-  border-radius: var(--radius); padding: 18px; transition: all .15s;
-}
-.toast {
-  position: fixed; top: max(16px, env(safe-area-inset-top, 16px)); left: 16px; right: 16px;
-  z-index: 999; padding: 12px 16px; border-radius: 10px;
-  font-size: 13px; font-weight: 600; text-align: center;
-  animation: fadeUp .3s ease; max-width: 400px; margin: 0 auto;
-  box-shadow: 0 4px 20px rgba(0,0,0,.1);
-}
-.toast-ok { background: var(--ok-bg); color: var(--ok); border: 1px solid rgba(74,133,86,.15); }
-.toast-err { background: var(--nc-bg); color: var(--nc); border: 1px solid rgba(179,64,51,.15); }
-.status-pill {
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 600; padding: 8px 12px; border-radius: 8px;
-  border: 1.5px solid var(--border); background: transparent; color: var(--text-d);
-  transition: all .15s; min-width: 44px; min-height: 44px;
-  touch-action: manipulation; cursor: pointer;
-}
-.status-pill.active-ok { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
-.status-pill.active-nc { border-color: var(--nc); background: var(--nc-bg); color: var(--nc); }
-.status-pill.active-na { border-color: var(--na); background: rgba(145,139,127,.08); color: var(--na); }
-.progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-l)); border-radius: 3px; transition: width .3s; }
-.inspect-row { padding: 14px 12px; border-bottom: 1px solid rgba(0,0,0,.04); display: flex; flex-direction: column; gap: 8px; }
-.inspect-row:nth-child(even) { background: var(--surface-alt); }
-.inspect-row .row-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-.inspect-row .row-info { flex: 1; min-width: 0; }
-.inspect-row .row-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-d); background: var(--accent-bg); padding: 2px 6px; border-radius: 4px; display: inline-block; margin-right: 6px; }
-.inspect-row .row-equipo { font-size: 14px; font-weight: 600; line-height: 1.3; }
-.inspect-row .row-sector { font-size: 11px; color: var(--text-mu); margin-top: 2px; }
-.inspect-row .row-tipo { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-d); display: inline-block; margin-top: 2px; }
-.inspect-row .status-group { display: flex; gap: 6px; flex-shrink: 0; }
-.inspect-row .obs-input { font-size: 13px; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); }
-.section-header { background: #1B1915; color: var(--white); padding: 10px 14px; font-weight: 700; font-size: 13px; letter-spacing: .01em; position: sticky; top: 56px; z-index: 10; display: flex; justify-content: space-between; align-items: center; }
-.section-header .count { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: rgba(255,255,255,.4); }
-.sheets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-@media (min-width: 600px) { .sheets-grid { grid-template-columns: repeat(3, 1fr); } }
-.sheet-card { background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px 14px; cursor: pointer; transition: all .15s; }
-.sheet-card:active { border-color: var(--accent-bd); transform: scale(.97); }
-.sheet-card .freq { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-d); display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
-.sheet-card .freq .dot { width: 7px; height: 7px; border-radius: 50%; }
-.sheet-card .sname { font-family: 'Instrument Serif', serif; font-size: 17px; line-height: 1.2; margin-bottom: 4px; }
-.sheet-card .sitems { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-d); }
-.attach-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-@media (min-width: 500px) { .attach-grid { grid-template-columns: repeat(4, 1fr); } }
-.attach-item { position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: var(--surface-alt); }
-.attach-item img { width: 100%; height: 70px; object-fit: cover; display: block; }
-.attach-item .attach-placeholder { width: 100%; height: 70px; display: flex; align-items: center; justify-content: center; font-size: 22px; background: var(--accent-bg); }
-.attach-item .attach-name { font-size: 9px; padding: 4px 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-m); }
-.attach-item .attach-remove { position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 50%; background: rgba(0,0,0,.6); color: white; border: none; font-size: 11px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-.bottom-bar { position: sticky; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1.5px solid var(--border); padding: 12px 16px; padding-bottom: calc(12px + var(--safe-b)); display: flex; gap: 8px; z-index: 40; box-shadow: 0 -4px 20px rgba(0,0,0,.05); }
-.config-section { margin-bottom: 14px; }
-.config-section .config-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-.config-label { display: block; font-size: 10px; font-weight: 600; color: var(--text-mu); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .05em; }
-.config-hint { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-d); margin-top: 3px; }
-.history-item { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; margin-bottom: 5px; font-size: 12px; }
-.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .5s linear infinite; }
-.mono { font-family: 'IBM Plex Mono', monospace; }
-.script-block { font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 1.6; color: var(--text-m); background: var(--surface-alt); border: 1px solid var(--border); border-radius: 8px; padding: 14px; overflow-x: auto; white-space: pre-wrap; max-height: 50vh; }
-.drive-badge { font-family: 'IBM Plex Mono', monospace; font-size: 10px; display: flex; align-items: center; gap: 4px; }
-.drive-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FormVault GVP — Control de Vidrios y Plásticos</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #F2EFEA; --accent: #7A6332; --text: #2C2820; --white: #FFF; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+        .header { background: #1B1915; color: var(--white); padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+        .content { padding: 15px; max-width: 800px; margin: 0 auto; }
+        .sheet-card { background: #FFF; border: 1px solid #DDD; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; }
+        .btn { padding: 10px 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-accent { background: var(--accent); color: white; }
+        .inspect-row { background: white; padding: 12px; border-bottom: 1px solid #EEE; display: flex; justify-content: space-between; align-items: center; }
+        .status-pill { padding: 8px 12px; border: 1px solid #CCC; border-radius: 4px; background: none; }
+        .active-ok { background: #4A8556; color: white; border-color: #4A8556; }
+        .active-nc { background: #B34033; color: white; border-color: #B34033; }
+        .bottom-bar { position: fixed; bottom: 0; width: 100%; background: white; padding: 15px; border-top: 1px solid #DDD; display: flex; gap: 10px; box-sizing: border-box; }
+    </style>
 </head>
 <body>
-<div id="app" class="app"></div>
+    <div id="app"></div>
 
-<script>
-// ═══════════════════════════════════════════════════
-// FormVault GVP — VERSIÓN FINAL CON RUTAS FIJAS
-// ═══════════════════════════════════════════════════
+    <script>
+        // --- CONFIGURACIÓN PERMANENTE ---
+        const DEFAULT_CLIENT_ID = '399944808776-ndb9l3rsnv17cbrteni11n0nrmgjve7n.apps.googleusercontent.com';
+        const DEFAULT_FOLDER_ID = '18KDbxt63cluSBl5rFDdSP7ZdiUzGPZPL';
 
-const SCOPES = 'https://www.googleapis.com/auth/drive';
-const STATUS_OPT = ['Conforme','No Conforme','N/A'];
-const LOGO_B64 = 'data:image/jpeg;base64,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';
-const FIRMA_NATACHA_B64 = 'data:image/png;base64,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
+        const FIXED_FOLDERS = {
+            "Trimestral": "12_sPI8pZHgBUorhl4GccL77ooJGMo6p8",
+            "Mensual ": "1iZ3p9b5VSHmrseOUiMDatoCbMkFVZWlD",
+            "Diario-Blanchado": "1DkmsnSJrn-gMY1YccYMg9K1obO1SatdP",
+            "Diario-HPS1": "1ZaFYbXVvuuJDZTYur5-4ECTB_j5-2tib",
+            "Diario-HPS2": "1Rl8mEId5JipHK5K8gK9lkhMFf2XB-5Xh",
+            "Diaria-Depósitos": "1d3yK6PVdz2tlL-U9XSgTbqi7cPLY0QjO",
+            "Diario-Tostado-Pasta-Frito": "1ltSWK8XH9LACOcGrEND7YgGaJ4O8GMEj",
+            "Diario-Planta PE II": "1EtWnvY76lh4KaVWhtOxEqTO1Qd5bFzGi",
+            "Planta Tacc": "1msZpAigKWZIrfZGBhfAtWEiLlSOWLfRD"
+        };
+
+        const state = {
+            view: 'home',
+            sheets: [],
+            activeSheet: null,
+            token: localStorage.getItem('fv_token') || null,
+            inspector: localStorage.getItem('fv_inspector') || ''
+        };
+
+        // --- LÓGICA ---
+        function getFolder(name) { return FIXED_FOLDERS[name] || DEFAULT_FOLDER_ID; }
+
+        function render() {
+            const app = document.getElementById('app');
+            app.innerHTML = '';
+
+            // Header
+            const header = document.createElement('div');
+            header.className = 'header';
+            header.innerHTML = `<b>MANIAGRO GVP</b> <button class="btn btn-s" style="background:#444; color:white" onclick="authenticate()">Conectar Drive</button>`;
+            app.appendChild(header);
+
+            const container = document.createElement('div');
+            container.className = 'content';
+
+            if (state.view === 'home') {
+                container.innerHTML = `<h3>Seleccione Formulario</h3>`;
+                Object.keys(FIXED_FOLDERS).forEach(name => {
+                    const card = document.createElement('div');
+                    card.className = 'sheet-card';
+                    card.innerHTML = `<b>${name}</b><br><small>Carpeta: ${FIXED_FOLDERS[name].slice(0,8)}...</small>`;
+                    card.onclick = () => { 
+                        state.activeSheet = { name: name, items: [{id:1, eq:'Ejemplo Equipo', num:1}] }; // Aquí cargaría tu Excel
+                        state.view = 'fill'; 
+                        render(); 
+                    };
+                    container.appendChild(card);
+                });
+            } else {
+                container.innerHTML = `<button onclick="state.view='home';render()">← Volver</button> <h2>${state.activeSheet.name}</h2>`;
+                state.activeSheet.items.forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = 'inspect-row';
+                    row.innerHTML = `<span>${item.eq}</span> <div>
+                        <button class="status-pill" onclick="this.classList.toggle('active-ok')">✓</button>
+                        <button class="status-pill" onclick="this.classList.toggle('active-nc')">✗</button>
+                    </div>`;
+                    container.appendChild(row);
+                });
+
+                const footer = document.createElement('div');
+                footer.className = 'bottom-bar';
+                footer.innerHTML = `<button class="btn btn-accent" style="flex:1" onclick="alert('Guardando en carpeta: ' + getFolder(state.activeSheet.name))">GUARDAR EN DRIVE</button>`;
+                app.appendChild(footer);
+            }
+            app.appendChild(container);
+        }
+
+        function authenticate() {
+            const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${DEFAULT_CLIENT_ID}&redirect_uri=${window.location.href.split('#')[0]}&response_type=token&scope=https://www.googleapis.com/auth/drive.file`;
+            window.location.href = url;
+        }
+
+        // Leer token del URL tras conectar
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+            const params = new URLSearchParams(hash);
+            if (params.get('access_token')) {
+                state.token = params.get('access_token');
+                localStorage.setItem('fv_token', state.token);
+            }
+        }
+
+        render();
+    </script>
+</body>
+</html>
