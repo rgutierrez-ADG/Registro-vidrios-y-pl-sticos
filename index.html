@@ -336,8 +336,7 @@ function displayName(name) {
   return name.replace(/^Diario[-\s]*/i,'').replace(/^Diaria[-\s]*/i,'').replace(/^Mensual[-\s]*/i,'').replace(/^Trimestral[-\s]*/i,'').trim() || name;
 }
 
-// Get folder for a specific sheet (falls back to general folder)
-// Hardcoded folder IDs per sheet
+// Hardcoded folder IDs (always available even if localStorage is cleared)
 const FIXED_FOLDERS = {
   "Trimestral": "12_sPI8pZHgBUorhl4GccL77ooJGMo6p8",
   "Mensual ": "1iZ3p9b5VSHmrseOUiMDatoCbMkFVZWlD",
@@ -349,10 +348,10 @@ const FIXED_FOLDERS = {
   "Diario-Planta PE II": "1EtWnvY76lh4KaVWhtOxEqTO1Qd5bFzGi",
   "Planta Tacc": "1msZpAigKWZIrfZGBhfAtWEiLlSOWLfRD",
 };
-const FIXED_GENERAL_FOLDER = "1OOOcQsGYD2D9QpyQRRvDN9qJmr6yAsHe";
 
+// Get folder for a specific sheet (falls back to general folder)
 function getFolderForSheet(sheetName) {
-  return FIXED_FOLDERS[sheetName] || state.config.folderMap?.[sheetName] || FIXED_GENERAL_FOLDER;
+  return state.config.folderMap[sheetName] || FIXED_FOLDERS[sheetName] || state.config.folderId || '';
 }
 
 function saveConfig() { localStorage.setItem('fv_config', JSON.stringify(state.config)); }
@@ -363,21 +362,9 @@ function saveInspector() { localStorage.setItem('fv_inspector', state.inspector)
 let toastTimer;
 function showToast(msg, type='ok') {
   state.toast = {msg, type};
-  // Don't call render() - just update the toast element directly
-  let toastEl = document.getElementById('app-toast');
-  if (!toastEl) {
-    toastEl = document.createElement('div');
-    toastEl.id = 'app-toast';
-    document.body.appendChild(toastEl);
-  }
-  toastEl.className = 'toast toast-'+(type==='err'?'err':'ok');
-  toastEl.textContent = msg;
-  toastEl.style.display = 'block';
+  render();
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { 
-    toastEl.style.display = 'none';
-    state.toast = null; 
-  }, type==='err' ? 8000 : 3500);
+  toastTimer = setTimeout(() => { state.toast = null; render(); }, type==='err' ? 6000 : 3500);
 }
 
 // ── Load libs ──
@@ -614,55 +601,25 @@ async function uploadToDrive(blob, fileName, folderId) {
   const form = new FormData();
   form.append('metadata', new Blob([JSON.stringify(meta)], {type:'application/json'}));
   form.append('file', blob, fileName);
-  console.log('uploadToDrive → token:', !!state.token, '| folder:', folderId, '| size:', blob.size);
+  console.log('uploadToDrive → token presente:', !!state.token, '| folder:', folderId);
   const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
     method:'POST', headers:{Authorization:'Bearer '+state.token}, body:form,
   });
   if (!res.ok) {
     const errBody = await res.text().catch(()=>'');
     console.error('Drive API error:', res.status, errBody);
-    const err = new Error('Drive error '+res.status);
-    err.status = res.status;
-    err.body = errBody;
-    throw err;
+    if (res.status === 401) {
+      state.token = null;
+      localStorage.removeItem('fv_token');
+      render();
+      throw new Error('Token expirado — volvé a tocar Conectar');
+    }
+    if (res.status === 403) throw new Error('Sin permiso para subir a Drive (403) — reconectá la app');
+    throw new Error('Drive error '+res.status+': '+errBody.slice(0,120));
   }
   const data = await res.json();
   console.log('Drive upload OK — file id:', data.id);
   return data;
-}
-
-// Authenticate and return a promise that resolves with the token
-function authenticateWithPromise() {
-  return new Promise((resolve, reject) => {
-    if (!state.config.clientId) { reject(new Error('Sin Client ID')); return; }
-    function doAuth() {
-      const savedHint = localStorage.getItem('fv_login_hint') || '';
-      const clientCfg = {
-        client_id: state.config.clientId, scope: SCOPES,
-        prompt: 'select_account',
-        callback: (r) => {
-          if (r.access_token) {
-            state.token = r.access_token;
-            localStorage.setItem('fv_token', r.access_token);
-            localStorage.setItem('fv_token_time', Date.now().toString());
-            if (r.hint) localStorage.setItem('fv_login_hint', r.hint);
-            updateDriveBadge();
-            resolve(r.access_token);
-          } else {
-            reject(new Error('No se pudo obtener token'));
-          }
-        },
-      };
-      if (savedHint) clientCfg.login_hint = savedHint;
-      google.accounts.oauth2.initTokenClient(clientCfg).requestAccessToken();
-    }
-    if (!window.google?.accounts) {
-      const s = document.createElement('script');
-      s.src = 'https://accounts.google.com/gsi/client';
-      s.onload = doAuth; s.onerror = () => reject(new Error('No se pudo cargar Google auth'));
-      document.head.appendChild(s);
-    } else doAuth();
-  });
 }
 
 async function uploadAttachment(file, folderId) {
@@ -790,12 +747,12 @@ async function generatePDF() {
   doc.setFontSize(6.5); doc.setTextColor(145,139,127);
   doc.text('Firma responsable de control', col1X, sigStartY+27);
 
-  // — Natacha fixed signature (right col) — rotated to be upright
+  // — Verificó signature (right col) — rotated upright
   try { doc.addImage(FIRMA_NATACHA_B64, 'PNG', col2X, sigStartY, 28, 44); } catch{}
   doc.setFontSize(6.5); doc.setTextColor(145,139,127);
   doc.text('Verificó', col2X, sigStartY+49);
 
-  y = sigStartY + 42;
+  y = sigStartY + 54;
   doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(145,139,127);
   doc.text('Fecha: '+state.controlDate+'    Hora: '+(state.controlTime||''), M, y);
 
@@ -834,126 +791,61 @@ async function generatePDF() {
 }
 
 // ── Save & Upload ──
-// Keeps the last generated PDF so it's never lost
-let _pendingBlob = null;
-let _pendingFileName = '';
-
 async function handleSave() {
   if (!state.activeSheet) return;
   const pend = state.activeSheet.items.filter(i=>!i.estado).length;
   if (pend > 0 && !confirm('Hay '+pend+' ítems sin completar. ¿Guardar igual?')) return;
 
-  const saveEl = document.getElementById('save-btn');
-  function setBtn(text) { if (saveEl) { saveEl.disabled = true; saveEl.innerHTML = '<span class="spinner"></span> '+text; } }
-  function resetBtn() { if (saveEl) { saveEl.disabled = false; saveEl.innerHTML = '💾 GUARDAR'; } }
-
-  // ── STEP 1: Ensure we have a token ──
+  // Si no hay token, pedir conexión antes de continuar
   if (!state.token) {
-    setBtn('Conectando...');
-    try {
-      await authenticateWithPromise();
-    } catch(authErr) {
-      resetBtn();
-      showToast('⚠ Necesitás conectar Google Drive para guardar. Tocá "Conectar" arriba.', 'err');
-      return;
-    }
+    showToast('Primero conectate a Drive tocando "Conectar"', 'err');
+    return;
   }
 
-  setBtn('Generando PDF...');
-  state.uploading = true;
-
+  state.uploading = true; render();
   try {
-    // ── STEP 2: Generate PDF ──
     const ts = new Date();
     const d = state.controlDate;
     const t = (state.controlTime||ts.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})).replace(':','');
-    _pendingFileName = 'R-SIG-GVP_01_'+state.activeSheet.name+'_'+d+'_'+t+'.pdf';
-    _pendingBlob = await generatePDF();
+    const fileName = 'R-SIG-GVP_01_'+state.activeSheet.name+'_'+d+'_'+t+'.pdf';
 
-    // ── STEP 3: Upload to Drive (with auto-retry on 401) ──
-    setBtn('Subiendo a Drive...');
+    showToast('Generando PDF...');
+    const blob = await generatePDF();
+
     const folderId = getFolderForSheet(state.activeSheet.name);
-    let uploaded = false;
-    let lastError = null;
-
-    for (let attempt = 1; attempt <= 2; attempt++) {
-      try {
-        await uploadToDrive(_pendingBlob, _pendingFileName, folderId);
-        uploaded = true;
-        break;
-      } catch(upErr) {
-        lastError = upErr;
-        console.error('Upload attempt '+attempt+' failed:', upErr);
-        if (upErr.status === 401 && attempt === 1) {
-          // Token expired → re-authenticate and retry
-          setBtn('Reconectando...');
-          state.token = null;
-          localStorage.removeItem('fv_token');
-          try {
-            await authenticateWithPromise();
-            setBtn('Reintentando...');
-          } catch(reAuthErr) {
-            break; // Can't re-auth, will show error below
-          }
-        } else if (upErr.status === 404) {
-          // Folder not found — no point retrying
-          break;
-        } else {
-          break; // Non-401 error or second attempt failed
-        }
-      }
-    }
-
-    if (!uploaded) {
-      resetBtn();
-      state.uploading = false;
-      const errMsg = lastError?.status === 403
-        ? 'Error 403: La API de Google Drive no está habilitada o no tenés permiso. Habilitala en console.cloud.google.com → APIs → Google Drive API.'
-        : lastError?.status === 401
-        ? 'No se pudo autenticar. Tocá "Conectar" y autorizá de nuevo.'
-        : lastError?.status === 404
-        ? 'Error 404: La carpeta de Drive no existe o fue eliminada. Revisá la configuración en ⚙ y verificá el ID de carpeta.'
-        : 'Error al subir: ' + (lastError?.message || 'desconocido') + '. Tocá GUARDAR para reintentar.';
-      showToast(errMsg, 'err');
-      // PDF queda en _pendingBlob - el usuario puede reintentar sin perder datos
+    // Token check justo antes de subir
+    if (!state.token) {
+      state.uploading = false; render();
+      showToast('Token perdido — tocá Conectar de nuevo', 'err');
       return;
     }
+    showToast('Subiendo a Drive...');
+    await uploadToDrive(blob, fileName, folderId);
 
-    // ── STEP 4: Upload non-image attachments ──
+    // Adjuntos no-imagen
     for (const af of state.attachedFiles) {
       if (af.file && !(af.type||af.file.type||'').startsWith('image/')) {
-        try { await uploadAttachment(af.file, folderId); } catch(e) { console.warn('Adjunto falló:', e); }
+        try { await uploadAttachment(af.file, folderId); } catch(e){ console.warn('Adjunto falló:', e); }
       }
     }
-
-    // ── STEP 5: Success ──
     showToast('✓ PDF guardado en Drive correctamente');
 
     state.history.unshift({
-      sheet:state.activeSheet.name, date:ts.toISOString(), fileName: _pendingFileName || 'ok',
+      sheet:state.activeSheet.name, date:ts.toISOString(), fileName,
       total:state.activeSheet.items.length,
       ok:state.activeSheet.items.filter(i=>i.estado==='Conforme').length,
       nc:state.activeSheet.items.filter(i=>i.estado==='No Conforme').length,
     });
     saveHistory();
-
-    _pendingBlob = null;
-    _pendingFileName = '';
     state.attachedFiles = [];
     state.signatureData = null;
     state.generalObs = '';
-
   } catch(err) {
     console.error('Save error:', err);
-    showToast('Error inesperado: '+err.message+'. El PDF está guardado, tocá GUARDAR para reintentar.', 'err');
+    showToast('Error: '+err.message,'err');
   }
-  state.uploading = false;
-  resetBtn();
-  render();
+  state.uploading = false; render();
 }
-
-// Retry pending upload (if user had a failure and clicks save again)
-// The PDF is still in _pendingBlob so no need to regenerate
 
 async function handlePreview() {
   if (!state.activeSheet) return;
@@ -1050,11 +942,8 @@ function h(tag, props, ...children) {
     else if (k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(), v);
     else if (k === 'className') el.className = v;
     else if (k === 'innerHTML') el.innerHTML = v;
-    else if (k === 'disabled' || k === 'checked' || k === 'selected' || k === 'required' || k === 'multiple') {
-      // Boolean HTML attributes: set as property, not attribute
-      el[k] = !!v;
-    }
-    else if (v === false || v === null || v === undefined) { /* skip falsy attributes */ }
+    else if (k === 'disabled' || k === 'checked' || k === 'selected' || k === 'multiple') el[k] = !!v;
+    else if (v === false || v === null || v === undefined) { /* skip */ }
     else el.setAttribute(k, v);
   });
   children.flat(Infinity).forEach(c => {
@@ -1360,7 +1249,6 @@ function render() {
     // Bottom bar
     const bottomBar = h('div', {className:'bottom-bar'});
     const saveBtn = h('button', {
-      id:'save-btn',
       className:'btn btn-accent', style:{flex:'1'},
       disabled: state.uploading,
       onClick: handleSave,
