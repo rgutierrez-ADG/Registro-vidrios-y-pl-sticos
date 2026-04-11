@@ -1,118 +1,279 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FormVault GVP — Control de Vidrios y Plásticos</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
-    <style>
-        :root { --bg: #F2EFEA; --accent: #7A6332; --text: #2C2820; --white: #FFF; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
-        .header { background: #1B1915; color: var(--white); padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
-        .content { padding: 15px; max-width: 800px; margin: 0 auto; }
-        .sheet-card { background: #FFF; border: 1px solid #DDD; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; }
-        .btn { padding: 10px 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; }
-        .btn-accent { background: var(--accent); color: white; }
-        .inspect-row { background: white; padding: 12px; border-bottom: 1px solid #EEE; display: flex; justify-content: space-between; align-items: center; }
-        .status-pill { padding: 8px 12px; border: 1px solid #CCC; border-radius: 4px; background: none; }
-        .active-ok { background: #4A8556; color: white; border-color: #4A8556; }
-        .active-nc { background: #B34033; color: white; border-color: #B34033; }
-        .bottom-bar { position: fixed; bottom: 0; width: 100%; background: white; padding: 15px; border-top: 1px solid #DDD; display: flex; gap: 10px; box-sizing: border-box; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1B1915">
+<meta name="mobile-web-app-capable" content="yes">
+<title>FormVault GVP — Control de Vidrios y Plásticos</title>
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRm9ybVZhdWx0IEdWUCIsInNob3J0X25hbWUiOiJGb3JtVmF1bHQiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzFCMTkxNSIsInRoZW1lX2NvbG9yIjoiIzFCMTkxNSJ9">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+/* SE MANTIENEN TODOS TUS ESTILOS ORIGINALES */
+:root {
+  --bg: #F2EFEA;
+  --surface: #FFFFFF;
+  --surface-alt: #F8F7F4;
+  --card: #FFFFFF;
+  --border: #DDD8CE;
+  --border-s: #C8C2B6;
+  --border-f: #7A6332;
+  --accent: #7A6332;
+  --accent-l: #9E8550;
+  --accent-bg: rgba(122,99,50,.06);
+  --accent-bd: rgba(122,99,50,.2);
+  --text: #2C2820;
+  --text-m: #5C554A;
+  --text-mu: #918B7F;
+  --text-d: #B5AFA3;
+  --ok: #4A8556;
+  --ok-bg: rgba(74,133,86,.08);
+  --nc: #B34033;
+  --nc-bg: rgba(179,64,51,.08);
+  --na: #918B7F;
+  --white: #FFF;
+  --radius: 10px;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+input, select, textarea {
+  font-family: 'DM Sans', sans-serif; font-size: 16px;
+  background: var(--surface); color: var(--text);
+  border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 12px 14px; width: 100%; outline: none;
+  transition: border-color .2s;
+  -webkit-appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--border-f);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+textarea { resize: vertical; min-height: 60px; }
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23918B7F' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  padding-right: 32px;
+}
+button { font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+::placeholder { color: var(--text-d); }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border-s); border-radius: 2px; }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px) } to { opacity:1; transform:translateY(0) } }
+@keyframes spin { to { transform:rotate(360deg) } }
+@keyframes slideUp { from { transform:translateY(100%) } to { transform:translateY(0) } }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+.fade-up { animation: fadeUp .35s ease both; }
+
+.app { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+.header {
+  background: #1B1915; color: var(--white);
+  padding: 14px 16px; padding-top: max(14px, env(safe-area-inset-top));
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+}
+.header-logo { display: flex; align-items: center; gap: 10px; }
+.header-logo .icon {
+  width: 32px; height: 32px; border-radius: 8px; background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Instrument Serif', serif; font-size: 16px; font-weight: 400; color: var(--white);
+}
+.header-logo .name { font-size: 16px; font-weight: 700; }
+.header-logo .badge { font-size: 9px; color: rgba(255,255,255,.4); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+
+.content { flex: 1; padding: 16px; padding-bottom: calc(16px + var(--safe-b)); max-width: 800px; width: 100%; margin: 0 auto; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-weight: 600; font-size: 13px; padding: 10px 18px; border-radius: 8px;
+  border: none; transition: all .15s; white-space: nowrap;
+  touch-action: manipulation;
+}
+.btn-s { padding: 7px 12px; font-size: 12px; }
+.btn-full { width: 100%; }
+.btn-accent { background: var(--accent); color: var(--white); }
+.btn-default { background: var(--surface); color: var(--text); border: 1.5px solid var(--border); }
+.btn-ghost { background: transparent; color: var(--text-mu); padding: 6px 10px; }
+.btn-ok { background: var(--ok-bg); color: var(--ok); }
+.btn-nc { background: var(--nc-bg); color: var(--nc); }
+.btn:disabled { opacity: .4; pointer-events: none; }
+.btn:active { transform: scale(.97); }
+
+.card {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 18px; transition: all .15s;
+}
+.card-hover:active { border-color: var(--accent-bd); transform: scale(.98); }
+
+.toast {
+  position: fixed; top: max(16px, env(safe-area-inset-top, 16px)); left: 16px; right: 16px;
+  z-index: 999; padding: 12px 16px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; text-align: center;
+  animation: fadeUp .3s ease; max-width: 400px; margin: 0 auto;
+  box-shadow: 0 4px 20px rgba(0,0,0,.1);
+}
+.toast-ok { background: var(--ok-bg); color: var(--ok); border: 1px solid rgba(74,133,86,.15); }
+.toast-err { background: var(--nc-bg); color: var(--nc); border: 1px solid rgba(179,64,51,.15); }
+
+.status-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; padding: 8px 12px; border-radius: 8px;
+  border: 1.5px solid var(--border); background: transparent; color: var(--text-d);
+  transition: all .15s; min-width: 44px; min-height: 44px;
+  touch-action: manipulation; cursor: pointer;
+}
+.status-pill.active-ok { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
+.status-pill.active-nc { border-color: var(--nc); background: var(--nc-bg); color: var(--nc); }
+.status-pill.active-na { border-color: var(--na); background: rgba(145,139,127,.08); color: var(--na); }
+.status-pill:active { transform: scale(.93); }
+
+.progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-l)); border-radius: 3px; transition: width .3s; }
+
+.inspect-row {
+  padding: 14px 12px; border-bottom: 1px solid rgba(0,0,0,.04);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.inspect-row:nth-child(even) { background: var(--surface-alt); }
+.inspect-row .row-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.inspect-row .row-info { flex: 1; min-width: 0; }
+.inspect-row .row-num {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-d);
+  background: var(--accent-bg); padding: 2px 6px; border-radius: 4px;
+  display: inline-block; margin-right: 6px;
+}
+.inspect-row .row-equipo { font-size: 14px; font-weight: 600; line-height: 1.3; }
+.inspect-row .row-sector { font-size: 11px; color: var(--text-mu); margin-top: 2px; }
+.inspect-row .row-tipo {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-d);
+  display: inline-block; margin-top: 2px;
+}
+.inspect-row .status-group { display: flex; gap: 6px; flex-shrink: 0; }
+.inspect-row .obs-input {
+  font-size: 13px; padding: 8px 10px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--surface);
+}
+.inspect-row .obs-input:focus { border-color: var(--border-f); }
+
+.section-header {
+  background: #1B1915; color: var(--white);
+  padding: 10px 14px; font-weight: 700; font-size: 13px;
+  letter-spacing: .01em; position: sticky; top: 56px; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.section-header .count {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  color: rgba(255,255,255,.4); font-weight: 400;
+}
+
+.sheets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (min-width: 600px) { .sheets-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.sheet-card {
+  background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 16px 14px; cursor: pointer; transition: all .15s;
+}
+.sheet-card:active { border-color: var(--accent-bd); transform: scale(.97); }
+.sheet-card .freq {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-d);
+  display: flex; align-items: center; gap: 5px; margin-bottom: 8px;
+}
+.sheet-card .freq .dot { width: 7px; height: 7px; border-radius: 50%; }
+.sheet-card .sname { font-family: 'Instrument Serif', serif; font-size: 17px; line-height: 1.2; margin-bottom: 4px; }
+.sheet-card .sitems { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-d); }
+
+.attach-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+@media (min-width: 500px) { .attach-grid { grid-template-columns: repeat(4, 1fr); } }
+.attach-item {
+  position: relative; border-radius: 8px; overflow: hidden;
+  border: 1px solid var(--border); background: var(--surface-alt);
+}
+.attach-item img { width: 100%; height: 70px; object-fit: cover; display: block; }
+.attach-item .attach-placeholder {
+  width: 100%; height: 70px; display: flex; align-items: center; justify-content: center;
+  font-size: 22px; background: var(--accent-bg);
+}
+.attach-item .attach-name {
+  font-size: 9px; padding: 4px 6px; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; color: var(--text-m);
+}
+.attach-item .attach-remove {
+  position: absolute; top: 3px; right: 3px; width: 22px; height: 22px;
+  border-radius: 50%; background: rgba(0,0,0,.6); color: white; border: none;
+  font-size: 11px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+
+.bottom-bar {
+  position: sticky; bottom: 0; left: 0; right: 0;
+  background: var(--surface); border-top: 1.5px solid var(--border);
+  padding: 12px 16px; padding-bottom: calc(12px + var(--safe-b));
+  display: flex; gap: 8px; z-index: 40;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.05);
+}
+
+.config-section { margin-bottom: 14px; }
+.config-section .config-title {
+  font-size: 13px; font-weight: 700; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.config-label {
+  display: block; font-size: 10px; font-weight: 600; color: var(--text-mu);
+  margin-bottom: 4px; text-transform: uppercase; letter-spacing: .05em;
+}
+.config-hint {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  color: var(--text-d); margin-top: 3px;
+}
+
+.history-item {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 14px; margin-bottom: 5px; font-size: 12px;
+}
+
+.spinner {
+  display: inline-block; width: 16px; height: 16px;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin .5s linear infinite;
+}
+
+.mono { font-family: 'IBM Plex Mono', monospace; }
+
+.script-block {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 1.6;
+  color: var(--text-m); background: var(--surface-alt); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px; overflow-x: auto; white-space: pre-wrap;
+  max-height: 50vh;
+}
+
+.drive-badge {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  display: flex; align-items: center; gap: 4px;
+}
+.drive-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+</style>
 </head>
 <body>
-    <div id="app"></div>
+<div id="app" class="app"></div>
 
-    <script>
-        // --- CONFIGURACIÓN PERMANENTE ---
-        const DEFAULT_CLIENT_ID = '399944808776-ndb9l3rsnv17cbrteni11n0nrmgjve7n.apps.googleusercontent.com';
-        const DEFAULT_FOLDER_ID = '18KDbxt63cluSBl5rFDdSP7ZdiUzGPZPL';
+<script>
+// ═══════════════════════════════════════════════════
+// FormVault GVP — LÓGICA REESTABLECIDA
+// ═══════════════════════════════════════════════════
 
-        const FIXED_FOLDERS = {
-            "Trimestral": "12_sPI8pZHgBUorhl4GccL77ooJGMo6p8",
-            "Mensual ": "1iZ3p9b5VSHmrseOUiMDatoCbMkFVZWlD",
-            "Diario-Blanchado": "1DkmsnSJrn-gMY1YccYMg9K1obO1SatdP",
-            "Diario-HPS1": "1ZaFYbXVvuuJDZTYur5-4ECTB_j5-2tib",
-            "Diario-HPS2": "1Rl8mEId5JipHK5K8gK9lkhMFf2XB-5Xh",
-            "Diaria-Depósitos": "1d3yK6PVdz2tlL-U9XSgTbqi7cPLY0QjO",
-            "Diario-Tostado-Pasta-Frito": "1ltSWK8XH9LACOcGrEND7YgGaJ4O8GMEj",
-            "Diario-Planta PE II": "1EtWnvY76lh4KaVWhtOxEqTO1Qd5bFzGi",
-            "Planta Tacc": "1msZpAigKWZIrfZGBhfAtWEiLlSOWLfRD"
-        };
-
-        const state = {
-            view: 'home',
-            sheets: [],
-            activeSheet: null,
-            token: localStorage.getItem('fv_token') || null,
-            inspector: localStorage.getItem('fv_inspector') || ''
-        };
-
-        // --- LÓGICA ---
-        function getFolder(name) { return FIXED_FOLDERS[name] || DEFAULT_FOLDER_ID; }
-
-        function render() {
-            const app = document.getElementById('app');
-            app.innerHTML = '';
-
-            // Header
-            const header = document.createElement('div');
-            header.className = 'header';
-            header.innerHTML = `<b>MANIAGRO GVP</b> <button class="btn btn-s" style="background:#444; color:white" onclick="authenticate()">Conectar Drive</button>`;
-            app.appendChild(header);
-
-            const container = document.createElement('div');
-            container.className = 'content';
-
-            if (state.view === 'home') {
-                container.innerHTML = `<h3>Seleccione Formulario</h3>`;
-                Object.keys(FIXED_FOLDERS).forEach(name => {
-                    const card = document.createElement('div');
-                    card.className = 'sheet-card';
-                    card.innerHTML = `<b>${name}</b><br><small>Carpeta: ${FIXED_FOLDERS[name].slice(0,8)}...</small>`;
-                    card.onclick = () => { 
-                        state.activeSheet = { name: name, items: [{id:1, eq:'Ejemplo Equipo', num:1}] }; // Aquí cargaría tu Excel
-                        state.view = 'fill'; 
-                        render(); 
-                    };
-                    container.appendChild(card);
-                });
-            } else {
-                container.innerHTML = `<button onclick="state.view='home';render()">← Volver</button> <h2>${state.activeSheet.name}</h2>`;
-                state.activeSheet.items.forEach(item => {
-                    const row = document.createElement('div');
-                    row.className = 'inspect-row';
-                    row.innerHTML = `<span>${item.eq}</span> <div>
-                        <button class="status-pill" onclick="this.classList.toggle('active-ok')">✓</button>
-                        <button class="status-pill" onclick="this.classList.toggle('active-nc')">✗</button>
-                    </div>`;
-                    container.appendChild(row);
-                });
-
-                const footer = document.createElement('div');
-                footer.className = 'bottom-bar';
-                footer.innerHTML = `<button class="btn btn-accent" style="flex:1" onclick="alert('Guardando en carpeta: ' + getFolder(state.activeSheet.name))">GUARDAR EN DRIVE</button>`;
-                app.appendChild(footer);
-            }
-            app.appendChild(container);
-        }
-
-        function authenticate() {
-            const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${DEFAULT_CLIENT_ID}&redirect_uri=${window.location.href.split('#')[0]}&response_type=token&scope=https://www.googleapis.com/auth/drive.file`;
-            window.location.href = url;
-        }
-
-        // Leer token del URL tras conectar
-        const hash = window.location.hash.substring(1);
-        if (hash) {
-            const params = new URLSearchParams(hash);
-            if (params.get('access_token')) {
-                state.token = params.get('access_token');
-                localStorage.setItem('fv_token', state.token);
-            }
-        }
-
-        render();
-    </script>
-</body>
-</html>
+const SCOPES = 'https://www.googleapis.com/auth/drive';
+const STATUS_OPT = ['Conforme','No Conforme','N/A'];
+const LOGO_B64 = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCABQAFADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3eonnROponfZGTWLqmq6doOjNrGsMzRFgscajJYnoAO5OCee1NJydkJtRV2ahv4h/GPzpPt8X98fnXAf8Lf8ADH/QFvP+/Uf/AMVR/wALf8Mf9AW8/wC/Uf8A8VW/1St/KYfW6P8AMd/9vi/vj86Pt8X98fnXAf8AC3/DH/QFvP8Av1H/APFUf8Lf8Mf9AW8/79R//FUfVK38ofW6P8x3/wBvi/vj86UX8R/jH515/wD8Lf8ADH/QFvP+/Uf/AMVR/wALf8Mf9AW8/wC/Uf8A8VR9Urfyh9bo/wAx6Mk6P0NS1g6Xqena7oy6zpDMsWSHjYYKkdQR2I9q2YH3oDWDTi7M3TTV0Q3xxA30rgPi3/yIelf9fSf+i3rv7/8A1DfSuA+LX/IhaV/19J/6Let8L/GiYYr+DI8TqSOCabPlRSSY67ELY/KmKCzBVGWJwAO5r3W5ZPAvgOKaFVFzaRoABx5kzEZzjryT+Ar18ViVQina9zxqFD2t23ZI8MkikhbbLG6N1w6kH9aSOOSVtsaM7eiqSf0r3z4kWEHiP4fDVbZA7wIl5E+OfLI+YZ9Npz+FZngnToND8A/2hcrseWN7yVxw20D5Rn6AfnWX15ey9pbW9rG/1L95yX0te54xJBNDjzYpI89N6EZ/Oo6+h4XT4hfDAtIiG5nt2GMZ2TpnGPTkD8DXzyQVJDDBHBB7GtcLiVXi3a1jCvQ9lZp3TPb/AITf8k+1H/r6k/8AQErvLL/UL9K4L4Tf8k+1H/r6l/8AQErvbH/UL9K8fFfxpHtYX+DES/8A9Q30rA8WarpGkeFbCfWbL7XbtIiKnlLJhtpOcN7A1v3/APqG+lcB8W/+RC0r/r6T/wBFeb8Tq3oaeIjKVOSisYvjvwRBKksOgNHIhyrrZxAqfUHNYHjvxzB4mt7azsYJoreJzK7TYBdsYHAJ4GT+dc5p3h3UdVsmu7OJZI1uY7YjPO+T7v4Zxk+9SzeFtShgvpmWIx2V39jlIf+PcFyOOVBK8/7QrOU
