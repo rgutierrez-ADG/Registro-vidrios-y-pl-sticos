@@ -193,8 +193,14 @@ button { font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: tra
 .sheet-card {
   background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius);
   padding: 16px 14px; cursor: pointer; transition: all .15s;
+  border-left-width: 5px;
 }
 .sheet-card:active { border-color: var(--accent-bd); transform: scale(.97); }
+.sheet-card.freq-diario { border-left-color: #B34033; }
+.sheet-card.freq-mensual { border-left-color: #B34033; }
+.sheet-card.freq-bimestral { border-left-color: #7B4F9B; background: rgba(123,79,155,.04); }
+.sheet-card.freq-trimestral { border-left-color: #2E6FB8; background: rgba(46,111,184,.04); }
+.sheet-card.freq-semestral { border-left-color: #4A8556; background: rgba(74,133,86,.04); }
 .sheet-card .freq {
   font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-d);
   display: flex; align-items: center; gap: 5px; margin-bottom: 8px;
@@ -438,14 +444,42 @@ function showToast(msg, type='ok') {
   }, type==='err' ? 8000 : 3500);
 }
 
-// ── Load libs ──
-async function loadSheetJS() {
-  if (window.XLSX) return;
-  return new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
-    s.onload = res; s.onerror = rej; document.head.appendChild(s);
-  });
+// ── CSV Parser (RFC 4180, maneja comillas y comas dentro de campos) ──
+function parseCSV(text) {
+  // Quitar BOM si existe
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  const rows = [];
+  let row = [], field = '', i = 0, inQuotes = false;
+  while (i < text.length) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i+1] === '"') { field += '"'; i += 2; continue; }
+        inQuotes = false; i++; continue;
+      }
+      field += c; i++; continue;
+    }
+    if (c === '"') { inQuotes = true; i++; continue; }
+    if (c === ',') { row.push(field); field = ''; i++; continue; }
+    if (c === '\r') { i++; continue; }
+    if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; i++; continue; }
+    field += c; i++;
+  }
+  // Última fila si no termina en \n
+  if (field !== '' || row.length > 0) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+// Limpia el nombre del archivo CSV para obtener el nombre de la hoja
+// Ej: "R-SIG-GVP_01_REGISTRO_DE_CONTROL_DE_VIDRIOS_Y_PLÁSTICOS_11-09-2023_xlsx_-_Diario-HPS1.csv" → "Diario-HPS1"
+function cleanSheetName(filename) {
+  let n = filename.replace(/\.csv$/i, '');
+  // Si contiene "_-_" tomamos lo que viene después (nombre de hoja)
+  const idx = n.lastIndexOf('_-_');
+  if (idx >= 0) n = n.substring(idx + 3);
+  // Reemplazar guiones bajos sobrantes por espacios
+  n = n.replace(/_/g, ' ').trim();
+  return n;
 }
 
 async function loadJsPDF() {
@@ -457,12 +491,10 @@ async function loadJsPDF() {
   });
 }
 
-// ── Parse XLSX ──
-function parseWorkbook(wb) {
-  const KNOWN_TYPES = ['text','number','date','email','select','textarea','checkbox','file'];
-  return wb.SheetNames.map(name => {
-    const ws = wb.Sheets[name];
-    const raw = XLSX.utils.sheet_to_json(ws, {header:1, defval:null});
+// ── Parse sheets (acepta [{name, rows}] donde rows es array de arrays) ──
+function parseWorkbook(sheetsInput) {
+  return sheetsInput.map(({name, rows}) => {
+    const raw = rows;
     let headerIdx = -1;
     for (let i = 0; i < Math.min(raw.length, 12); i++) {
       const row = (raw[i]||[]).map(c => String(c||'').trim().toLowerCase());
@@ -502,6 +534,23 @@ function parseWorkbook(wb) {
       const row = raw[i];
       if (!row || row.every(c => c===null||c===undefined||String(c).trim()==='')) continue;
       const ub = colMap.ubicacion !== undefined ? String(row[colMap.ubicacion]||'').trim() : '';
+      // Detectar filas de firma / pie de página. Sólo cortar si la fila no tiene
+      // número de ítem (col N° vacía) Y contiene una palabra clave clara de pie.
+      const _num = colMap.num !== undefined ? String(row[colMap.num]||'').trim() : '';
+      if (!_num) {
+        const cells = row.map(c => String(c||'').trim().toLowerCase());
+        const rowJoined = cells.join(' ');
+        const hasSigKeyword =
+          rowJoined.includes('jefe de pre-requisitos') ||
+          rowJoined.includes('supervisor de pre-requisitos') ||
+          rowJoined.includes('supervisor de sgcia') ||
+          rowJoined.includes('administrativo de sgcia') ||
+          rowJoined.includes('gerente de planta') ||
+          cells.some(c => c === 'realizó' || c === 'realizo' ||
+                          c === 'revisó' || c === 'reviso' ||
+                          c === 'aprobó' || c === 'aprobo');
+        if (hasSigKeyword) break;
+      }
       if (ub) lastUb = ub;
       const num = colMap.num !== undefined ? row[colMap.num] : '';
       const sector = colMap.sector !== undefined ? String(row[colMap.sector]||'').trim() : '';
@@ -534,22 +583,43 @@ function loadEmbeddedData() {
   }));
 }
 
-// ── File upload (for updating data) ──
-function handleXLSX(e) {
-  const file = e.target.files?.[0];
-  if (!file) return;
+// ── File upload (carga múltiples CSV, uno por hoja) ──
+function handleCSVs(e) {
+  const files = Array.from(e.target.files || []);
+  if (!files.length) return;
   state.loading = true; render();
-  const reader = new FileReader();
-  reader.onload = async (ev) => {
-    try {
-      await loadSheetJS();
-      const wb = XLSX.read(new Uint8Array(ev.target.result), {type:'array', cellDates:true});
-      state.sheets = parseWorkbook(wb);
-      showToast(state.sheets.length + ' formulario(s) cargado(s)');
-    } catch(err) { showToast('Error: ' + err.message, 'err'); }
-    state.loading = false; render();
-  };
-  reader.readAsArrayBuffer(file);
+
+  const readFile = (file) => new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = (ev) => {
+      try {
+        const text = ev.target.result;
+        const rows = parseCSV(text);
+        resolve({ name: cleanSheetName(file.name), rows });
+      } catch (err) { reject(err); }
+    };
+    r.onerror = () => reject(new Error('No se pudo leer ' + file.name));
+    r.readAsText(file, 'UTF-8');
+  });
+
+  Promise.all(files.map(readFile))
+    .then(sheetsInput => {
+      const parsed = parseWorkbook(sheetsInput);
+      if (parsed.length === 0) {
+        showToast('No se detectaron ítems en los CSV. Revisá el formato.', 'err');
+      } else {
+        // Si ya había hojas cargadas, hacemos merge reemplazando las de mismo nombre
+        const existing = state.sheets || [];
+        const map = new Map();
+        existing.forEach(s => map.set(s.name, s));
+        parsed.forEach(s => map.set(s.name, s));
+        state.sheets = Array.from(map.values());
+        showToast(parsed.length + ' hoja(s) cargada(s) — total: ' + state.sheets.length);
+      }
+    })
+    .catch(err => showToast('Error: ' + err.message, 'err'))
+    .finally(() => { state.loading = false; render(); });
+
   e.target.value = '';
 }
 
@@ -1156,12 +1226,12 @@ function render() {
     if (state.sheets.length === 0) {
       const empty = h('div', {className:'card', style:{textAlign:'center',padding:'40px 20px'}});
       empty.appendChild(h('div', {style:{fontSize:'44px',marginBottom:'8px'}}, '📋'));
-      empty.appendChild(h('div', {style:{fontSize:'16px',fontWeight:'600',marginBottom:'4px'}}, 'Cargá tu archivo Excel'));
-      empty.appendChild(h('div', {style:{color:'var(--text-mu)',fontSize:'13px',marginBottom:'20px',lineHeight:'1.5'}}, 'Subí el .xlsx con los registros de control. Cada hoja se mostrará como formulario.'));
-      const fileInput = h('input', {type:'file', accept:'.xlsx,.xls', style:{display:'none'}, onChange:handleXLSX});
+      empty.appendChild(h('div', {style:{fontSize:'16px',fontWeight:'600',marginBottom:'4px'}}, 'Cargá tus archivos CSV'));
+      empty.appendChild(h('div', {style:{color:'var(--text-mu)',fontSize:'13px',marginBottom:'20px',lineHeight:'1.5'}}, 'Subí uno o varios .csv (uno por hoja). Podés seleccionarlos todos juntos.'));
+      const fileInput = h('input', {type:'file', accept:'.csv,text/csv', multiple:'true', style:{display:'none'}, onChange:handleCSVs});
       const btn = h('button', {className:'btn btn-accent', onClick:()=>fileInput.click()},
         state.loading ? h('span',{className:'spinner'}) : '📁',
-        state.loading ? ' Cargando...' : ' Seleccionar archivo'
+        state.loading ? ' Cargando...' : ' Seleccionar archivos'
       );
       empty.appendChild(fileInput);
       empty.appendChild(btn);
@@ -1170,18 +1240,30 @@ function render() {
       // Sheets grid
       const reloadRow = h('div', {style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'12px'}});
       reloadRow.appendChild(h('span', {className:'mono', style:{fontSize:'11px',color:'var(--text-d)'}}, state.sheets.length+' hojas'));
-      const ri = h('input', {type:'file', accept:'.xlsx,.xls', style:{display:'none'}, onChange:handleXLSX});
+      const ri = h('input', {type:'file', accept:'.csv,text/csv', multiple:'true', style:{display:'none'}, onChange:handleCSVs});
       reloadRow.appendChild(ri);
-      reloadRow.appendChild(h('button', {className:'btn btn-s btn-ghost', onClick:()=>ri.click()}, '↻ Otro archivo'));
+      reloadRow.appendChild(h('button', {className:'btn btn-s btn-ghost', onClick:()=>ri.click()}, '↻ Cargar CSV'));
       content.appendChild(reloadRow);
 
       const grid = h('div', {className:'sheets-grid'});
       state.sheets.forEach((s, i) => {
-        const isDiario = s.meta.frequency?.toLowerCase().includes('diario');
-        const isMensual = s.meta.frequency?.toLowerCase().includes('mensual');
-        const dotColor = isDiario ? '#B34033' : isMensual ? '#C8A832' : '#4A8556';
+        const freq = (s.meta.frequency || '').toLowerCase();
+        const isDiario = freq.includes('diario') || freq.includes('diaria');
+        const isMensual = freq.includes('mensual');
+        const isBimestral = freq.includes('bimestral');
+        const isTrimestral = freq.includes('trimestral');
+        const isSemestral = freq.includes('semestral');
 
-        const card = h('div', {className:'sheet-card', style:{animationDelay:i*.04+'s'}, onClick:()=>{
+        let freqClass = '';
+        let dotColor = '#B34033';
+        if (isBimestral) { freqClass = 'freq-bimestral'; dotColor = '#7B4F9B'; }
+        else if (isTrimestral) { freqClass = 'freq-trimestral'; dotColor = '#2E6FB8'; }
+        else if (isSemestral) { freqClass = 'freq-semestral'; dotColor = '#4A8556'; }
+        else if (isMensual) { freqClass = 'freq-mensual'; dotColor = '#B34033'; }
+        else if (isDiario) { freqClass = 'freq-diario'; dotColor = '#B34033'; }
+        else { freqClass = 'freq-diario'; dotColor = '#B34033'; }
+
+        const card = h('div', {className:'sheet-card '+freqClass, style:{animationDelay:i*.04+'s'}, onClick:()=>{
           state.activeSheet = s; state.view='fill'; state.attachedFiles=[]; state.controlDate=new Date().toISOString().slice(0,10); state.controlTime=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); state.generalObs=''; state.signatureData=null; render();
         }},
           h('div', {className:'freq'}, h('span',{className:'dot',style:{background:dotColor}}), s.meta.frequency||'—'),
