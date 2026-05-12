@@ -309,6 +309,8 @@ const state = {
   view: 'home', 
   sheets: JSON.parse(localStorage.getItem('fv_sheets') || '[]'),
   activeSheet: null,
+  pendingSheet: null,
+  pwError: false,
   inspector: localStorage.getItem('fv_inspector') || '',
   controlDate: new Date().toISOString().slice(0,10),
   controlTime: new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}),
@@ -418,6 +420,19 @@ const FIXED_FOLDERS = {
   "Planta Alérgenos": "1msZpAigKWZ1rfZGBhfAtWEiLlS0WLfRD"
 };
 const FIXED_GENERAL_FOLDER = "1OOOcQsGYD2D9QpyQRRvDN9qJmr6yAsHe";
+
+// Contraseñas por sección (clave = nombre exacto de la hoja)
+const SECTION_PASSWORDS = {
+  "Bimestral":              "Bimestral",
+  "Semestral":              "Semestral",
+  "Trimestral":             "Trimestral",
+  "Diario-Blanchado":       "Blanch2026",
+  "Diario-HPS1":            "HPS1.2026",
+  "Diario-HPS2":            "HPS2.2026",
+  "Diario-Planta PE II":    "PE2026",
+  "Diario-Tostado-Pasta-Frito": "Tost2026",
+  "Planta Alérgenos":       "PA2026",
+};
 
 const FIXED_CSVS = [
   "R-SIG-GVP_01_REGISTRO_DE_CONTROL_DE_VIDRIOS_Y_PLÁSTICOS_11-09-2023_xlsx_-_Bimestral.csv",
@@ -831,7 +846,7 @@ function render() {
 
   // HEADER
   app.appendChild(h('div', {className:'header'},
-    h('div', {className:'header-logo', onClick:()=>{state.view='home';state.activeSheet=null;render();}},
+    h('div', {className:'header-logo', onClick:()=>{state.view='home';state.activeSheet=null;state.pendingSheet=null;state.pwError=false;render();}},
       h('img', {src:LOGO_B64, style:{width:'36px',height:'36px',borderRadius:'6px',objectFit:'cover'}}),
       h('div', null, h('span', {className:'name'}, 'Maniagro'), h('span', {className:'badge', style:{marginLeft:'6px'}}, 'GVP'))
     ),
@@ -847,7 +862,7 @@ function render() {
     content.appendChild(h('h1', {style:{fontFamily:"'Instrument Serif',serif",fontSize:'28px'}}, 'Control de Vidrios y Plásticos'));
     const grid = h('div', {className:'sheets-grid', style:{marginTop:'20px'}});
     state.sheets.forEach(s => {
-      grid.appendChild(h('div', {className:'sheet-card freq-diario', onClick:() => { state.activeSheet = s; state.view = 'fill'; render(); }}, 
+      grid.appendChild(h('div', {className:'sheet-card freq-diario', onClick:() => { state.pendingSheet = s; state.pwError = false; state.view = 'password'; render(); }}, 
         h('div', {className:'sname'}, displayName(s.name)), h('div', {className:'sitems'}, s.items.length+' ítems')
       ));
     });
@@ -874,7 +889,40 @@ function render() {
     bb.appendChild(h('button', {id:'save-btn', className:'btn btn-accent btn-full', onClick:handleSave}, '💾 GUARDAR'));
     content.appendChild(bb);
   }
-  else if (state.view === 'config') {
+  else if (state.view === 'password') {
+    const ps = state.pendingSheet;
+    const sectionName = displayName(ps.name);
+    const wrap = h('div', {className:'fade-up', style:{maxWidth:'380px',margin:'60px auto 0',padding:'0 4px'}});
+    wrap.appendChild(h('button', {className:'btn btn-ghost', style:{marginBottom:'20px'}, onClick:()=>{state.view='home';state.pendingSheet=null;render();}}, '← Volver'));
+    const card = h('div', {style:{background:'var(--surface)',border:'1.5px solid var(--border)',borderRadius:'14px',padding:'28px 24px'}});
+    card.appendChild(h('div', {style:{fontSize:'13px',fontWeight:'600',color:'var(--text-mu)',textTransform:'uppercase',letterSpacing:'.08em',marginBottom:'6px'}}, 'Sección'));
+    card.appendChild(h('div', {style:{fontFamily:"'Instrument Serif',serif",fontSize:'26px',marginBottom:'24px',color:'var(--text)'}}, sectionName));
+    card.appendChild(h('label', {style:{display:'block',fontSize:'13px',fontWeight:'600',color:'var(--text-m)',marginBottom:'8px'}}, 'Contraseña'));
+    const inp = h('input', {type:'password', placeholder:'Ingresá la contraseña', style:{marginBottom:'8px'}});
+    if (state.pwError) {
+      card.appendChild(inp);
+      card.appendChild(h('div', {style:{color:'var(--nc)',fontSize:'13px',marginBottom:'12px',display:'flex',alignItems:'center',gap:'6px'}}, '✗ Contraseña incorrecta. Intentá de nuevo.'));
+    } else {
+      card.appendChild(inp);
+      card.appendChild(h('div', {style:{height:'12px'}}));
+    }
+    const confirmBtn = h('button', {className:'btn btn-accent btn-full'}, 'Ingresar →');
+    confirmBtn.addEventListener('click', () => {
+      const pw = inp.value;
+      const expected = SECTION_PASSWORDS[ps.name];
+      if (!expected || pw === expected) {
+        state.activeSheet = ps; state.pendingSheet = null; state.pwError = false; state.view = 'fill'; render();
+      } else {
+        state.pwError = true; render();
+        // re-focus the input after re-render
+        setTimeout(() => { const ni = document.querySelector('input[type=password]'); if(ni){ni.focus();} }, 50);
+      }
+    });
+    inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') confirmBtn.click(); });
+    card.appendChild(confirmBtn);
+    wrap.appendChild(card);
+    content.appendChild(wrap);
+  }
     content.appendChild(h('button', {className:'btn btn-ghost', onClick:()=> {state.view='home';render();}}, '← Volver'));
     content.appendChild(h('h1', null, 'Configuración'));
     content.appendChild(h('button', {className:'btn btn-default btn-full', style:{marginTop:'20px'}, onClick:()=> {state.view='script';render();}}, '📜 Ver script recordatorio'));
